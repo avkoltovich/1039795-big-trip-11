@@ -200,7 +200,8 @@ const createTripEventItemTemplate = (event) => {
 
   if (duration >= 1440) {
     days = `${castTimeFormat(Math.floor(duration / 1440))}D `;
-    duration = duration - Math.floor(duration / 1440) * 1400;
+    duration = duration - Math.floor(duration / 1440) * 1440;
+    hours = `00H `;
   }
 
   if (duration >= 60) {
