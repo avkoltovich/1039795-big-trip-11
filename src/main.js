@@ -1,12 +1,17 @@
-import {createTripInfoTemplate, createTripMenuTemplate, createTripFilterTemplate} from './components/header.js';
-import {createTripSortingTemplate} from './components/trip-sorting.js';
-import {createTripDaysListTemplate, createTripDayItemTemplate} from './components/trip-days-list.js';
-import {createTripEventsListTemplate, createEditableTripEventPointTemplate, createTripEventItemTemplate} from './components/trip-events-list.js';
+import {getISOStringDate} from './utils.js';
+import {createTripInfoTemplate} from './components/info.js';
+import {createTripMenuTemplate} from './components/menu.js';
+import {createTripFilterTemplate} from './components/filter.js';
+import {createTripSortingTemplate, getSortingEvents} from './components/sorting.js';
+import {createTripDaysListTemplate, createTripDayItemTemplate} from './components/days.js';
+import {createTripEventsListTemplate, createEditableTripEventPointTemplate, createTripEventItemTemplate} from './components/events.js';
+import {getRandomTripEvents} from './mocks/events.js';
 
-const NUMBER_OF_POINTS = 3;
+const POINTS_COUNT = 20;
 const tripMain = document.querySelector(`.trip-main`);
 const tripMainControls = tripMain.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
+const randomEvents = getSortingEvents(getRandomTripEvents(POINTS_COUNT));
 
 const insertComponent = (container, position, template) => {
   container.insertAdjacentHTML(position, template);
@@ -23,31 +28,49 @@ const renderTripDaysList = () => {
   insertComponent(tripEvents, `beforeend`, createTripDaysListTemplate());
 };
 
-const renderTripDayItem = () => {
+const renderTripDayItem = (event, count) => {
   const tripDaysList = tripEvents.querySelector(`.trip-days`);
-  insertComponent(tripDaysList, `beforeend`, createTripDayItemTemplate());
+  insertComponent(tripDaysList, `beforeend`, createTripDayItemTemplate(event, count));
 };
 
-const renderTripEventsList = () => {
-  const tripDayItem = tripEvents.querySelector(`.trip-days__item`);
-  insertComponent(tripDayItem, `beforeend`, createTripEventsListTemplate());
+const renderTripEventsList = (container) => {
+  insertComponent(container, `afterend`, createTripEventsListTemplate());
 };
 
-const renderEditableTripEventItem = () => {
-  const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
-  insertComponent(tripEventsList, `beforeend`, createEditableTripEventPointTemplate());
+const renderEditableTripEventItem = (container, event) => {
+  insertComponent(container, `beforeend`, createEditableTripEventPointTemplate(event));
 };
 
-const renderTripEventItems = () => {
-  const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
-  for (let i = 0; i < NUMBER_OF_POINTS; i++) {
-    insertComponent(tripEventsList, `beforeend`, createTripEventItemTemplate());
+const renderTripEventItem = (container, event) => {
+  insertComponent(container, `beforeend`, createTripEventItemTemplate(event));
+};
+
+const renderMain = (events) => {
+  renderTripDaysList();
+  let daysCount = 1;
+  let editableEventsCount = 1;
+
+  for (let event of events) {
+    const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
+    let currentDateTimeElement = tripEvents.querySelector(`[datetime="${currentDateTime}"]`);
+
+    if (currentDateTimeElement) {
+      renderTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
+    } else {
+      renderTripDayItem(event, daysCount);
+      daysCount++;
+      currentDateTimeElement = tripEvents.querySelector(`[datetime="${currentDateTime}"]`);
+      renderTripEventsList(currentDateTimeElement.parentElement);
+
+      if (editableEventsCount === 1) {
+        renderEditableTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
+        editableEventsCount++;
+      } else {
+        renderTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
+      }
+    }
   }
 };
 
 renderHeader();
-renderTripDaysList();
-renderTripDayItem();
-renderTripEventsList();
-renderEditableTripEventItem();
-renderTripEventItems();
+renderMain(randomEvents);

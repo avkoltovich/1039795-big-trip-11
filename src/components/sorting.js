@@ -27,4 +27,10 @@ const createTripSortingTemplate = () => {
   );
 };
 
-export {createTripSortingTemplate};
+const getSortingEvents = (events) => {
+  return (
+    events.slice().sort((a, b) => a.date.start - b.date.start)
+  );
+};
+
+export {createTripSortingTemplate, getSortingEvents};
