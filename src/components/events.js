@@ -1,5 +1,5 @@
 import {eventTypesMap, offerTitlesMap} from '../const.js';
-import {getFormatTime24H, getStringDate, getISOStringDate} from '../utils.js';
+import {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate} from '../utils.js';
 
 const offerPricesMap = {
   'event-offer-luggage': 30,
@@ -194,9 +194,21 @@ const createOfferItemTemplate = (offer) => {
 
 const createTripEventItemTemplate = (event) => {
   const {date, type, city, price, offers} = event;
-  const duration = (date.end - date.start) / 60000;
-  const hours = Math.floor(duration / 60);
-  const minutes = (duration % 60 === 0) ? 0 : duration - hours * 60;
+  let duration = (date.end - date.start) / 60000;
+  let days = ``;
+  let hours = ``;
+
+  if (duration >= 1440) {
+    days = `${castTimeFormat(Math.floor(duration / 1440))}D `;
+    duration = duration - Math.floor(duration / 1440) * 1400;
+  }
+
+  if (duration >= 60) {
+    hours = `${castTimeFormat(Math.floor(duration / 60))}H `;
+    duration = duration - Math.floor(duration / 60) * 60;
+  }
+
+  const minutes = `${castTimeFormat(duration)}M`;
 
   return (
     `<li class="trip-events__item">
@@ -212,7 +224,7 @@ const createTripEventItemTemplate = (event) => {
             &mdash;
             <time class="event__end-time" datetime="${getISOStringDate(date.end).slice(0, 16)}">${getFormatTime24H(date.end)}</time>
           </p>
-          <p class="event__duration">${hours}H ${minutes}M</p>
+          <p class="event__duration">${days}${hours}${minutes}</p>
         </div>
 
         <p class="event__price">

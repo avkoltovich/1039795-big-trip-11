@@ -42,7 +42,7 @@ const getRandomDate = () => {
 
 const getRandomEndDate = (startDate) => {
   const randomEndDate = new Date(startDate);
-  randomEndDate.setHours(randomEndDate.getHours() + getRandomIntegerNumber(1, 23));
+  randomEndDate.setHours(randomEndDate.getHours() + getRandomIntegerNumber(1, 48));
   randomEndDate.setMinutes(randomEndDate.getMinutes() + getRandomIntegerNumber(0, 59));
   return randomEndDate;
 };

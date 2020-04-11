@@ -12,4 +12,4 @@ const getISOStringDate = (date) => {
   return isoDate.toISOString();
 };
 
-export {getFormatTime24H, getStringDate, getISOStringDate};
+export {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate};
