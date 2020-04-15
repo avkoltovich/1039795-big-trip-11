@@ -8,6 +8,7 @@ import {createTripEventsListTemplate, createEditableTripEventPointTemplate, crea
 import {getRandomTripEvents} from './mocks/events.js';
 
 const POINTS_COUNT = 20;
+const FORM_COUNT = 1;
 const tripMain = document.querySelector(`.trip-main`);
 const tripMainControls = tripMain.querySelector(`.trip-main__trip-controls`);
 const tripEventsSection = document.querySelector(`.trip-events`);
@@ -53,7 +54,7 @@ const renderTripEventItem = (container, event) => {
 };
 
 const renderMain = (events) => {
-  renderEditableTripEventItem(events[0]);
+  renderEditableTripEventItem(events[0], FORM_COUNT);
   renderTripDaysList();
   const tripDaysList = tripEventsSection.querySelector(`.trip-days`);
   let daysCount = 1;
