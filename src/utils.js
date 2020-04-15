@@ -12,4 +12,6 @@ const getISOStringDate = (date) => {
   return isoDate.toISOString();
 };
 
-export {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate};
+const getCapitalLetterInWord = (word) => word[0].toUpperCase() + word.slice(1);
+
+export {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate, getCapitalLetterInWord};

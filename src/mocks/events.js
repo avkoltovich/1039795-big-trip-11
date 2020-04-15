@@ -1,4 +1,4 @@
-import {eventTypesMap, offerTitlesMap} from '../const.js';
+import {transferTypes, activityTypes, offerTitlesMap} from '../const.js';
 
 const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 const STRINGS = [
@@ -14,7 +14,7 @@ const STRINGS = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
-const eventTypes = Object.keys(eventTypesMap);
+const eventTypes = transferTypes.concat(activityTypes);
 const offers = Object.keys(offerTitlesMap).map((item) => {
   return (item = {name: item, isChecked: Math.random() > 0.5});
 });

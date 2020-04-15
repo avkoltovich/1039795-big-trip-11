@@ -1,3 +1,6 @@
+const transferTypes = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
+const activityTypes = [`check-in`, `sightseeing`, `restaurant`];
+
 const eventTypesMap = {
   'taxi': `Taxi to `,
   'bus': `Bus to `,
@@ -19,4 +22,4 @@ const offerTitlesMap = {
   'event-offer-train': `Travel by train`
 };
 
-export {eventTypesMap, offerTitlesMap};
+export {transferTypes, activityTypes, eventTypesMap, offerTitlesMap};

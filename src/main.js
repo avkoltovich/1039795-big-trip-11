@@ -2,7 +2,7 @@ import {getISOStringDate} from './utils.js';
 import {createTripInfoTemplate} from './components/info.js';
 import {createTripMenuTemplate} from './components/menu.js';
 import {createTripFilterTemplate} from './components/filter.js';
-import {createTripSortingTemplate, getSortingEvents} from './components/sorting.js';
+import {createTripSortingTemplate} from './components/sorting.js';
 import {createTripDaysListTemplate, createTripDayItemTemplate} from './components/days.js';
 import {createTripEventsListTemplate, createEditableTripEventPointTemplate, createTripEventItemTemplate} from './components/events.js';
 import {getRandomTripEvents} from './mocks/events.js';
@@ -10,7 +10,14 @@ import {getRandomTripEvents} from './mocks/events.js';
 const POINTS_COUNT = 20;
 const tripMain = document.querySelector(`.trip-main`);
 const tripMainControls = tripMain.querySelector(`.trip-main__trip-controls`);
-const tripEvents = document.querySelector(`.trip-events`);
+const tripEventsSection = document.querySelector(`.trip-events`);
+
+const getSortingEvents = (events) => {
+  return (
+    events.slice().sort((a, b) => a.date.start - b.date.start)
+  );
+};
+
 const randomEvents = getSortingEvents(getRandomTripEvents(POINTS_COUNT));
 
 const insertComponent = (container, position, template) => {
@@ -24,12 +31,12 @@ const renderHeader = () => {
 };
 
 const renderTripDaysList = () => {
-  insertComponent(tripEvents.querySelector(`h2`), `afterend`, createTripSortingTemplate());
-  insertComponent(tripEvents, `beforeend`, createTripDaysListTemplate());
+  insertComponent(tripEventsSection.querySelector(`h2`), `afterend`, createTripSortingTemplate());
+  insertComponent(tripEventsSection, `beforeend`, createTripDaysListTemplate());
 };
 
 const renderTripDayItem = (event, count) => {
-  const tripDaysList = tripEvents.querySelector(`.trip-days`);
+  const tripDaysList = tripEventsSection.querySelector(`.trip-days`);
   insertComponent(tripDaysList, `beforeend`, createTripDayItemTemplate(event, count));
 };
 
@@ -37,8 +44,8 @@ const renderTripEventsList = (container) => {
   insertComponent(container, `afterend`, createTripEventsListTemplate());
 };
 
-const renderEditableTripEventItem = (container, event) => {
-  insertComponent(container, `beforeend`, createEditableTripEventPointTemplate(event));
+const renderEditableTripEventItem = (event) => {
+  insertComponent(tripEventsSection.querySelector(`h2`), `afterend`, createEditableTripEventPointTemplate(event));
 };
 
 const renderTripEventItem = (container, event) => {
@@ -46,28 +53,24 @@ const renderTripEventItem = (container, event) => {
 };
 
 const renderMain = (events) => {
+  renderEditableTripEventItem(events[0]);
   renderTripDaysList();
+  const tripDaysList = tripEventsSection.querySelector(`.trip-days`);
   let daysCount = 1;
-  let editableEventsCount = 1;
+  const slicedEvents = events.slice(1);
 
-  for (let event of events) {
+  for (let event of slicedEvents) {
     const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
-    let currentDateTimeElement = tripEvents.querySelector(`[datetime="${currentDateTime}"]`);
+    let currentDateTimeElement = tripDaysList.querySelector(`[datetime="${currentDateTime}"]`);
 
     if (currentDateTimeElement) {
       renderTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
     } else {
       renderTripDayItem(event, daysCount);
       daysCount++;
-      currentDateTimeElement = tripEvents.querySelector(`[datetime="${currentDateTime}"]`);
+      currentDateTimeElement = tripDaysList.querySelector(`[datetime="${currentDateTime}"]`);
       renderTripEventsList(currentDateTimeElement.parentElement);
-
-      if (editableEventsCount === 1) {
-        renderEditableTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
-        editableEventsCount++;
-      } else {
-        renderTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
-      }
+      renderTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
     }
   }
 };
