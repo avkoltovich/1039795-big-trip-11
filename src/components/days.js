@@ -15,13 +15,15 @@ const MONTH_NAMES = [
   `DEC`,
 ];
 
-const createTripDaysListTemplate = () => {
+const createTripDaysListTemplate = (dayItems = ``) => {
   return (
-    `<ul class="trip-days"></ul>`
+    `<ul class="trip-days">
+      ${dayItems}
+    </ul>`
   );
 };
 
-const createTripDayItemTemplate = (event, count) => {
+const createTripDayItemTemplate = (event, count, eventsList) => {
   const {date} = event;
 
   return (
@@ -30,6 +32,7 @@ const createTripDayItemTemplate = (event, count) => {
         <span class="day__counter">${count}</span>
         <time class="day__date" datetime="${getISOStringDate(date.start).slice(0, 10)}">${MONTH_NAMES[date.start.getMonth()]} ${date.start.getDate()}</time>
       </div>
+      ${eventsList}
     </li>`
   );
 };

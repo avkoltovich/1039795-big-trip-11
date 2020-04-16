@@ -2,9 +2,11 @@ import {transferTypes, activityTypes, eventTypesMap} from '../const.js';
 import {createOfferCheckboxTemplate, createOfferItemTemplate} from './offers.js';
 import {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate, getCapitalLetterInWord} from '../utils.js';
 
-const createTripEventsListTemplate = () => {
+const createTripEventsListTemplate = (eventItems = ``) => {
   return (
-    `<ul class="trip-events__list"></ul>`
+    `<ul class="trip-events__list">
+      ${eventItems}
+    </ul>`
   );
 };
 

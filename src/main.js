@@ -1,4 +1,4 @@
-import {getISOStringDate} from './utils.js';
+import {getISOStringDate, getPassedDays} from './utils.js';
 import {createTripInfoTemplate} from './components/info.js';
 import {createTripMenuTemplate} from './components/menu.js';
 import {createTripFilterTemplate} from './components/filter.js';
@@ -36,13 +36,9 @@ const renderTripDaysList = () => {
   insertComponent(tripEventsSection, `beforeend`, createTripDaysListTemplate());
 };
 
-const renderTripDayItem = (event, count) => {
+const renderTripDayItem = (event, count, eventsList) => {
   const tripDaysList = tripEventsSection.querySelector(`.trip-days`);
-  insertComponent(tripDaysList, `beforeend`, createTripDayItemTemplate(event, count));
-};
-
-const renderTripEventsList = (container) => {
-  insertComponent(container, `afterend`, createTripEventsListTemplate());
+  insertComponent(tripDaysList, `beforeend`, createTripDayItemTemplate(event, count, eventsList));
 };
 
 const renderEditableTripEventItem = (event) => {
@@ -57,21 +53,22 @@ const renderMain = (events) => {
   renderEditableTripEventItem(events[0], FORM_COUNT);
   renderTripDaysList();
   const tripDaysList = tripEventsSection.querySelector(`.trip-days`);
-  let daysCount = 1;
   const slicedEvents = events.slice(1);
+  let daysCount;
+  let startDateTime;
+  let previousDateTime;
 
   for (let event of slicedEvents) {
     const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
-    let currentDateTimeElement = tripDaysList.querySelector(`[datetime="${currentDateTime}"]`);
 
-    if (currentDateTimeElement) {
+    if (previousDateTime === currentDateTime) {
+      const currentDateTimeElement = tripDaysList.querySelector(`[datetime="${currentDateTime}"]`);
       renderTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
     } else {
-      renderTripDayItem(event, daysCount);
-      daysCount++;
-      currentDateTimeElement = tripDaysList.querySelector(`[datetime="${currentDateTime}"]`);
-      renderTripEventsList(currentDateTimeElement.parentElement);
-      renderTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
+      startDateTime = startDateTime ? startDateTime : currentDateTime;
+      daysCount = daysCount ? getPassedDays(startDateTime, currentDateTime) : 1;
+      renderTripDayItem(event, daysCount, createTripEventsListTemplate(createTripEventItemTemplate(event)));
+      previousDateTime = currentDateTime;
     }
   }
 };
