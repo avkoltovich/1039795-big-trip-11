@@ -54,7 +54,7 @@ const renderMain = (events) => {
   renderTripDaysList();
   const tripDaysList = tripEventsSection.querySelector(`.trip-days`);
   const slicedEvents = events.slice(1);
-  let daysCount;
+  let daysPassed;
   let startDateTime;
   let previousDateTime;
 
@@ -66,8 +66,8 @@ const renderMain = (events) => {
       renderTripEventItem(currentDateTimeElement.parentElement.nextElementSibling, event);
     } else {
       startDateTime = startDateTime ? startDateTime : currentDateTime;
-      daysCount = daysCount ? getPassedDays(startDateTime, currentDateTime) : 1;
-      renderTripDayItem(event, daysCount, createTripEventsListTemplate(createTripEventItemTemplate(event)));
+      daysPassed = daysPassed ? getPassedDays(startDateTime, currentDateTime) : 1;
+      renderTripDayItem(event, daysPassed, createTripEventsListTemplate(createTripEventItemTemplate(event)));
       previousDateTime = currentDateTime;
     }
   }
