@@ -1,6 +1,6 @@
 import {transferTypes, activityTypes, eventTypesMap} from '../const.js';
 import {createOfferCheckboxTemplate, createOfferItemTemplate} from './offers.js';
-import {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate, getCapitalLetterInWord} from '../utils.js';
+import {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate, capitalizeFirstLetter} from '../utils.js';
 
 const createTripEventsListTemplate = (eventItems = ``) => {
   return (
@@ -20,7 +20,7 @@ const createEventTypeItemTemplate = (type, isChecked, formCount) => {
   return (
     `<div class="event__type-item">
       <input id="event-type-${type}-${formCount}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked ? `checked` : ``}>
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${formCount}">${getCapitalLetterInWord(type)}</label>
+      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${formCount}">${capitalizeFirstLetter(type)}</label>
     </div>`
   );
 };

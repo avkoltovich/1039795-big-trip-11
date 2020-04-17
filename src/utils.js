@@ -14,6 +14,6 @@ const getISOStringDate = (date) => {
 
 const getPassedDays = (start, end) => (new Date(new Date(end) - new Date(start))).getDate();
 
-const getCapitalLetterInWord = (word) => word[0].toUpperCase() + word.slice(1);
+const capitalizeFirstLetter = (word) => word[0].toUpperCase() + word.slice(1);
 
-export {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate, getCapitalLetterInWord, getPassedDays};
+export {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate, capitalizeFirstLetter, getPassedDays};
