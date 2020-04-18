@@ -28,7 +28,7 @@ const getRandomArrayItem = (array) => {
   return array[getRandomIntegerNumber(0, array.length - 1)];
 };
 
-const getRandomDate = () => {
+const getRandomStartDate = () => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
   const diffValue = sign * getRandomIntegerNumber(0, 8);
@@ -71,8 +71,8 @@ const getRandomPhotos = () => {
   return photos;
 };
 
-const getRandomTripEvent = () => {
-  const randomDate = getRandomDate();
+const getRandomEvent = () => {
+  const randomDate = getRandomStartDate();
   const randomEndDate = getRandomEndDate(randomDate);
   return {
     date: {
@@ -89,10 +89,10 @@ const getRandomTripEvent = () => {
   };
 };
 
-const getRandomTripEvents = (count) => {
+const getRandomEvents = (count) => {
   return new Array(count)
     .fill(``)
-    .map(getRandomTripEvent);
+    .map(getRandomEvent);
 };
 
-export {getRandomTripEvent, getRandomTripEvents};
+export {getRandomEvent, getRandomEvents};

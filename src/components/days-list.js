@@ -1,22 +1,20 @@
 import {createElement} from "../utils.js";
 
-const createInfoTemplate = (cost) => {
+const createDaysListTemplate = (dayItems = ``) => {
   return (
-    `<section class="trip-main__trip-info  trip-info">
-      <p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">${cost ? cost : 0}</span>
-      </p>
-    </section>`
+    `<ul class="trip-days">
+      ${dayItems}
+    </ul>`
   );
 };
 
-export default class Info {
+export default class DaysList {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createInfoTemplate();
+    return createDaysListTemplate();
   }
 
   getElement() {

@@ -1,6 +1,8 @@
+import {createElement} from "../utils.js";
+
 const FILTER_NAMES = [`everything`, `future`, `past`];
 
-const createTripFilterMarkup = (name, isChecked) => {
+const createFilterMarkup = (name, isChecked) => {
   return (
     `<div class="trip-filters__filter">
       <input
@@ -16,8 +18,8 @@ const createTripFilterMarkup = (name, isChecked) => {
   );
 };
 
-const createTripFilterTemplate = () => {
-  const filtersMarkup = FILTER_NAMES.map((it, i) => createTripFilterMarkup(it, i === 0)).join(`\n`);
+const createFilterTemplate = () => {
+  const filtersMarkup = FILTER_NAMES.map((it, i) => createFilterMarkup(it, i === 0)).join(`\n`);
 
   return (
     `<form class="trip-filters" action="#" method="get">
@@ -27,4 +29,24 @@ const createTripFilterTemplate = () => {
   );
 };
 
-export {createTripFilterTemplate};
+export default class Filter {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilterTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

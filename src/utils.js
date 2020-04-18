@@ -16,4 +16,31 @@ const getPassedDays = (start, end) => (new Date(new Date(end) - new Date(start))
 
 const capitalizeFirstLetter = (word) => word[0].toUpperCase() + word.slice(1);
 
-export {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate, capitalizeFirstLetter, getPassedDays};
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+const InsertionPosition = {
+  AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
+  BEFOREEND: `beforeend`
+};
+
+const render = (container, element, position) => {
+  switch (position) {
+    case InsertionPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case InsertionPosition.AFTEREND:
+      container.after(element);
+      break;
+    case InsertionPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+export {castTimeFormat, getFormatTime24H, getStringDate, getISOStringDate, capitalizeFirstLetter, getPassedDays, createElement, InsertionPosition, render};
