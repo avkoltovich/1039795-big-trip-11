@@ -1,10 +1,11 @@
-import {createElement} from "../utils.js";
+import {createElement} from "../../helpers/utils.js";
 
 const createInfoTemplate = (cost) => {
+  const costValue = `${cost ? cost : 0}`;
   return (
     `<section class="trip-main__trip-info  trip-info">
       <p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">${cost ? cost : 0}</span>
+        Total: &euro;&nbsp;<span class="trip-info__cost-value">${costValue}</span>
       </p>
     </section>`
   );

@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import {createElement} from "../helpers/utils.js";
 
 const createSortingTemplate = () => {
   return (

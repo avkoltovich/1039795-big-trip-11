@@ -1,4 +1,4 @@
-import {transferTypes, activityTypes, offerTitlesMap} from '../const.js';
+import {transferTypes, activityTypes, offerTitlesMap} from '../helpers/const.js';
 
 const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 const STRINGS = [

@@ -1,10 +1,8 @@
-import {createElement} from "../utils.js";
+import {createElement} from "../../helpers/utils.js";
 
-const createDaysListTemplate = (dayItems = ``) => {
+const createDaysListTemplate = () => {
   return (
-    `<ul class="trip-days">
-      ${dayItems}
-    </ul>`
+    `<ul class="trip-days"></ul>`
   );
 };
 

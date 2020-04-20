@@ -1,10 +1,8 @@
-import {createElement} from "../utils.js";
+import {createElement} from "../../helpers/utils.js";
 
-const createEventsListTemplate = (eventItems = ``) => {
+const createEventsListTemplate = () => {
   return (
-    `<ul class="trip-events__list">
-      ${eventItems}
-    </ul>`
+    `<ul class="trip-events__list"></ul>`
   );
 };
 

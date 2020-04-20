@@ -1,30 +1,19 @@
-import {transferTypes, activityTypes, eventTypesMap} from '../const.js';
-import {createOfferCheckboxTemplate} from './offers.js';
-import {getFormatTime24H, getStringDate, capitalizeFirstLetter, createElement} from '../utils.js';
+import {transferTypes, activityTypes, eventTypesMap} from '../../../helpers/const.js';
+import {createOfferCheckboxTemplate} from '../offers.js';
+import {getFormatTime24H, castTimeFormat, createElement} from '../../../helpers/utils.js';
+import {createEventTypeItemTemplate} from './type-item.js';
+import {createTripPhotoTemplate} from './photo-tape.js';
 
-const createTripPhotoTemplate = (src) => {
-  return (
-    `<img class="event__photo" src="${src}" alt="Event photo">`
-  );
-};
+const getStringDate = (date) => `${castTimeFormat(date.getDate())}/${castTimeFormat(date.getMonth())}/${date.getFullYear() % 100}`;
 
-const createEventTypeItemTemplate = (type, isChecked, formID) => {
-  const eventTypeString = capitalizeFirstLetter(type);
-
-  return (
-    `<div class="event__type-item">
-      <input id="event-type-${type}-${formID}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked ? `checked` : ``}>
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${formID}">${eventTypeString}</label>
-    </div>`
-  );
-};
-
-const createEditEventTemplate = (event, formID) => {
+const createEventEditTemplate = (event, formID) => {
   const {date, destination, type, city, price, isFavorite, offers, photos} = event;
   const transferTypesFieldsetItems = transferTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, formID)).join(`\n`);
   const activityTypesFieldsetItems = activityTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, formID)).join(`\n`);
+  const eventType = eventTypesMap[type];
   const eventStartTime = `${getStringDate(date.start)} ${getFormatTime24H(date.start)}`;
   const eventEndTime = `${getStringDate(date.end)} ${getFormatTime24H(date.end)}`;
+  const favorite = `${isFavorite ? `checked` : ``}`;
   const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, formID)).join(`\n`);
   const photosTape = photos.map((photo) => createTripPhotoTemplate(photo)).join(`\n`);
 
@@ -57,7 +46,7 @@ const createEditEventTemplate = (event, formID) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-${formID}">
-            ${eventTypesMap[type]}
+            ${eventType}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-${formID}" type="text" name="event-destination" value="${city}" list="destination-list-${formID}">
           <datalist id="destination-list-${formID}">
@@ -90,7 +79,7 @@ const createEditEventTemplate = (event, formID) => {
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
 
-        <input id="event-favorite-${formID}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+        <input id="event-favorite-${formID}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${favorite}>
         <label class="event__favorite-btn" for="event-favorite-${formID}">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -127,7 +116,7 @@ const createEditEventTemplate = (event, formID) => {
   );
 };
 
-export default class EditEvent {
+export default class EventEdit {
   constructor(event, formID) {
     this._event = event;
     this._formID = formID;
@@ -135,7 +124,7 @@ export default class EditEvent {
   }
 
   getTemplate() {
-    return createEditEventTemplate(this._event, this._formID);
+    return createEventEditTemplate(this._event, this._formID);
   }
 
   getElement() {
