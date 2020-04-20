@@ -9,24 +9,31 @@ const offerPricesMap = {
 };
 
 const createOfferCheckboxTemplate = (offer, formCount) => {
+  const checked = `${offer.isChecked ? `checked` : ``}`;
+  const offerTitle = offerTitlesMap[offer.name];
+  const offerPrice = offerPricesMap[offer.name];
+
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${offer.name}-${formCount}" type="checkbox" name="${offer}" ${offer.isChecked ? `checked` : ``}>
+      <input class="event__offer-checkbox  visually-hidden" id="${offer.name}-${formCount}" type="checkbox" name="${offer}" ${checked}>
       <label class="event__offer-label" for="${offer.name}-${formCount}">
-        <span class="event__offer-title">${offerTitlesMap[offer.name]}</span>
+        <span class="event__offer-title">${offerTitle}</span>
         &plus;
-        &euro;&nbsp;<span class="event__offer-price">${offerPricesMap[offer.name]}</span>
+        &euro;&nbsp;<span class="event__offer-price">${offerPrice}</span>
       </label>
     </div>`
   );
 };
 
 const createOfferItemTemplate = (offer) => {
+  const offerTitle = offerTitlesMap[offer.name];
+  const offerPrice = offerPricesMap[offer.name];
+
   return (
     `<li class="event__offer">
-      <span class="event__offer-title">${offerTitlesMap[offer.name]}</span>
+      <span class="event__offer-title">${offerTitle}</span>
       &plus;
-      &euro;&nbsp;<span class="event__offer-price">${offerPricesMap[offer.name]}</span>
+      &euro;&nbsp;<span class="event__offer-price">${offerPrice}</span>
     </li>`
   );
 };
