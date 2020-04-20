@@ -55,23 +55,20 @@ const renderEventItem = (eventsListElement, event) => {
   const rollUpEventButton = eventInnerWrapper.querySelector(`.event__rollup-btn`);
   rollUpEventButton.addEventListener(`click`, onRollUpEventButtonClick);
 
-  const eventEditComponent = new EventEditComponent(event);
-  const rollUpEventEditButton = eventEditComponent.getElement().querySelector(`.event__rollup-btn`);
-  rollUpEventEditButton.addEventListener(`click`, onRollUpEventEditButtonClick);
+  const eventEditComponent = new EventEditComponent(event, FORM_ID);
+  eventEditComponent.getElement().addEventListener(`submit`, onRollUpEventEditButtonClick);
 
   render(eventsListElement, eventComponent.getElement(), InsertionPosition.BEFOREEND);
 };
 
 const renderMain = (events) => {
-  render(tripEventsSection.querySelector(`h2`), new EventEditComponent(events[0], FORM_ID).getElement(), InsertionPosition.AFTEREND);
   const daysListComponent = new DaysListComponent().getElement();
   renderDaysList(daysListComponent);
-  const slicedEvents = events.slice(1);
   let daysPassed;
   let startDateTime;
   let previousDateTime;
 
-  for (let event of slicedEvents) {
+  for (let event of events) {
     const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
 
     if (previousDateTime === currentDateTime) {
