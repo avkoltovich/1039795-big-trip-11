@@ -1,8 +1,11 @@
 import {transferTypes, activityTypes, eventTypesMap} from '../../../helpers/const.js';
 import {createOfferCheckboxTemplate} from '../offers.js';
 import {getFormatTime24H, castTimeFormat, createElement} from '../../../helpers/utils.js';
+import {createDestinationItemTemplate} from './destination-item';
 import {createEventTypeItemTemplate} from './type-item.js';
 import {createTripPhotoTemplate} from './photo-tape.js';
+
+const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 
 const getStringDate = (date) => `${castTimeFormat(date.getDate())}/${castTimeFormat(date.getMonth())}/${date.getFullYear() % 100}`;
 
@@ -11,6 +14,7 @@ const createEventEditTemplate = (event, formID) => {
   const transferTypesFieldsetItems = transferTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, formID)).join(`\n`);
   const activityTypesFieldsetItems = activityTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, formID)).join(`\n`);
   const eventType = eventTypesMap[type];
+  const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
   const eventStartTime = `${getStringDate(date.start)} ${getFormatTime24H(date.start)}`;
   const eventEndTime = `${getStringDate(date.end)} ${getFormatTime24H(date.end)}`;
   const favorite = `${isFavorite ? `checked` : ``}`;
@@ -30,16 +34,12 @@ const createEventEditTemplate = (event, formID) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Transfer</legend>
-
               ${transferTypesFieldsetItems}
-
             </fieldset>
 
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Activity</legend>
-
               ${activityTypesFieldsetItems}
-
             </fieldset>
           </div>
         </div>
@@ -50,9 +50,7 @@ const createEventEditTemplate = (event, formID) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-${formID}" type="text" name="event-destination" value="${city}" list="destination-list-${formID}">
           <datalist id="destination-list-${formID}">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+            ${destinationItems}
           </datalist>
         </div>
 
