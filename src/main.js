@@ -1,11 +1,11 @@
 import {getISOStringDate, InsertionPosition, render} from './helpers/utils.js';
 import InfoComponent from './components/header/info.js';
 import MenuComponent from './components/header/menu.js';
-import FilterComponent from './components/header/filter/filter.js';
+import FilterComponent from './components/header/filter.js';
 import SortingComponent from './components/sorting.js';
 import DaysListComponent from './components/days/days-list.js';
 import DayItemComponent from './components/days/day.js';
-import EventEditComponent from './components/events/event-edit/event-edit.js';
+import EventEditComponent from './components/events/event-edit.js';
 import EventsListComponent from './components/events/events-list.js';
 import EventComponent from './components/events/event.js';
 import {getRandomEvents} from './mocks/events.js';
