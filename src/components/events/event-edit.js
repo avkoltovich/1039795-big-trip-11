@@ -1,13 +1,36 @@
-import {transferTypes, activityTypes, eventTypesMap} from '../../../helpers/const.js';
-import {createOfferCheckboxTemplate} from '../offers.js';
-import {getFormatTime24H, castTimeFormat, createElement} from '../../../helpers/utils.js';
-import {createDestinationItemTemplate} from './destination-item';
-import {createEventTypeItemTemplate} from './type-item.js';
-import {createTripPhotoTemplate} from './photo-tape.js';
+import {transferTypes, activityTypes, eventTypesMap} from '../../helpers/const.js';
+import {createOfferCheckboxTemplate} from './offers.js';
+import {getFormatTime24H, castTimeFormat, createElement} from '../../helpers/utils.js';
 
 const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 
 const getStringDate = (date) => `${castTimeFormat(date.getDate())}/${castTimeFormat(date.getMonth())}/${date.getFullYear() % 100}`;
+
+const capitalizeFirstLetter = (word) => word[0].toUpperCase() + word.slice(1);
+
+const createEventTypeItemTemplate = (type, isChecked, formID) => {
+  const eventTypeString = capitalizeFirstLetter(type);
+  const checked = `${type}" ${isChecked ? `checked` : ``}`;
+
+  return (
+    `<div class="event__type-item">
+      <input id="event-type-${type}-${formID}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${checked}>
+      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${formID}">${eventTypeString}</label>
+    </div>`
+  );
+};
+
+const createDestinationItemTemplate = (city) => {
+  return (
+    `<option value="${city}"></option>`
+  );
+};
+
+const createTripPhotoTemplate = (src) => {
+  return (
+    `<img class="event__photo" src="${src}" alt="Event photo">`
+  );
+};
 
 const createEventEditTemplate = (event, formID) => {
   const {date, destination, type, city, price, isFavorite, offers, photos} = event;
