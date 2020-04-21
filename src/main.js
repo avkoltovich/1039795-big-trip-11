@@ -8,6 +8,7 @@ import DayItemComponent from './components/days/day.js';
 import EventEditComponent from './components/events/event-edit.js';
 import EventsListComponent from './components/events/events-list.js';
 import EventComponent from './components/events/event.js';
+import NoEventsComponent from "./components/events/no-events.js";
 import {getRandomEvents} from './mocks/events.js';
 
 const POINTS_COUNT = 20;
@@ -81,6 +82,10 @@ const renderEventItem = (eventsListElement, event) => {
 };
 
 const renderMain = (events) => {
+  if (events.length === 0) {
+    render(tripEventsSection.querySelector(`h2`), new NoEventsComponent().getElement(), InsertionPosition.AFTEREND);
+    return;
+  }
   const daysListComponent = new DaysListComponent().getElement();
   renderDaysList(daysListComponent);
   let daysPassed;
