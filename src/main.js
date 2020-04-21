@@ -42,12 +42,31 @@ const renderDayItem = (daysListComponent, event, count) => {
 };
 
 const renderEventItem = (eventsListElement, event) => {
-  const onRollUpEventButtonClick = () => {
+  const replaceEventToEdit = () => {
     eventComponent.getElement().replaceChild(eventEditComponent.getElement(), eventInnerWrapper);
   };
 
-  const onRollUpEventEditButtonClick = () => {
+  const replaceEditToEvent = () => {
     eventComponent.getElement().replaceChild(eventInnerWrapper, eventEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const onRollUpEventButtonClick = () => {
+    replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  };
+
+  const onEditFormSubmit = () => {
+    replaceEditToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
   const eventComponent = new EventComponent(event);
@@ -56,7 +75,7 @@ const renderEventItem = (eventsListElement, event) => {
   rollUpEventButton.addEventListener(`click`, onRollUpEventButtonClick);
 
   const eventEditComponent = new EventEditComponent(event, FORM_ID);
-  eventEditComponent.getElement().addEventListener(`submit`, onRollUpEventEditButtonClick);
+  eventEditComponent.getElement().addEventListener(`submit`, onEditFormSubmit);
 
   render(eventsListElement, eventComponent.getElement(), InsertionPosition.BEFOREEND);
 };
