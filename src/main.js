@@ -1,13 +1,14 @@
 import {getISOStringDate, InsertionPosition, render} from './helpers/utils.js';
 import InfoComponent from './components/header/info.js';
 import MenuComponent from './components/header/menu.js';
-import FilterComponent from './components/header/filter/filter.js';
+import FilterComponent from './components/header/filter.js';
 import SortingComponent from './components/sorting.js';
 import DaysListComponent from './components/days/days-list.js';
 import DayItemComponent from './components/days/day.js';
-import EventEditComponent from './components/events/event-edit/event-edit.js';
+import EventEditComponent from './components/events/event-edit.js';
 import EventsListComponent from './components/events/events-list.js';
 import EventComponent from './components/events/event.js';
+import NoEventsComponent from "./components/events/no-events.js";
 import {getRandomEvents} from './mocks/events.js';
 
 const POINTS_COUNT = 20;
@@ -42,12 +43,31 @@ const renderDayItem = (daysListComponent, event, count) => {
 };
 
 const renderEventItem = (eventsListElement, event) => {
-  const onRollUpEventButtonClick = () => {
+  const replaceEventToEdit = () => {
     eventComponent.getElement().replaceChild(eventEditComponent.getElement(), eventInnerWrapper);
   };
 
-  const onRollUpEventEditButtonClick = () => {
+  const replaceEditToEvent = () => {
     eventComponent.getElement().replaceChild(eventInnerWrapper, eventEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const onRollUpEventButtonClick = () => {
+    replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  };
+
+  const onEditFormSubmit = () => {
+    replaceEditToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
   const eventComponent = new EventComponent(event);
@@ -56,12 +76,16 @@ const renderEventItem = (eventsListElement, event) => {
   rollUpEventButton.addEventListener(`click`, onRollUpEventButtonClick);
 
   const eventEditComponent = new EventEditComponent(event, FORM_ID);
-  eventEditComponent.getElement().addEventListener(`submit`, onRollUpEventEditButtonClick);
+  eventEditComponent.getElement().addEventListener(`submit`, onEditFormSubmit);
 
   render(eventsListElement, eventComponent.getElement(), InsertionPosition.BEFOREEND);
 };
 
 const renderMain = (events) => {
+  if (events.length === 0) {
+    render(tripEventsSection.querySelector(`h2`), new NoEventsComponent().getElement(), InsertionPosition.AFTEREND);
+    return;
+  }
   const daysListComponent = new DaysListComponent().getElement();
   renderDaysList(daysListComponent);
   let daysPassed;

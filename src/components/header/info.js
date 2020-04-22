@@ -1,4 +1,4 @@
-import {createElement} from "../../helpers/utils.js";
+import {createElement} from '../../helpers/utils.js';
 
 const createInfoTemplate = (cost) => {
   const costValue = `${cost ? cost : 0}`;
