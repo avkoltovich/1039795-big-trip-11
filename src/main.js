@@ -29,25 +29,24 @@ const getPassedDays = (start, end) => (new Date(new Date(end) - new Date(start))
 const randomEvents = getSortingEvents(getRandomEvents(POINTS_COUNT));
 
 const renderHeader = () => {
-  render(tripMain, new InfoComponent().getElement(), InsertionPosition.AFTERBEGIN);
-  render(tripMainControls.querySelector(`h2`), new MenuComponent().getElement(), InsertionPosition.AFTEREND);
-  render(tripMainControls, new FilterComponent().getElement(), InsertionPosition.BEFOREEND);
+  render(tripMain, new InfoComponent(), InsertionPosition.AFTERBEGIN);
+  render(tripMainControls.querySelector(`h2`), new MenuComponent(), InsertionPosition.AFTEREND);
+  render(tripMainControls, new FilterComponent(), InsertionPosition.BEFOREEND);
 };
 
 const renderDaysList = (daysListComponent) => {
-  render(tripEventsSection.querySelector(`h2`), new SortingComponent().getElement(), InsertionPosition.AFTEREND);
+  render(tripEventsSection.querySelector(`h2`), new SortingComponent(), InsertionPosition.AFTEREND);
   render(tripEventsSection, daysListComponent, InsertionPosition.BEFOREEND);
 };
 
 const renderDayItem = (daysListComponent, event, count) => {
-  render(daysListComponent, new DayItemComponent(event, count).getElement(), InsertionPosition.BEFOREEND);
+  render(daysListComponent, new DayItemComponent(event, count), InsertionPosition.BEFOREEND);
 };
 
 const renderEventItem = (eventsListElement, event) => {
   const eventComponent = new EventComponent(event);
   const eventEditComponent = new EventEditComponent(event, FORM_ID);
-  const eventInnerWrapper = eventComponent.getElement().querySelector(`.event`);
-  const rollUpEventButton = eventInnerWrapper.querySelector(`.event__rollup-btn`);
+  const rollUpEventButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
 
   const replaceEventToEdit = () => {
     replace(eventEditComponent, eventComponent);
@@ -80,15 +79,15 @@ const renderEventItem = (eventsListElement, event) => {
 
   eventEditComponent.getElement().addEventListener(`submit`, onEditFormSubmit);
 
-  render(eventsListElement, eventComponent.getElement(), InsertionPosition.BEFOREEND);
+  render(eventsListElement, eventComponent, InsertionPosition.BEFOREEND);
 };
 
 const renderMain = (events) => {
   if (events.length === 0) {
-    render(tripEventsSection.querySelector(`h2`), new NoEventsComponent().getElement(), InsertionPosition.AFTEREND);
+    render(tripEventsSection.querySelector(`h2`), new NoEventsComponent(), InsertionPosition.AFTEREND);
     return;
   }
-  const daysListComponent = new DaysListComponent().getElement();
+  const daysListComponent = new DaysListComponent();
   renderDaysList(daysListComponent);
   let daysPassed;
   let startDateTime;
@@ -98,15 +97,15 @@ const renderMain = (events) => {
     const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
 
     if (previousDateTime === currentDateTime) {
-      const currentDateTimeElement = daysListComponent.querySelector(`[datetime="${currentDateTime}"]`);
+      const currentDateTimeElement = daysListComponent.getElement().querySelector(`[datetime="${currentDateTime}"]`);
       const currentEventsListElement = currentDateTimeElement.parentElement.parentElement.querySelector(`.trip-events__list`);
       renderEventItem(currentEventsListElement, event);
     } else {
       startDateTime = startDateTime ? startDateTime : currentDateTime;
       daysPassed = daysPassed ? getPassedDays(startDateTime, currentDateTime) : 1;
-      renderDayItem(daysListComponent, event, daysPassed);
-      const currentDateTimeElement = daysListComponent.querySelector(`[datetime="${currentDateTime}"]`);
-      render(currentDateTimeElement.parentElement.parentElement, new EventsListComponent().getElement(), InsertionPosition.BEFOREEND);
+      renderDayItem(daysListComponent.getElement(), event, daysPassed);
+      const currentDateTimeElement = daysListComponent.getElement().querySelector(`[datetime="${currentDateTime}"]`);
+      render(currentDateTimeElement.parentElement.parentElement, new EventsListComponent(), InsertionPosition.BEFOREEND);
       const currentEventsListElement = currentDateTimeElement.parentElement.parentElement.querySelector(`.trip-events__list`);
       renderEventItem(currentEventsListElement, event);
       previousDateTime = currentDateTime;

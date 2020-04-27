@@ -11,16 +11,16 @@ const InsertionPosition = {
   BEFOREEND: `beforeend`
 };
 
-const render = (container, element, position) => {
+const render = (container, component, position) => {
   switch (position) {
     case InsertionPosition.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(component.getElement());
       break;
     case InsertionPosition.AFTEREND:
-      container.after(element);
+      container.after(component.getElement());
       break;
     case InsertionPosition.BEFOREEND:
-      container.append(element);
+      container.append(component.getElement());
       break;
   }
 };
