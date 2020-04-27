@@ -1,4 +1,5 @@
-import {getISOStringDate, InsertionPosition, render} from './helpers/utils.js';
+import {getISOStringDate} from './helpers/utils.js';
+import {InsertionPosition, render} from './helpers/render.js';
 import InfoComponent from './components/header/info.js';
 import MenuComponent from './components/header/menu.js';
 import FilterComponent from './components/header/filter.js';
