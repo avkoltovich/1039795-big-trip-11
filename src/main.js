@@ -46,7 +46,6 @@ const renderDayItem = (daysListComponent, event, count) => {
 const renderEventItem = (eventsListElement, event) => {
   const eventComponent = new EventComponent(event);
   const eventEditComponent = new EventEditComponent(event, FORM_ID);
-  const rollUpEventButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
 
   const replaceEventToEdit = () => {
     replace(eventEditComponent, eventComponent);
@@ -75,9 +74,9 @@ const renderEventItem = (eventsListElement, event) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
-  rollUpEventButton.addEventListener(`click`, onRollUpEventButtonClick);
+  eventComponent.setEditButtonClickHandler(onRollUpEventButtonClick);
 
-  eventEditComponent.getElement().addEventListener(`submit`, onEditFormSubmit);
+  eventEditComponent.setSubmitHandler(onEditFormSubmit);
 
   render(eventsListElement, eventComponent, InsertionPosition.BEFOREEND);
 };
