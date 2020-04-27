@@ -1,5 +1,5 @@
 import {getISOStringDate} from './helpers/utils.js';
-import {InsertionPosition, render} from './helpers/render.js';
+import {InsertionPosition, render, replace} from './helpers/render.js';
 import InfoComponent from './components/header/info.js';
 import MenuComponent from './components/header/menu.js';
 import FilterComponent from './components/header/filter.js';
@@ -44,12 +44,17 @@ const renderDayItem = (daysListComponent, event, count) => {
 };
 
 const renderEventItem = (eventsListElement, event) => {
+  const eventComponent = new EventComponent(event);
+  const eventInnerWrapper = eventComponent.getElement().querySelector(`.event`);
+  const rollUpEventButton = eventInnerWrapper.querySelector(`.event__rollup-btn`);
+  const eventEditComponent = new EventEditComponent(event, FORM_ID);
+
   const replaceEventToEdit = () => {
-    eventComponent.getElement().replaceChild(eventEditComponent.getElement(), eventInnerWrapper);
+    replace(eventComponent.getElement(), eventEditComponent.getElement(), eventInnerWrapper);
   };
 
   const replaceEditToEvent = () => {
-    eventComponent.getElement().replaceChild(eventInnerWrapper, eventEditComponent.getElement());
+    replace(eventComponent.getElement(), eventInnerWrapper, eventEditComponent.getElement());
   };
 
   const onEscKeyDown = (evt) => {
@@ -71,12 +76,8 @@ const renderEventItem = (eventsListElement, event) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
-  const eventComponent = new EventComponent(event);
-  const eventInnerWrapper = eventComponent.getElement().querySelector(`.event`);
-  const rollUpEventButton = eventInnerWrapper.querySelector(`.event__rollup-btn`);
   rollUpEventButton.addEventListener(`click`, onRollUpEventButtonClick);
 
-  const eventEditComponent = new EventEditComponent(event, FORM_ID);
   eventEditComponent.getElement().addEventListener(`submit`, onEditFormSubmit);
 
   render(eventsListElement, eventComponent.getElement(), InsertionPosition.BEFOREEND);
