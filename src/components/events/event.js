@@ -1,6 +1,7 @@
 import {eventTypesMap} from '../../helpers/const.js';
 import {createOfferItemTemplate} from './offers.js';
-import {castTimeFormat, getFormatTime24H, getISOStringDate, createElement} from '../../helpers/utils.js';
+import {castTimeFormat, getFormatTime24H, getISOStringDate} from '../../helpers/utils.js';
+import AbstractComponent from '../abstract.js';
 
 const SHOWING_OFFERS_COUNT = 3;
 
@@ -64,25 +65,14 @@ const createEventTemplate = (event) => {
   );
 };
 
-export default class Event {
+export default class Event extends AbstractComponent {
   constructor(event) {
+    super();
+
     this._event = event;
-    this._element = null;
   }
 
   getTemplate() {
     return createEventTemplate(this._event);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

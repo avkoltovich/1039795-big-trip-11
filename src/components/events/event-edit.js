@@ -1,6 +1,7 @@
 import {transferTypes, activityTypes, eventTypesMap} from '../../helpers/const.js';
 import {createOfferCheckboxTemplate} from './offers.js';
-import {getFormatTime24H, castTimeFormat, createElement} from '../../helpers/utils.js';
+import {getFormatTime24H, castTimeFormat} from '../../helpers/utils.js';
+import AbstractComponent from '../abstract.js';
 
 const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 
@@ -137,26 +138,15 @@ const createEventEditTemplate = (event, formID) => {
   );
 };
 
-export default class EventEdit {
+export default class EventEdit extends AbstractComponent {
   constructor(event, formID) {
+    super();
+
     this._event = event;
     this._formID = formID;
-    this._element = null;
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event, this._formID);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
