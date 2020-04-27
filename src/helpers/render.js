@@ -29,4 +29,8 @@ const replace = (parent, newElement, oldElement) => {
   parent.replaceChild(newElement, oldElement);
 };
 
-export {createElement, InsertionPosition, render, replace};
+const remove = (element) => {
+  element.remove();
+};
+
+export {createElement, InsertionPosition, render, replace, remove};
