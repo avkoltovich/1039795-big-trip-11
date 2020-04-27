@@ -45,16 +45,16 @@ const renderDayItem = (daysListComponent, event, count) => {
 
 const renderEventItem = (eventsListElement, event) => {
   const eventComponent = new EventComponent(event);
+  const eventEditComponent = new EventEditComponent(event, FORM_ID);
   const eventInnerWrapper = eventComponent.getElement().querySelector(`.event`);
   const rollUpEventButton = eventInnerWrapper.querySelector(`.event__rollup-btn`);
-  const eventEditComponent = new EventEditComponent(event, FORM_ID);
 
   const replaceEventToEdit = () => {
-    replace(eventComponent.getElement(), eventEditComponent.getElement(), eventInnerWrapper);
+    replace(eventEditComponent, eventComponent);
   };
 
   const replaceEditToEvent = () => {
-    replace(eventComponent.getElement(), eventInnerWrapper, eventEditComponent.getElement());
+    replace(eventComponent, eventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
