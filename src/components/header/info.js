@@ -1,4 +1,4 @@
-import {createElement} from '../../helpers/utils.js';
+import AbstractComponent from '../abstract.js';
 
 const createInfoTemplate = (cost) => {
   const costValue = `${cost ? cost : 0}`;
@@ -11,24 +11,8 @@ const createInfoTemplate = (cost) => {
   );
 };
 
-export default class Info {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Info extends AbstractComponent {
   getTemplate() {
     return createInfoTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

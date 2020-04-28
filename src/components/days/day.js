@@ -1,4 +1,5 @@
-import {getISOStringDate, createElement} from '../../helpers/utils.js';
+import {getISOStringDate} from '../../helpers/utils.js';
+import AbstractComponent from '../abstract.js';
 
 const MONTH_NAMES = [
   `JAN`,
@@ -30,26 +31,15 @@ const createDayItemTemplate = (event, count) => {
   );
 };
 
-export default class DayItem {
+export default class DayItem extends AbstractComponent {
   constructor(event, count) {
+    super();
+
     this._event = event;
     this._count = count;
-    this._element = null;
   }
 
   getTemplate() {
     return createDayItemTemplate(this._event, this._count);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
