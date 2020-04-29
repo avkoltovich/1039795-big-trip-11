@@ -10,13 +10,7 @@ const tripMain = document.querySelector(`.trip-main`);
 const tripMainControls = tripMain.querySelector(`.trip-main__trip-controls`);
 const tripEventsSection = document.querySelector(`.trip-events`);
 
-const getSortingEvents = (events) => {
-  return (
-    events.slice().sort((a, b) => a.date.start - b.date.start)
-  );
-};
-
-const randomEvents = getSortingEvents(getRandomEvents(POINTS_COUNT));
+const randomEvents = getRandomEvents(POINTS_COUNT);
 
 const renderHeader = () => {
   render(tripMain, new InfoComponent(), InsertionPosition.AFTERBEGIN);

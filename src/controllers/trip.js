@@ -1,6 +1,6 @@
 import {getISOStringDate} from '../helpers/utils.js';
 import {InsertionPosition, render, replace} from '../helpers/render.js';
-import SortingComponent from '../components/sorting.js';
+import SortingComponent, {sortTypeMap} from '../components/sorting.js';
 import DaysListComponent from '../components/days/days-list.js';
 import DayItemComponent from '../components/days/day.js';
 import EventEditComponent from '../components/events/event-edit.js';
@@ -12,8 +12,11 @@ const FORM_ID = 1;
 
 const getPassedDays = (start, end) => (new Date(new Date(end) - new Date(start))).getDate();
 
+const renderSortingElement = (eventsSection, sortingComponent) => {
+  render(eventsSection.querySelector(`h2`), sortingComponent, InsertionPosition.AFTEREND);
+};
+
 const renderDaysList = (eventsSection, daysListComponent) => {
-  render(eventsSection.querySelector(`h2`), new SortingComponent(), InsertionPosition.AFTEREND);
   render(eventsSection, daysListComponent, InsertionPosition.BEFOREEND);
 };
 
@@ -63,14 +66,25 @@ const renderEventItem = (eventsListElement, event) => {
   render(eventsListElement.getElement(), eventComponent, InsertionPosition.BEFOREEND);
 };
 
-const renderTrip = (eventsSection, events) => {
-  if (events.length === 0) {
-    render(eventsSection.querySelector(`h2`), new NoEventsComponent(), InsertionPosition.AFTEREND);
-    return;
+const getSortedEvents = (events, sortType) => {
+  let sortedEvents = [];
+  const showingEvents = events.slice();
+
+  switch (sortType) {
+    case sortTypeMap.DEFAULT:
+      sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
+      break;
+
+    default:
+      sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
+      break;
   }
 
-  const daysListComponent = new DaysListComponent();
+  return sortedEvents;
+};
 
+const renderTripList = (eventsSection, sortedEvents) => {
+  const daysListComponent = new DaysListComponent();
   renderDaysList(eventsSection, daysListComponent);
 
   let daysPassed;
@@ -78,7 +92,7 @@ const renderTrip = (eventsSection, events) => {
   let previousDateTime;
   let currentEventsListElement;
 
-  for (let event of events) {
+  for (let event of sortedEvents) {
     const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
 
     if (previousDateTime === currentDateTime) {
@@ -99,12 +113,30 @@ const renderTrip = (eventsSection, events) => {
   }
 };
 
+const renderTripBoard = (eventsSection, events) => {
+  if (events.length === 0) {
+    render(eventsSection.querySelector(`h2`), new NoEventsComponent(), InsertionPosition.AFTEREND);
+    return;
+  }
+
+  const sortingComponent = new SortingComponent();
+  const sortedEvents = getSortedEvents(events, sortingComponent.getSortType());
+
+  sortingComponent.setSortTypeChangeHandler(() => {
+    console.log(sortingComponent.getSortType());
+  });
+
+  renderSortingElement(eventsSection, sortingComponent);
+
+  renderTripList(eventsSection, sortedEvents);
+};
+
 export default class TripController {
   constructor(container) {
     this._container = container;
   }
 
   render(events) {
-    renderTrip(this._container, events);
+    renderTripBoard(this._container, events);
   }
 }
