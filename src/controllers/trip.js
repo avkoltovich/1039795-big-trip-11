@@ -67,28 +67,6 @@ const renderEventItemElement = (eventsListElement, event) => {
   render(eventsListElement.getElement(), eventComponent, InsertionPosition.BEFOREEND);
 };
 
-const getSortedEvents = (events, sortType) => {
-  let sortedEvents = [];
-  const showingEvents = events.slice();
-
-  switch (sortType) {
-    case sortTypeMap.DEFAULT:
-      sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
-      break;
-    case sortTypeMap.TIME:
-      sortedEvents = showingEvents.sort((a, b) => (b.date.end - b.date.start) - (a.date.end - a.date.start));
-      break;
-    case sortTypeMap.PRICE:
-      sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
-      break;
-    default:
-      sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
-      break;
-  }
-
-  return sortedEvents;
-};
-
 const renderEventsByDays = (daysListComponent, sortedEvents) => {
   let daysPassed;
   let startDateTime;
@@ -128,51 +106,54 @@ const renderEventsByTimeOrPrice = (daysListComponent, sortedEvents) => {
   }
 };
 
-const renderSortedEvents = (sortType, daysListComponent, sortedEvents) => {
+const renderSortedEvents = (sortType, daysListComponent, events) => {
+  let sortedEvents = [];
+  const showingEvents = events.slice();
+
   switch (sortType) {
     case sortTypeMap.DEFAULT:
+      sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
       renderEventsByDays(daysListComponent, sortedEvents);
       break;
     case sortTypeMap.TIME:
+      sortedEvents = showingEvents.sort((a, b) => (b.date.end - b.date.start) - (a.date.end - a.date.start));
       renderEventsByTimeOrPrice(daysListComponent, sortedEvents);
       break;
     case sortTypeMap.PRICE:
+      sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
       renderEventsByTimeOrPrice(daysListComponent, sortedEvents);
       break;
     default:
+      sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
       renderEventsByDays(daysListComponent, sortedEvents);
       break;
   }
-};
-
-const renderTripBoard = (eventsSection, events) => {
-  if (events.length === 0) {
-    render(eventsSection.querySelector(`h2`), new NoEventsComponent(), InsertionPosition.AFTEREND);
-    return;
-  }
-
-  const sortingComponent = new SortingComponent();
-  const daysListComponent = new DaysListComponent();
-  const sortedEvents = getSortedEvents(events, sortingComponent.getSortType());
-
-  sortingComponent.setSortTypeChangeHandler(() => {
-    remove(daysListComponent.getElement());
-    daysListComponent.removeElement();
-    renderDaysListElement(eventsSection, daysListComponent);
-    renderSortedEvents(sortingComponent.getSortType(), daysListComponent, getSortedEvents(events, sortingComponent.getSortType()));
-  });
-
-  renderSortingElement(eventsSection, sortingComponent);
-  renderDaysListElement(eventsSection, daysListComponent);
-  renderSortedEvents(sortingComponent.getSortType(), daysListComponent, sortedEvents);
 };
 
 export default class TripController {
   constructor(container) {
     this._container = container;
+
+    this._noEventsComponent = new NoEventsComponent();
+    this._sortingComponent = new SortingComponent();
+    this._daysListComponent = new DaysListComponent();
   }
 
   render(events) {
-    renderTripBoard(this._container, events);
+    if (events.length === 0) {
+      render(this._container.querySelector(`h2`), this._noEventsComponent, InsertionPosition.AFTEREND);
+      return;
+    }
+
+    this._sortingComponent.setSortTypeChangeHandler(() => {
+      remove(this._daysListComponent.getElement());
+      this._daysListComponent.removeElement();
+      renderDaysListElement(this._container, this._daysListComponent);
+      renderSortedEvents(this._sortingComponent.getSortType(), this._daysListComponent, events);
+    });
+
+    renderSortingElement(this._container, this._sortingComponent);
+    renderDaysListElement(this._container, this._daysListComponent);
+    renderSortedEvents(this._sortingComponent.getSortType(), this._daysListComponent, events);
   }
 }
