@@ -9,8 +9,6 @@ import EventsListComponent from '../components/events/events-list.js';
 import EventComponent from '../components/events/event.js';
 import NoEventsComponent from '../components/events/no-events.js';
 
-const FORM_ID = 1;
-
 const getPassedDays = (start, end) => (new Date(new Date(end) - new Date(start))).getDate();
 
 const renderSortingElement = (eventsSection, sortingComponent) => {
@@ -31,7 +29,7 @@ const renderEventsListElement = (eventsListContainer, EventsListElement) => {
 
 const renderEventItemElement = (eventsListElement, event) => {
   const eventComponent = new EventComponent(event);
-  const eventEditComponent = new EventEditComponent(event, FORM_ID);
+  const eventEditComponent = new EventEditComponent(event);
 
   const replaceEventToEdit = () => {
     replace(eventEditComponent, eventComponent);

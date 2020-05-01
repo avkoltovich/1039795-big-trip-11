@@ -75,6 +75,7 @@ const getRandomEvent = () => {
   const randomDate = getRandomStartDate();
   const randomEndDate = getRandomEndDate(randomDate);
   return {
+    id: getRandomIntegerNumber(1, 10),
     date: {
       start: randomDate,
       end: randomEndDate
