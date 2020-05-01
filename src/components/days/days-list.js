@@ -1,4 +1,4 @@
-import AbstractComponent from '../abstract.js';
+import AbstractTripComponent from '../abstract-trip.js';
 
 const createDaysListTemplate = () => {
   return (
@@ -6,7 +6,7 @@ const createDaysListTemplate = () => {
   );
 };
 
-export default class DaysList extends AbstractComponent {
+export default class DaysList extends AbstractTripComponent {
   getTemplate() {
     return createDaysListTemplate();
   }
