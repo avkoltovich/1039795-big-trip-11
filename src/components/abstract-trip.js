@@ -18,7 +18,7 @@ export default class AbstractComponent {
   }
 
   render(container) {
-    if (`getElement` in container) {
+    if (container instanceof AbstractComponent) {
       render(container.getElement(), this, InsertionPosition.BEFOREEND);
     } else {
       render(container, this, InsertionPosition.BEFOREEND);

@@ -1,7 +1,7 @@
-import {eventTypesMap} from '../../helpers/const.js';
+import {eventTypesMap} from '../../../helpers/const.js';
 import {createOfferItemTemplate} from './offers.js';
-import {castTimeFormat, getFormatTime24H, getISOStringDate} from '../../helpers/utils.js';
-import AbstractTripComponent from '../abstract-trip.js';
+import {castTimeFormat, getFormatTime24H, getISOStringDate} from '../../../helpers/utils.js';
+import AbstractTripComponent from '../../abstract-trip.js';
 
 const SHOWING_OFFERS_COUNT = 3;
 

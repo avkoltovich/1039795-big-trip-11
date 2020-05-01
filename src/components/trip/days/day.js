@@ -1,5 +1,5 @@
-import {getISOStringDate} from '../../helpers/utils.js';
-import AbstractTripComponent from '../abstract-trip.js';
+import {getISOStringDate} from '../../../helpers/utils.js';
+import AbstractTripComponent from '../../abstract-trip.js';
 
 const MONTH_NAMES = [
   `JAN`,

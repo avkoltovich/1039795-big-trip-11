@@ -1,7 +1,7 @@
-import {transferTypes, activityTypes, eventTypesMap} from '../../helpers/const.js';
+import {transferTypes, activityTypes, eventTypesMap} from '../../../helpers/const.js';
 import {createOfferCheckboxTemplate} from './offers.js';
-import {getFormatTime24H, castTimeFormat} from '../../helpers/utils.js';
-import AbstractComponent from '../abstract.js';
+import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
+import AbstractComponent from '../../abstract.js';
 
 const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 

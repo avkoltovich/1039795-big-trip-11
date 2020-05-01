@@ -1,4 +1,4 @@
-import AbstractTripComponent from '../abstract-trip.js';
+import AbstractTripComponent from '../../abstract-trip.js';
 
 const createEventsListTemplate = () => {
   return (

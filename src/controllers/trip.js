@@ -1,101 +1,11 @@
-import {getISOStringDate} from '../helpers/utils.js';
-import {InsertionPosition, render, replace, remove} from '../helpers/render.js';
+import {InsertionPosition, render, replace} from '../helpers/render.js';
 import SortingComponent, {sortTypeMap} from '../components/sorting.js';
-import DaysListComponent from '../components/days/days-list.js';
-import DayItemComponent from '../components/days/day.js';
-import DayItemBlankComponent from '../components/days/day-blank.js';
-import EventEditComponent from '../components/events/event-edit.js';
-import EventsListComponent from '../components/events/events-list.js';
-import EventComponent from '../components/events/event.js';
-import NoEventsComponent from '../components/events/no-events.js';
-
-const getPassedDays = (start, end) => (new Date(new Date(end) - new Date(start))).getDate();
+import NoEventsComponent from '../components/trip/events/no-events.js';
+import {getTripWithDays} from '../components/trip/trip-with-days.js';
+import {getTripWithoutDays} from '../components/trip/trip-without-days.js';
 
 const renderSortingElement = (eventsSection, sortingComponent) => {
   render(eventsSection.querySelector(`h2`), sortingComponent, InsertionPosition.AFTEREND);
-};
-
-const renderEventItemElement = (eventsListElement, event) => {
-  const eventComponent = new EventComponent(event);
-  const eventEditComponent = new EventEditComponent(event);
-
-  const replaceEventToEdit = () => {
-    replace(eventEditComponent, eventComponent);
-  };
-
-  const replaceEditToEvent = () => {
-    replace(eventComponent, eventEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const onRollUpEventButtonClick = () => {
-    replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  };
-
-  const onEditFormSubmit = () => {
-    replaceEditToEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  };
-
-  eventComponent.setEditButtonClickHandler(onRollUpEventButtonClick);
-
-  eventEditComponent.setSubmitHandler(onEditFormSubmit);
-
-  eventComponent.render(eventsListElement);
-};
-
-const getDaysListComponentByDays = (sortedEvents) => {
-  const daysListComponent = new DaysListComponent();
-  let daysPassed;
-  let startDateTime;
-  let previousDateTime;
-  let currentEventsListElement;
-
-  for (let event of sortedEvents) {
-    const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
-
-    if (previousDateTime === currentDateTime) {
-      renderEventItemElement(currentEventsListElement, event);
-    } else {
-      startDateTime = startDateTime ? startDateTime : currentDateTime;
-      daysPassed = daysPassed ? getPassedDays(startDateTime, currentDateTime) : 1;
-
-      const currentDayItemElement = new DayItemComponent(event, daysPassed);
-      currentDayItemElement.render(daysListComponent);
-
-      currentEventsListElement = new EventsListComponent();
-      currentEventsListElement.render(currentDayItemElement);
-      renderEventItemElement(currentEventsListElement, event);
-
-      previousDateTime = currentDateTime;
-    }
-  }
-
-  return daysListComponent;
-};
-
-const getDaysListComponentByTimeOrPrice = (sortedEvents) => {
-  const daysListComponent = new DaysListComponent();
-  const dayItemComponent = new DayItemBlankComponent(daysListComponent);
-  dayItemComponent.render();
-
-  const eventsListComponent = new EventsListComponent(dayItemComponent);
-  eventsListComponent.render();
-
-  for (let event of sortedEvents) {
-    renderEventItemElement(eventsListComponent, event);
-  }
-
-  return daysListComponent;
 };
 
 const getSortedRoute = (sortType, events) => {
@@ -106,15 +16,15 @@ const getSortedRoute = (sortType, events) => {
   switch (sortType) {
     case sortTypeMap.DEFAULT:
       sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
-      sortedDaysListComponent = getDaysListComponentByDays(sortedEvents);
+      sortedDaysListComponent = getTripWithDays(sortedEvents);
       break;
     case sortTypeMap.TIME:
       sortedEvents = showingEvents.sort((a, b) => (b.date.end - b.date.start) - (a.date.end - a.date.start));
-      sortedDaysListComponent = getDaysListComponentByTimeOrPrice(sortedEvents);
+      sortedDaysListComponent = getTripWithoutDays(sortedEvents);
       break;
     case sortTypeMap.PRICE:
       sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
-      sortedDaysListComponent = getDaysListComponentByTimeOrPrice(sortedEvents);
+      sortedDaysListComponent = getTripWithoutDays(sortedEvents);
       break;
   }
 
@@ -136,10 +46,9 @@ export default class TripController {
     }
 
     this._sortingComponent.setSortTypeChangeHandler(() => {
-      remove(sortedRoute.getElement());
-      sortedRoute.removeElement();
-      sortedRoute = getSortedRoute(this._sortingComponent.getSortType(), events);
-      sortedRoute.render(this._container);
+      const newSortedRoute = getSortedRoute(this._sortingComponent.getSortType(), events);
+      replace(newSortedRoute, sortedRoute);
+      sortedRoute = newSortedRoute;
     });
 
     renderSortingElement(this._container, this._sortingComponent);
