@@ -32,8 +32,8 @@ const createDayItemTemplate = (event, count) => {
 };
 
 export default class DayItem extends AbstractTripComponent {
-  constructor(container, event, count) {
-    super(container);
+  constructor(event, count) {
+    super();
 
     this._event = event;
     this._count = count;

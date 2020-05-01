@@ -1,13 +1,12 @@
 import {InsertionPosition, createElement, render} from '../helpers/render.js';
 
 export default class AbstractComponent {
-  constructor(container) {
+  constructor() {
     if (new.target === AbstractComponent) {
       throw new Error(`Can't instantiate AbstractComponent, only concrete one.`);
     }
 
     this._element = null;
-    this._container = container;
   }
 
   getElement() {
@@ -18,11 +17,11 @@ export default class AbstractComponent {
     return this._element;
   }
 
-  render() {
-    if (`getElement` in this._container) {
-      render(this._container.getElement(), this, InsertionPosition.BEFOREEND);
+  render(container) {
+    if (`getElement` in container) {
+      render(container.getElement(), this, InsertionPosition.BEFOREEND);
     } else {
-      render(this._container, this, InsertionPosition.BEFOREEND);
+      render(container, this, InsertionPosition.BEFOREEND);
     }
   }
 
