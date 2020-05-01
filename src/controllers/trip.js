@@ -53,7 +53,7 @@ const renderEventItemElement = (eventsListElement, event) => {
   eventComponent.render();
 };
 
-const renderEventsByDays = (container, sortedEvents) => {
+const getDaysListComponentByDays = (container, sortedEvents) => {
   const daysListComponent = new DaysListComponent(container);
   let daysPassed;
   let startDateTime;
@@ -83,7 +83,7 @@ const renderEventsByDays = (container, sortedEvents) => {
   return daysListComponent;
 };
 
-const renderEventsByTimeOrPrice = (container, sortedEvents) => {
+const getDaysListComponentByTimeOrPrice = (container, sortedEvents) => {
   const daysListComponent = new DaysListComponent(container);
   const dayItemComponent = new DayItemBlankComponent(daysListComponent);
   dayItemComponent.render();
@@ -98,24 +98,27 @@ const renderEventsByTimeOrPrice = (container, sortedEvents) => {
   return daysListComponent;
 };
 
-const renderSortedEvents = (container, sortType, events) => {
+const getSortedDaysListComponent = (container, sortType, events) => {
+  let sortedDaysListComponent;
   let sortedEvents = [];
   const showingEvents = events.slice();
 
   switch (sortType) {
     case sortTypeMap.DEFAULT:
       sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
-      renderEventsByDays(container, sortedEvents).render();
+      sortedDaysListComponent = getDaysListComponentByDays(container, sortedEvents);
       break;
     case sortTypeMap.TIME:
       sortedEvents = showingEvents.sort((a, b) => (b.date.end - b.date.start) - (a.date.end - a.date.start));
-      renderEventsByTimeOrPrice(container, sortedEvents).render();
+      sortedDaysListComponent = getDaysListComponentByTimeOrPrice(container, sortedEvents);
       break;
     case sortTypeMap.PRICE:
       sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
-      renderEventsByTimeOrPrice(container, sortedEvents).render();
+      sortedDaysListComponent = getDaysListComponentByTimeOrPrice(container, sortedEvents);
       break;
   }
+
+  return sortedDaysListComponent;
 };
 
 export default class TripController {
@@ -133,13 +136,14 @@ export default class TripController {
     }
 
     this._sortingComponent.setSortTypeChangeHandler(() => {
-      remove(this._daysListComponent.getElement());
-      this._daysListComponent.removeElement();
-      this._daysListComponent.render();
-      renderSortedEvents(this._sortingComponent.getSortType(), this._daysListComponent, events);
+      remove(daysList.getElement());
+      daysList.removeElement();
+      daysList = getSortedDaysListComponent(this._container, this._sortingComponent.getSortType(), events);
+      daysList.render();
     });
 
     renderSortingElement(this._container, this._sortingComponent);
-    renderSortedEvents(this._container, this._sortingComponent.getSortType(), events);
+    let daysList = getSortedDaysListComponent(this._container, this._sortingComponent.getSortType(), events);
+    daysList.render();
   }
 }
