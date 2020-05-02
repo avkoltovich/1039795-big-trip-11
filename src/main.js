@@ -1,5 +1,5 @@
 import {renderHeader} from './components/header/header.js';
-import RouteBoardElement from './components/route-board.js';
+import TripController from './controllers/trip.js';
 import {getRandomEvents} from './mocks/events.js';
 
 const POINTS_COUNT = 20;
@@ -11,7 +11,7 @@ const tripEventsSection = document.querySelector(`.trip-events`);
 
 const randomEvents = getRandomEvents(POINTS_COUNT);
 
-const routeBoardElement = new RouteBoardElement(tripEventsSection);
+const tripController = new TripController(tripEventsSection);
 
 renderHeader(infoContainer, menuContainer, filterContainer);
-routeBoardElement.render(randomEvents);
+tripController.render(randomEvents);
