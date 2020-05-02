@@ -1,5 +1,5 @@
 import {transferTypes, activityTypes, eventTypesMap} from '../../../helpers/const.js';
-import {createOfferCheckboxTemplate} from './offers.js';
+import {createOfferCheckboxTemplate} from './offer-template.js';
 import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
 import AbstractComponent from '../../abstract-component.js';
 

@@ -1,5 +1,5 @@
 import {eventTypesMap} from '../../../helpers/const.js';
-import {createOfferItemTemplate} from './offers.js';
+import {createOfferItemTemplate} from './offer-template.js';
 import {castTimeFormat, getFormatTime24H, getISOStringDate} from '../../../helpers/utils.js';
 import AbstractTripComponent from '../../abstract-trip-component.js';
 
