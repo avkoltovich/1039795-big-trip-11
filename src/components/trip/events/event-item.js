@@ -23,19 +23,15 @@ const getEventItemElement = (event) => {
     }
   };
 
-  const onRollUpEventButtonClick = () => {
+  collapsedEventComponent.setEditButtonClickHandler(() => {
     replaceEventToEdit();
     document.addEventListener(`keydown`, onEscKeyDown);
-  };
+  });
 
-  const onEditFormSubmit = () => {
+  editableEventComponent.setSubmitHandler(() => {
     replaceEditToEvent();
     document.removeEventListener(`keydown`, onEscKeyDown);
-  };
-
-  collapsedEventComponent.setEditButtonClickHandler(onRollUpEventButtonClick);
-
-  editableEventComponent.setSubmitHandler(onEditFormSubmit);
+  });
 
   return collapsedEventComponent;
 };
