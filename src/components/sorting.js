@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract.js';
+import AbstractComponent from './abstract-component.js';
 
 export const sortTypeMap = {
   DEFAULT: `sort-event`,

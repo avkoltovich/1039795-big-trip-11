@@ -1,7 +1,7 @@
 import {transferTypes, activityTypes, eventTypesMap} from '../../../helpers/const.js';
 import {createOfferCheckboxTemplate} from './offers.js';
 import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
-import AbstractComponent from '../../abstract.js';
+import AbstractComponent from '../../abstract-component.js';
 
 const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 
@@ -33,7 +33,7 @@ const createTripPhotoTemplate = (src) => {
   );
 };
 
-const createEventEditTemplate = (event) => {
+const createEditableEventTemplate = (event) => {
   const {id, date, destination, type, city, price, isFavorite, offers, photos} = event;
   const transferTypesFieldsetItems = transferTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
   const activityTypesFieldsetItems = activityTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
@@ -140,7 +140,7 @@ const createEventEditTemplate = (event) => {
   );
 };
 
-export default class EventEdit extends AbstractComponent {
+export default class EditableEvent extends AbstractComponent {
   constructor(event) {
     super();
 
@@ -148,7 +148,7 @@ export default class EventEdit extends AbstractComponent {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event);
+    return createEditableEventTemplate(this._event);
   }
 
   setSubmitHandler(handler) {

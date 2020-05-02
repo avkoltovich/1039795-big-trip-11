@@ -1,11 +1,11 @@
 import {eventTypesMap} from '../../../helpers/const.js';
 import {createOfferItemTemplate} from './offers.js';
 import {castTimeFormat, getFormatTime24H, getISOStringDate} from '../../../helpers/utils.js';
-import AbstractTripComponent from '../../abstract-trip.js';
+import AbstractTripComponent from '../../abstract-trip-component.js';
 
 const SHOWING_OFFERS_COUNT = 3;
 
-const createEventTemplate = (event) => {
+const createCollapsedEventTemplate = (event) => {
   const {date, type, city, price, offers} = event;
 
   let duration = (date.end - date.start) / 60000;
@@ -65,7 +65,7 @@ const createEventTemplate = (event) => {
   );
 };
 
-export default class Event extends AbstractTripComponent {
+export default class CollapsedEvent extends AbstractTripComponent {
   constructor(event) {
     super();
 
@@ -73,7 +73,7 @@ export default class Event extends AbstractTripComponent {
   }
 
   getTemplate() {
-    return createEventTemplate(this._event);
+    return createCollapsedEventTemplate(this._event);
   }
 
   setEditButtonClickHandler(handler) {
