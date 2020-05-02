@@ -1,12 +1,8 @@
-import {InsertionPosition, render, replace} from '../helpers/render.js';
+import {replace} from '../helpers/render.js';
 import SortingComponent, {sortTypeMap} from '../components/sorting.js';
 import BlankTripComponent from '../components/trip/blank-trip.js';
 import TripWithDaysElement from '../components/trip/trip-with-days.js';
 import TripWithoutDaysElement from '../components/trip/trip-without-days.js';
-
-const renderSortingElement = (eventsSection, sortingComponent) => {
-  render(eventsSection.querySelector(`h2`), sortingComponent, InsertionPosition.AFTEREND);
-};
 
 const getSortedRoute = (sortType, events) => {
   let tripElement;
@@ -41,7 +37,7 @@ export default class TripController {
 
   render(events) {
     if (events.length === 0) {
-      render(this._container.querySelector(`h2`), this._blankTripComponent, InsertionPosition.AFTEREND);
+      this._blankTripComponent.render(this._container);
       return;
     }
 
@@ -51,7 +47,8 @@ export default class TripController {
       sortedRoute = newSortedRoute;
     });
 
-    renderSortingElement(this._container, this._sortingComponent);
+    this._sortingComponent.render(this._container);
+
     let sortedRoute = getSortedRoute(this._sortingComponent.getSortType(), events);
     sortedRoute.render(this._container);
   }

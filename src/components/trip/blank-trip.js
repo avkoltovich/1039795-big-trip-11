@@ -1,4 +1,4 @@
-import AbstractComponent from '../abstract-component.js';
+import AbstractTripComponent from '../abstract-trip-component.js';
 
 const createNoEventsTemplate = () => {
   return (
@@ -6,7 +6,7 @@ const createNoEventsTemplate = () => {
   );
 };
 
-export default class BlankTrip extends AbstractComponent {
+export default class BlankTrip extends AbstractTripComponent {
   getTemplate() {
     return createNoEventsTemplate();
   }

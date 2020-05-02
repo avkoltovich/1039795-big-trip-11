@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractTripComponent from './abstract-trip-component.js';
 
 export const sortTypeMap = {
   DEFAULT: `sort-event`,
@@ -35,7 +35,7 @@ const createSortingTemplate = () => {
   );
 };
 
-export default class Sorting extends AbstractComponent {
+export default class Sorting extends AbstractTripComponent {
   constructor() {
     super();
 
