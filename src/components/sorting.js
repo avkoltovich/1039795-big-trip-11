@@ -1,10 +1,5 @@
+import {sortTypeMap} from '../helpers/const.js';
 import AbstractTripComponent from './abstract-trip-component.js';
-
-export const sortTypeMap = {
-  DEFAULT: `sort-event`,
-  TIME: `sort-time`,
-  PRICE: `sort-price`
-};
 
 const createSortingTemplate = () => {
   return (

@@ -22,4 +22,10 @@ const offerTitlesMap = {
   'event-offer-train': `Travel by train`
 };
 
-export {transferTypes, activityTypes, eventTypesMap, offerTitlesMap};
+const sortTypeMap = {
+  DEFAULT: `sort-event`,
+  TIME: `sort-time`,
+  PRICE: `sort-price`
+};
+
+export {transferTypes, activityTypes, eventTypesMap, offerTitlesMap, sortTypeMap};
