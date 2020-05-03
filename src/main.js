@@ -11,7 +11,7 @@ const tripEventsSection = document.querySelector(`.trip-events`);
 
 const randomEvents = getRandomEvents(POINTS_COUNT);
 
-const tripController = new TripController(tripEventsSection);
+const tripController = new TripController(randomEvents);
 
 renderHeader(infoContainer, menuContainer, filterContainer);
-tripController.render(randomEvents);
+tripController.render(tripEventsSection);

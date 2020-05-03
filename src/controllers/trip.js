@@ -29,28 +29,27 @@ const getTripElement = (sortType, events) => {
 };
 
 export default class TripController {
-  constructor(container) {
-    this._container = container;
-
+  constructor(events) {
+    this._events = events;
     this._blankTripComponent = new BlankTripComponent();
     this._sortingComponent = new SortingComponent();
   }
 
-  render(events) {
-    if (events.length === 0) {
-      this._blankTripComponent.render(this._container);
+  render(container) {
+    if (this._events.length === 0) {
+      this._blankTripComponent.render(container);
       return;
     }
 
     this._sortingComponent.setSortTypeChangeHandler(() => {
-      const newSortedTripElement = getTripElement(this._sortingComponent.getSortType(), events);
+      const newSortedTripElement = getTripElement(this._sortingComponent.getSortType(), this._events);
       replace(newSortedTripElement, sortedTripElement);
       sortedTripElement = newSortedTripElement;
     });
 
-    this._sortingComponent.render(this._container);
+    this._sortingComponent.render(container);
 
-    let sortedTripElement = getTripElement(this._sortingComponent.getSortType(), events);
-    sortedTripElement.render(this._container);
+    let sortedTripElement = getTripElement(this._sortingComponent.getSortType(), this._events);
+    sortedTripElement.render(container);
   }
 }
