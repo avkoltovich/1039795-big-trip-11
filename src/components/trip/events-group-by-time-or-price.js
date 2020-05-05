@@ -5,8 +5,9 @@ import EventsListComponent from './events/events-list.js';
 import EventController from '../../controllers/event.js';
 
 export default class EventsGroupByTimeOrPrice {
-  constructor(events) {
+  constructor(events, onDataChange) {
     this._events = events;
+    this._onDataChange = onDataChange;
     this._element = this._getEventsGroupByTimeOrPrice();
 
     return this._element;
@@ -21,7 +22,7 @@ export default class EventsGroupByTimeOrPrice {
     render(dayItemComponent, eventsListComponent, InsertionPosition.BEFOREEND);
 
     for (let event of this._events) {
-      const eventController = new EventController(eventsListComponent);
+      const eventController = new EventController(eventsListComponent, this._onDataChange);
       eventController.render(event);
     }
 

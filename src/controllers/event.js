@@ -3,8 +3,9 @@ import CollapsedEventComponent from '../components/trip/events/collapsed-event.j
 import EditableEventComponent from '../components/trip/events/editable-event.js';
 
 export default class EventController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
     this._collapsedEventComponent = null;
     this._editableEventComponent = null;
 
@@ -26,6 +27,12 @@ export default class EventController {
     this._editableEventComponent.setSubmitHandler(() => {
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
+    });
+
+    this._editableEventComponent.setFavoritesButtonClickHandler(() => {
+      this._onDataChange(this, event, Object.assign({}, event, {
+        isFavorite: !event.isFavorite,
+      }));
     });
 
     if (oldCollapsedEventComponent && oldEditableEventComponent) {

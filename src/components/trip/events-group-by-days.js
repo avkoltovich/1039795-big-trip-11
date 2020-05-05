@@ -6,8 +6,9 @@ import EventsListComponent from './events/events-list.js';
 import EventController from '../../controllers/event.js';
 
 export default class EventsGroupByDays {
-  constructor(events) {
+  constructor(events, onDataChange) {
     this._events = events;
+    this._onDataChange = onDataChange;
     this._element = this._getEventsGroupByDays();
 
     return this._element;
@@ -28,7 +29,7 @@ export default class EventsGroupByDays {
       const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
 
       if (previousDateTime === currentDateTime) {
-        const eventController = new EventController(currentEventsListElement);
+        const eventController = new EventController(currentEventsListElement, this._onDataChange);
         eventController.render(event);
       } else {
         startDateTime = startDateTime ? startDateTime : currentDateTime;
@@ -39,7 +40,7 @@ export default class EventsGroupByDays {
 
         currentEventsListElement = new EventsListComponent();
         render(currentDayItemElement, currentEventsListElement, InsertionPosition.BEFOREEND);
-        const eventController = new EventController(currentEventsListElement);
+        const eventController = new EventController(currentEventsListElement, this._onDataChange);
         eventController.render(event);
 
         previousDateTime = currentDateTime;
