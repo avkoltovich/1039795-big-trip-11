@@ -1,8 +1,8 @@
-import {render, replace, InsertionPosition} from '../../../helpers/render.js';
-import CollapsedEventComponent from './collapsed-event.js';
-import EditableEventComponent from './editable-event.js';
+import {render, replace, InsertionPosition} from '../helpers/render.js';
+import CollapsedEventComponent from '../components/trip/events/collapsed-event.js';
+import EditableEventComponent from '../components/trip/events/editable-event.js';
 
-export default class EventItemElement {
+export default class EventController {
   constructor(container) {
     this._container = container;
     this._collapsedEventComponent = null;

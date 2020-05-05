@@ -2,7 +2,7 @@ import {render, InsertionPosition} from '../../helpers/render.js';
 import DaysListComponent from './days/days-list.js';
 import DayItemBlankComponent from './days/day-blank.js';
 import EventsListComponent from './events/events-list.js';
-import EventItemElement from './events/event-item.js';
+import EventController from '../../controllers/event.js';
 
 const getTripWithoutDays = (events) => {
   const daysListComponent = new DaysListComponent();
@@ -13,8 +13,8 @@ const getTripWithoutDays = (events) => {
   render(dayItemComponent, eventsListComponent, InsertionPosition.BEFOREEND);
 
   for (let event of events) {
-    const eventItemElement = new EventItemElement(event);
-    render(eventsListComponent, eventItemElement, InsertionPosition.BEFOREEND);
+    const eventController = new EventController(eventsListComponent);
+    eventController.render(event);
   }
 
   return daysListComponent;

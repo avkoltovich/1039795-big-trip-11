@@ -3,7 +3,7 @@ import {getISOStringDate} from '../../helpers/utils.js';
 import DayItemComponent from './days/day.js';
 import DaysListComponent from './days/days-list.js';
 import EventsListComponent from './events/events-list.js';
-import EventItemElement from './events/event-item.js';
+import EventController from '../../controllers/event.js';
 
 const getPassedDays = (start, end) => (new Date(new Date(end) - new Date(start))).getDate();
 
@@ -18,8 +18,8 @@ const getTripWithDays = (events) => {
     const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
 
     if (previousDateTime === currentDateTime) {
-      const eventItemElement = new EventItemElement(currentEventsListElement);
-      eventItemElement.render(event);
+      const eventController = new EventController(currentEventsListElement);
+      eventController.render(event);
     } else {
       startDateTime = startDateTime ? startDateTime : currentDateTime;
       daysPassed = daysPassed ? getPassedDays(startDateTime, currentDateTime) : 1;
@@ -29,8 +29,8 @@ const getTripWithDays = (events) => {
 
       currentEventsListElement = new EventsListComponent();
       render(currentDayItemElement, currentEventsListElement, InsertionPosition.BEFOREEND);
-      const eventItemElement = new EventItemElement(currentEventsListElement);
-      eventItemElement.render(event);
+      const eventController = new EventController(currentEventsListElement);
+      eventController.render(event);
 
       previousDateTime = currentDateTime;
     }
