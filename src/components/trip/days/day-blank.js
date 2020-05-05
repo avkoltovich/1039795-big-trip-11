@@ -1,4 +1,4 @@
-import AbstractTripComponent from '../../abstract-trip-component.js';
+import AbstractTripComponent from '../abstract-trip-component.js';
 
 const createDayItemBlankTemplate = () => {
   return (

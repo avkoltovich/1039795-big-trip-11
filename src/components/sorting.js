@@ -1,5 +1,5 @@
 import {sortTypeMap} from '../helpers/const.js';
-import AbstractTripComponent from './abstract-trip-component.js';
+import AbstractTripComponent from './trip/abstract-trip-component.js';
 
 const createSortingTemplate = () => {
   return (
