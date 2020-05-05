@@ -1,4 +1,4 @@
-import AbstractTripComponent from '../abstract-trip-component.js';
+import AbstractComponent from '../../abstract-component.js';
 
 const createDayItemBlankTemplate = () => {
   return (
@@ -9,7 +9,7 @@ const createDayItemBlankTemplate = () => {
   );
 };
 
-export default class DayBlankItem extends AbstractTripComponent {
+export default class DayBlankItem extends AbstractComponent {
   getTemplate() {
     return createDayItemBlankTemplate();
   }

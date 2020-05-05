@@ -1,5 +1,5 @@
 import {sortTypeMap} from '../helpers/const.js';
-import AbstractTripComponent from './trip/abstract-trip-component.js';
+import AbstractComponent from './abstract-component.js';
 
 const createSortingTemplate = () => {
   return (
@@ -30,7 +30,7 @@ const createSortingTemplate = () => {
   );
 };
 
-export default class Sorting extends AbstractTripComponent {
+export default class Sorting extends AbstractComponent {
   constructor() {
     super();
 

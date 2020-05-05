@@ -1,5 +1,5 @@
 import {sortTypeMap} from '../helpers/const.js';
-import {replace} from '../helpers/render.js';
+import {render, replace, InsertionPosition} from '../helpers/render.js';
 import SortingComponent from '../components/sorting.js';
 import BlankTripComponent from '../components/trip/blank-trip.js';
 import TripWithDaysElement from '../components/trip/trip-with-days.js';
@@ -37,7 +37,7 @@ export default class TripController {
 
   render(container) {
     if (this._events.length === 0) {
-      this._blankTripComponent.render(container);
+      render(container, this._blankTripComponent, InsertionPosition.BEFOREEND);
       return;
     }
 
@@ -47,9 +47,9 @@ export default class TripController {
       sortedTripElement = newSortedTripElement;
     });
 
-    this._sortingComponent.render(container);
+    render(container, this._sortingComponent, InsertionPosition.BEFOREEND);
 
     let sortedTripElement = getTripElement(this._sortingComponent.getSortType(), this._events);
-    sortedTripElement.render(container);
+    render(container, sortedTripElement, InsertionPosition.BEFOREEND);
   }
 }

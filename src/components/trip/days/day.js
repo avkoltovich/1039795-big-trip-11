@@ -1,5 +1,5 @@
 import {getISOStringDate} from '../../../helpers/utils.js';
-import AbstractTripComponent from '../abstract-trip-component.js';
+import AbstractComponent from '../../abstract-component.js';
 
 const MONTH_NAMES = [
   `JAN`,
@@ -31,7 +31,7 @@ const createDayItemTemplate = (event, count) => {
   );
 };
 
-export default class DayItem extends AbstractTripComponent {
+export default class DayItem extends AbstractComponent {
   constructor(event, count) {
     super();
 
