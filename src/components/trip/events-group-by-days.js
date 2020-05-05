@@ -14,7 +14,7 @@ export default class EventsGroupByDays {
   }
 
   _getPassedDays(start, end) {
-    (new Date(new Date(end) - new Date(start))).getDate();
+    return (new Date(new Date(end) - new Date(start))).getDate();
   }
 
   _getEventsGroupByDays() {
