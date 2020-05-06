@@ -2,10 +2,17 @@ import {render, replace, InsertionPosition} from '../helpers/render.js';
 import CollapsedEventComponent from '../components/trip/events/collapsed-event.js';
 import EditableEventComponent from '../components/trip/events/editable-event.js';
 
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+};
+
 export default class EventController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, eventObserver) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._eventObserver = eventObserver;
+    this._mode = Mode.DEFAULT;
     this._collapsedEventComponent = null;
     this._editableEventComponent = null;
 
@@ -41,14 +48,25 @@ export default class EventController {
     } else {
       render(this._container, this._collapsedEventComponent, InsertionPosition.BEFOREEND);
     }
+
+    this._eventObserver.subscribe(this);
+  }
+
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditToEvent();
+    }
   }
 
   _replaceEventToEdit() {
+    this._eventObserver.collapse();
     replace(this._editableEventComponent, this._collapsedEventComponent);
+    this._mode = Mode.EDIT;
   }
 
   _replaceEditToEvent() {
     replace(this._collapsedEventComponent, this._editableEventComponent);
+    this._mode = Mode.DEFAULT;
   }
 
   _onEscKeyDown(evt) {
