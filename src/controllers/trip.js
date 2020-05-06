@@ -11,9 +11,10 @@ export default class TripController {
     this._events = events;
     this._blankTripComponent = new BlankTripComponent();
     this._sortingComponent = new SortingComponent();
-    this._eventObserver = new EventObserver();
 
     this._onDataChange = this._onDataChange.bind(this);
+    this._eventObserver = new EventObserver();
+    this._eventObserver.setSyncDataFunction(this._onDataChange);
   }
 
   render(container) {
@@ -54,15 +55,15 @@ export default class TripController {
     switch (sortType) {
       case sortTypeMap.DEFAULT:
         sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
-        tripElement = new EventsGroupByDaysComponent(sortedEvents, this._onDataChange, this._eventObserver);
+        tripElement = new EventsGroupByDaysComponent(sortedEvents, this._eventObserver);
         break;
       case sortTypeMap.TIME:
         sortedEvents = showingEvents.sort((a, b) => (b.date.end - b.date.start) - (a.date.end - a.date.start));
-        tripElement = new EventsGroupByTimeOrPriceComponent(sortedEvents, this._onDataChange, this._eventObserver);
+        tripElement = new EventsGroupByTimeOrPriceComponent(sortedEvents, this._eventObserver);
         break;
       case sortTypeMap.PRICE:
         sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
-        tripElement = new EventsGroupByTimeOrPriceComponent(sortedEvents, this._onDataChange, this._eventObserver);
+        tripElement = new EventsGroupByTimeOrPriceComponent(sortedEvents, this._eventObserver);
         break;
     }
 

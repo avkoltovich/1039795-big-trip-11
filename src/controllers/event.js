@@ -8,9 +8,8 @@ const Mode = {
 };
 
 export default class EventController {
-  constructor(container, onDataChange, eventObserver) {
+  constructor(container, eventObserver) {
     this._container = container;
-    this._onDataChange = onDataChange;
     this._eventObserver = eventObserver;
     this._mode = Mode.DEFAULT;
     this._collapsedEventComponent = null;
@@ -37,7 +36,7 @@ export default class EventController {
     });
 
     this._editableEventComponent.setFavoritesButtonClickHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {
+      this._eventObserver.syncData(this, event, Object.assign({}, event, {
         isFavorite: !event.isFavorite,
       }));
     });
