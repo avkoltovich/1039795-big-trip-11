@@ -1,7 +1,7 @@
 import {transferTypes, activityTypes, eventTypesMap} from '../../../helpers/const.js';
 import {createOfferCheckboxTemplate} from './offer-template.js';
 import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
-import AbstractComponent from '../../abstract-component.js';
+import AbstractSmartComponent from '../../abstract-smart-component.js';
 
 const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 
@@ -33,17 +33,17 @@ const createTripPhotoTemplate = (src) => {
   );
 };
 
-const createEditableEventTemplate = (event) => {
-  const {id, date, destination, type, city, price, isFavorite, offers, photos} = event;
+const createEditableEventTemplate = (event, options = {}) => {
+  const {id, date, destinations, price, isFavorite, offers} = event;
+  const {placeholder, type, city} = options;
   const transferTypesFieldsetItems = transferTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
   const activityTypesFieldsetItems = activityTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
-  const eventType = eventTypesMap[type];
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
   const eventStartTime = `${getStringDate(date.start)} ${getFormatTime24H(date.start)}`;
   const eventEndTime = `${getStringDate(date.end)} ${getFormatTime24H(date.end)}`;
   const favorite = `${isFavorite ? `checked` : ``}`;
   const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id)).join(`\n`);
-  const photosTape = photos.map((photo) => createTripPhotoTemplate(photo)).join(`\n`);
+  const photosTape = destinations[city].photos.map((photo) => createTripPhotoTemplate(photo)).join(`\n`);
 
   return (
     `<li class="trip-events__item">
@@ -71,7 +71,7 @@ const createEditableEventTemplate = (event) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-${id}">
-              ${eventType}
+              ${placeholder}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
             <datalist id="destination-list-${id}">
@@ -126,7 +126,7 @@ const createEditableEventTemplate = (event) => {
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destination}</p>
+            <p class="event__destination-description">${destinations[city].destination}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
@@ -140,15 +140,32 @@ const createEditableEventTemplate = (event) => {
   );
 };
 
-export default class EditableEvent extends AbstractComponent {
+export default class EditableEvent extends AbstractSmartComponent {
   constructor(event) {
     super();
 
     this._event = event;
+    this._type = event.type;
+    this._city = event.city;
+    this._placeholder = eventTypesMap[this._type];
+    this._subscribeOnEvents();
+  }
+
+  recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
   }
 
   getTemplate() {
-    return createEditableEventTemplate(this._event);
+    return createEditableEventTemplate(this._event, {
+      type: this._type,
+      city: this._city,
+      placeholder: this._placeholder
+    });
   }
 
   setSubmitHandler(handler) {
@@ -159,5 +176,24 @@ export default class EditableEvent extends AbstractComponent {
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`)
       .addEventListener(`click`, handler);
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    element.querySelector(`.event__type-list`)
+      .addEventListener(`change`, (evt) => {
+        this._type = evt.target.value;
+        this._placeholder = eventTypesMap[this._type];
+
+        this.rerender();
+      });
+
+    element.querySelector(`.event__input--destination`)
+    .addEventListener(`change`, (evt) => {
+      this._city = evt.target.value;
+
+      this.rerender();
+    });
   }
 }
