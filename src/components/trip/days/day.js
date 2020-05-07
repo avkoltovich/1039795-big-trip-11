@@ -1,5 +1,5 @@
-import {getISOStringDate} from '../../helpers/utils.js';
-import AbstractComponent from '../abstract.js';
+import {getISOStringDate} from '../../../helpers/utils.js';
+import AbstractComponent from '../../abstract-component.js';
 
 const MONTH_NAMES = [
   `JAN`,

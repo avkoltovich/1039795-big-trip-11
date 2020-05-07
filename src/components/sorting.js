@@ -1,10 +1,5 @@
-import AbstractComponent from './abstract.js';
-
-export const sortTypeMap = {
-  DEFAULT: `sort-event`,
-  TIME: `sort-time`,
-  PRICE: `sort-price`
-};
+import {sortTypeMap} from '../helpers/const.js';
+import AbstractComponent from './abstract-component.js';
 
 const createSortingTemplate = () => {
   return (

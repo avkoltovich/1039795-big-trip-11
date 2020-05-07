@@ -1,3 +1,5 @@
+import AbstractComponent from '../components/abstract-component.js';
+
 const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
@@ -12,6 +14,9 @@ const InsertionPosition = {
 };
 
 const render = (container, component, position) => {
+  if (container instanceof AbstractComponent) {
+    container = container.getElement();
+  }
   switch (position) {
     case InsertionPosition.AFTERBEGIN:
       container.prepend(component.getElement());

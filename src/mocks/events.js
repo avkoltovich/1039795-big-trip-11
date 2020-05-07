@@ -19,7 +19,6 @@ const offers = Object.keys(offerTitlesMap).map((item) => {
   return (item = {name: item, isChecked: Math.random() > 0.5});
 });
 
-
 const getRandomIntegerNumber = (min, max) => {
   return Math.floor(Math.random() * (max + 1 - min)) + min;
 };
@@ -71,10 +70,23 @@ const getRandomPhotos = () => {
   return photos;
 };
 
+const getCitiesDestinations = (cities) => {
+  let citiesDestinations = {};
+  cities.forEach((item) => {
+    citiesDestinations[item] = {
+      destination: getRandomDestination(STRINGS),
+      photos: getRandomPhotos()
+    };
+  });
+
+  return citiesDestinations;
+};
+
 const getRandomEvent = () => {
   const randomDate = getRandomStartDate();
   const randomEndDate = getRandomEndDate(randomDate);
   return {
+    id: getRandomIntegerNumber(1, 10),
     date: {
       start: randomDate,
       end: randomEndDate
@@ -84,8 +96,7 @@ const getRandomEvent = () => {
     price: getRandomIntegerNumber(5, 160),
     isFavorite: Math.random() > 0.5,
     offers: offers.slice(getRandomIntegerNumber(0, 5)),
-    destination: getRandomDestination(STRINGS),
-    photos: getRandomPhotos(),
+    destinations: getCitiesDestinations(CITIES)
   };
 };
 

@@ -1,4 +1,4 @@
-import {offerTitlesMap} from '../../helpers/const.js';
+import {offerTitlesMap} from '../../../helpers/const.js';
 
 const offerPricesMap = {
   'event-offer-luggage': 30,
