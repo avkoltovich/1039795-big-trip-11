@@ -53,7 +53,7 @@ export default class TripController {
     let tripElement;
 
     switch (sortType) {
-      case sortTypeMap.DEFAULT:
+      default:
         sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
         tripElement = new EventsGroupByDaysComponent(sortedEvents, this._eventObserver);
         break;
