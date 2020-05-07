@@ -21,6 +21,10 @@ const createEventTypeItemTemplate = (type, isChecked, id) => {
   );
 };
 
+const createTypesFieldsetTemplate = (typesList, type, id) => {
+  return typesList.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
+};
+
 const createDestinationItemTemplate = (city) => {
   return (
     `<option value="${city}"></option>`
@@ -36,8 +40,8 @@ const createTripPhotoTemplate = (src) => {
 const createEditableEventTemplate = (event, options = {}) => {
   const {id, date, destinations, price, isFavorite, offers} = event;
   const {placeholder, type, city} = options;
-  const transferTypesFieldsetItems = transferTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
-  const activityTypesFieldsetItems = activityTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
+  const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
+  const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
   const eventStartTime = `${getStringDate(date.start)} ${getFormatTime24H(date.start)}`;
   const eventEndTime = `${getStringDate(date.end)} ${getFormatTime24H(date.end)}`;
