@@ -2,7 +2,7 @@ import {render, InsertionPosition} from '../../helpers/render.js';
 import DaysListComponent from './days/days-list.js';
 import DayItemBlankComponent from './days/day-blank.js';
 import EventsListComponent from './events/events-list.js';
-import EventController from '../../controllers/event.js';
+import PointController from '../../controllers/point.js';
 
 export default class EventsGroupByTimeOrPrice {
   constructor(events, eventObserver) {
@@ -22,8 +22,8 @@ export default class EventsGroupByTimeOrPrice {
     render(dayItemComponent, eventsListComponent, InsertionPosition.BEFOREEND);
 
     for (let event of this._events) {
-      const eventController = new EventController(eventsListComponent, this._eventObserver);
-      eventController.render(event);
+      const pointController = new PointController(eventsListComponent, this._eventObserver);
+      pointController.render(event);
     }
 
     return daysListComponent;

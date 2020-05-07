@@ -3,7 +3,7 @@ import {getISOStringDate} from '../../helpers/utils.js';
 import DayItemComponent from './days/day.js';
 import DaysListComponent from './days/days-list.js';
 import EventsListComponent from './events/events-list.js';
-import EventController from '../../controllers/event.js';
+import PointController from '../../controllers/point.js';
 
 export default class EventsGroupByDays {
   constructor(events, eventObserver) {
@@ -29,8 +29,8 @@ export default class EventsGroupByDays {
       const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
 
       if (previousDateTime === currentDateTime) {
-        const eventController = new EventController(currentEventsListElement, this._eventObserver);
-        eventController.render(event);
+        const pointController = new PointController(currentEventsListElement, this._eventObserver);
+        pointController.render(event);
       } else {
         startDateTime = startDateTime ? startDateTime : currentDateTime;
         daysPassed = daysPassed ? this._getPassedDays(startDateTime, currentDateTime) : 1;
@@ -40,8 +40,8 @@ export default class EventsGroupByDays {
 
         currentEventsListElement = new EventsListComponent();
         render(currentDayItemElement, currentEventsListElement, InsertionPosition.BEFOREEND);
-        const eventController = new EventController(currentEventsListElement, this._eventObserver);
-        eventController.render(event);
+        const pointController = new PointController(currentEventsListElement, this._eventObserver);
+        pointController.render(event);
 
         previousDateTime = currentDateTime;
       }
