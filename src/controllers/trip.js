@@ -4,7 +4,7 @@ import SortingComponent from '../components/sorting.js';
 import BlankTripComponent from '../components/trip/blank-trip.js';
 import EventsGroupByDaysComponent from '../components/trip/events-group-by-days.js';
 import EventsGroupByTimeOrPriceComponent from '../components/trip/events-group-by-time-or-price.js';
-import EventObserver from '../observers/event-observer.js';
+import PointObserver from '../observers/point-observer.js';
 
 export default class TripController {
   constructor(events) {
@@ -13,8 +13,8 @@ export default class TripController {
     this._sortingComponent = new SortingComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
-    this._eventObserver = new EventObserver();
-    this._eventObserver.setSyncDataFunction(this._onDataChange);
+    this._pointObserver = new PointObserver();
+    this._pointObserver.setSyncDataFunction(this._onDataChange);
   }
 
   render(container) {
@@ -35,7 +35,7 @@ export default class TripController {
     render(container, sortedTripElement, InsertionPosition.BEFOREEND);
   }
 
-  _onDataChange(eventController, oldData, newData) {
+  _onDataChange(pointController, oldData, newData) {
     const index = this._events.findIndex((it) => it === oldData);
 
     if (index === -1) {
@@ -44,7 +44,7 @@ export default class TripController {
 
     this._events = [].concat(this._events.slice(0, index), newData, this._events.slice(index + 1));
 
-    eventController.render(this._events[index]);
+    pointController.render(this._events[index]);
   }
 
   _getTripElement(sortType) {
@@ -55,15 +55,15 @@ export default class TripController {
     switch (sortType) {
       default:
         sortedEvents = showingEvents.sort((a, b) => a.date.start - b.date.start);
-        tripElement = new EventsGroupByDaysComponent(sortedEvents, this._eventObserver);
+        tripElement = new EventsGroupByDaysComponent(sortedEvents, this._pointObserver);
         break;
       case sortTypeMap.TIME:
         sortedEvents = showingEvents.sort((a, b) => (b.date.end - b.date.start) - (a.date.end - a.date.start));
-        tripElement = new EventsGroupByTimeOrPriceComponent(sortedEvents, this._eventObserver);
+        tripElement = new EventsGroupByTimeOrPriceComponent(sortedEvents, this._pointObserver);
         break;
       case sortTypeMap.PRICE:
         sortedEvents = showingEvents.sort((a, b) => b.price - a.price);
-        tripElement = new EventsGroupByTimeOrPriceComponent(sortedEvents, this._eventObserver);
+        tripElement = new EventsGroupByTimeOrPriceComponent(sortedEvents, this._pointObserver);
         break;
     }
 

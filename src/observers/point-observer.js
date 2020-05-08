@@ -1,4 +1,4 @@
-export default class EventObserver {
+export default class PointObserver {
   constructor() {
     this._syncData = null;
     this.observers = [];

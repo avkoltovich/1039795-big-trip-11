@@ -5,9 +5,9 @@ import EventsListComponent from './events/events-list.js';
 import PointController from '../../controllers/point.js';
 
 export default class EventsGroupByTimeOrPrice {
-  constructor(events, eventObserver) {
+  constructor(events, pointObserver) {
     this._events = events;
-    this._eventObserver = eventObserver;
+    this._pointObserver = pointObserver;
     this._element = this._getEventsGroupByTimeOrPrice();
 
     return this._element;
@@ -22,7 +22,7 @@ export default class EventsGroupByTimeOrPrice {
     render(dayItemComponent, eventsListComponent, InsertionPosition.BEFOREEND);
 
     for (let event of this._events) {
-      const pointController = new PointController(eventsListComponent, this._eventObserver);
+      const pointController = new PointController(eventsListComponent, this._pointObserver);
       pointController.render(event);
     }
 

@@ -8,9 +8,9 @@ const Mode = {
 };
 
 export default class PointController {
-  constructor(container, eventObserver) {
+  constructor(container, pointObserver) {
     this._container = container;
-    this._eventObserver = eventObserver;
+    this._pointObserver = pointObserver;
     this._mode = Mode.DEFAULT;
     this._collapsedEventComponent = null;
     this._editableEventComponent = null;
@@ -27,16 +27,14 @@ export default class PointController {
 
     this._collapsedEventComponent.setEditButtonClickHandler(() => {
       this._replaceEventToEdit();
-      document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
     this._editableEventComponent.setSubmitHandler(() => {
       this._replaceEditToEvent();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
     this._editableEventComponent.setFavoritesButtonClickHandler(() => {
-      this._eventObserver.syncData(this, event, Object.assign({}, event, {
+      this._pointObserver.syncData(this, event, Object.assign({}, event, {
         isFavorite: !event.isFavorite,
       }));
     });
@@ -47,8 +45,6 @@ export default class PointController {
     } else {
       render(this._container, this._collapsedEventComponent, InsertionPosition.BEFOREEND);
     }
-
-    this._eventObserver.subscribe(this);
   }
 
   setDefaultView() {
@@ -58,14 +54,18 @@ export default class PointController {
   }
 
   _replaceEventToEdit() {
-    this._eventObserver.collapse();
+    this._pointObserver.collapse();
     replace(this._editableEventComponent, this._collapsedEventComponent);
     this._mode = Mode.EDIT;
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._pointObserver.subscribe(this);
   }
 
   _replaceEditToEvent() {
     replace(this._collapsedEventComponent, this._editableEventComponent);
     this._mode = Mode.DEFAULT;
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._pointObserver.unsubscribe(this);
   }
 
   _onEscKeyDown(evt) {
