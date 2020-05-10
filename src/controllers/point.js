@@ -33,6 +33,10 @@ export default class PointController {
       this._replaceEditToEvent();
     });
 
+    this._editableEventComponent.setCollapseHandler(() => {
+      this._replaceEditToEvent();
+    });
+
     this._editableEventComponent.setFavoritesButtonClickHandler(() => {
       this._pointObserver.syncData(this, event, Object.assign({}, event, {
         isFavorite: !event.isFavorite,

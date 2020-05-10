@@ -152,11 +152,14 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._type = event.type;
     this._city = event.city;
     this._placeholder = eventTypesMap[this._type];
+    this._submitHandler = null;
+    this._collapseHandler = null;
     this._subscribeOnEvents();
   }
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
+    this.setCollapseHandler(this._collapseHandler);
     this._subscribeOnEvents();
   }
 
@@ -175,6 +178,15 @@ export default class EditableEvent extends AbstractSmartComponent {
   setSubmitHandler(handler) {
     this.getElement().querySelector(`form`)
       .addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
+  }
+
+  setCollapseHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+
+    this._collapseHandler = handler;
   }
 
   setFavoritesButtonClickHandler(handler) {
