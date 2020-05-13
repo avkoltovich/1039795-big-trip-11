@@ -1,8 +1,10 @@
+import moment from "moment";
+
 const castTimeFormat = (value) => {
   return String(value).padStart(2, `0`);
 };
 
-const getFormatTime24H = (date) => `${castTimeFormat(date.getHours())}:${castTimeFormat(date.getMinutes())}`;
+const getFormatTime24H = (date) => moment(date).format(`hh:mm`);
 
 const getISOStringDate = (date) => {
   const isoDate = new Date(date);

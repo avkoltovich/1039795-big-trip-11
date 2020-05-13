@@ -2,6 +2,9 @@ import {transferTypes, activityTypes, eventTypesMap} from '../../../helpers/cons
 import {createOfferCheckboxTemplate} from './offer-template.js';
 import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
 import AbstractSmartComponent from '../../abstract-smart-component.js';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 
@@ -21,6 +24,10 @@ const createEventTypeItemTemplate = (type, isChecked, id) => {
   );
 };
 
+const createTypesFieldsetTemplate = (typesList, type, id) => {
+  return typesList.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
+};
+
 const createDestinationItemTemplate = (city) => {
   return (
     `<option value="${city}"></option>`
@@ -36,8 +43,8 @@ const createTripPhotoTemplate = (src) => {
 const createEditableEventTemplate = (event, options = {}) => {
   const {id, date, destinations, price, isFavorite, offers} = event;
   const {placeholder, type, city} = options;
-  const transferTypesFieldsetItems = transferTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
-  const activityTypesFieldsetItems = activityTypes.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
+  const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
+  const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
   const eventStartTime = `${getStringDate(date.start)} ${getFormatTime24H(date.start)}`;
   const eventEndTime = `${getStringDate(date.end)} ${getFormatTime24H(date.end)}`;
@@ -148,16 +155,26 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._type = event.type;
     this._city = event.city;
     this._placeholder = eventTypesMap[this._type];
+    this._submitHandler = null;
+    this._collapseHandler = null;
+
+    this._flatpickrStart = null;
+    this._flatpickrEnd = null;
+    this._applyFlatpickr();
+
     this._subscribeOnEvents();
   }
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
+    this.setCollapseHandler(this._collapseHandler);
     this._subscribeOnEvents();
   }
 
   rerender() {
     super.rerender();
+
+    this._applyFlatpickr();
   }
 
   getTemplate() {
@@ -168,14 +185,57 @@ export default class EditableEvent extends AbstractSmartComponent {
     });
   }
 
+  removeElement() {
+    if (this._flatpickrStart) {
+      this._flatpickrStart.destroy();
+      this._flatpickrStart = null;
+    }
+
+    if (this._flatpickrEnd) {
+      this._flatpickrEnd.destroy();
+      this._flatpickrEnd = null;
+    }
+
+    super.removeElement();
+  }
+
   setSubmitHandler(handler) {
     this.getElement().querySelector(`form`)
       .addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
+  }
+
+  setCollapseHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+
+    this._collapseHandler = handler;
   }
 
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`)
       .addEventListener(`click`, handler);
+  }
+
+  _applyFlatpickr() {
+    const dateStartInput = this.getElement().querySelector(`[name="event-start-time"]`);
+    this._flatpickrStart = flatpickr(dateStartInput, {
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+      altInput: true,
+      [`time_24hr`]: true,
+      defaultDate: this._event.date.start,
+    });
+
+    const dateEndInput = this.getElement().querySelector(`[name="event-end-time"]`);
+    this._flatpickrEnd = flatpickr(dateEndInput, {
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+      altInput: true,
+      [`time_24hr`]: true,
+      defaultDate: this._event.date.end,
+    });
   }
 
   _subscribeOnEvents() {

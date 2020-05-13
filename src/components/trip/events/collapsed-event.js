@@ -1,30 +1,34 @@
+import moment from "moment";
 import {eventTypesMap} from '../../../helpers/const.js';
 import {createOfferItemTemplate} from './offer-template.js';
-import {castTimeFormat, getFormatTime24H, getISOStringDate} from '../../../helpers/utils.js';
+import {getFormatTime24H, getISOStringDate} from '../../../helpers/utils.js';
 import AbstractComponent from '../../abstract-component.js';
 
 const SHOWING_OFFERS_COUNT = 3;
 
+const getDurationString = (duration) => {
+  const days = moment.duration(duration).days();
+  const hours = moment.duration(duration).hours();
+  const minutes = moment.duration(duration).minutes();
+  let formattedDuration = ``;
+
+  if (days) {
+    formattedDuration = `${days}D `;
+  }
+
+  if (days || hours) {
+    formattedDuration += `${hours}H `;
+  }
+
+  return (formattedDuration += `${minutes}M`);
+};
+
 const createCollapsedEventTemplate = (event) => {
   const {date, type, city, price, offers} = event;
 
-  let duration = (date.end - date.start) / 60000;
-  let days = ``;
-  let hours = ``;
-
-  if (duration >= 1440) {
-    days = `${castTimeFormat(Math.floor(duration / 1440))}D `;
-    duration = duration - parseInt(days, 10) * 1440;
-    hours = `00H `;
-  }
-
-  if (duration >= 60) {
-    hours = `${castTimeFormat(Math.floor(duration / 60))}H `;
-    duration = duration - parseInt(hours, 10) * 60;
-  }
-
+  const duration = (date.end - date.start);
+  const durationString = getDurationString(duration);
   const eventType = eventTypesMap[type];
-  const minutes = `${castTimeFormat(duration)}M`;
   const dataTimeStart = getISOStringDate(date.start).slice(0, 16);
   const dataTimeStart24H = getFormatTime24H(date.start);
   const dataTimeEnd = getISOStringDate(date.end).slice(0, 16);
@@ -45,7 +49,7 @@ const createCollapsedEventTemplate = (event) => {
             &mdash;
             <time class="event__end-time" datetime="${dataTimeEnd}">${dataTimeEnd24H}</time>
           </p>
-          <p class="event__duration">${days}${hours}${minutes}</p>
+          <p class="event__duration">${durationString}</p>
         </div>
 
         <p class="event__price">
