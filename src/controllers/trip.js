@@ -7,7 +7,8 @@ import EventsGroupByTimeOrPriceComponent from '../components/trip/points-group-b
 import PointsObserver from '../observers/points-observer.js';
 
 export default class TripController {
-  constructor(eventsModel) {
+  constructor(container, eventsModel) {
+    this._container = container;
     this._eventsModel = eventsModel;
     this._blankTripComponent = new BlankTripComponent();
     this._sortingComponent = new SortingComponent();
@@ -15,11 +16,11 @@ export default class TripController {
     this._pointsObserver = new PointsObserver(this._eventsModel);
   }
 
-  render(container) {
+  render() {
     const events = this._eventsModel.getEvents();
 
     if (events.length === 0) {
-      render(container, this._blankTripComponent, InsertionPosition.BEFOREEND);
+      render(this._container, this._blankTripComponent, InsertionPosition.BEFOREEND);
       return;
     }
 
@@ -29,10 +30,10 @@ export default class TripController {
       sortedTripElement = newSortedTripElement;
     });
 
-    render(container, this._sortingComponent, InsertionPosition.BEFOREEND);
+    render(this._container, this._sortingComponent, InsertionPosition.BEFOREEND);
 
     let sortedTripElement = this._getTripElement(this._sortingComponent.getSortType());
-    render(container, sortedTripElement, InsertionPosition.BEFOREEND);
+    render(this._container, sortedTripElement, InsertionPosition.BEFOREEND);
   }
 
   _getTripElement(sortType) {
