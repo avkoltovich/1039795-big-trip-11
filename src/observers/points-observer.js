@@ -1,11 +1,8 @@
-export default class PointObserver {
-  constructor() {
+export default class PointsObserver {
+  constructor(eventsModel) {
+    this._eventsModel = eventsModel;
     this._syncData = null;
     this.observers = [];
-  }
-
-  setSyncDataFunction(fn) {
-    this._syncData = fn;
   }
 
   subscribe(fn) {
@@ -20,11 +17,11 @@ export default class PointObserver {
     this.observers.forEach((it) => it.setDefaultView());
   }
 
-  syncData(...args) {
-    if (this._syncData) {
-      this._syncData(...args);
-    } else {
-      throw new Error(`Please set syncData function.`);
+  syncData(pointController, oldData, newData) {
+    const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
+
+    if (isSuccess) {
+      pointController.render(newData);
     }
   }
 }

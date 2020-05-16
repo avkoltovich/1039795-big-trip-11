@@ -6,9 +6,9 @@ import EventsListComponent from './points/points-list.js';
 import PointController from '../../controllers/point.js';
 
 export default class EventsGroupByDays {
-  constructor(events, pointObserver) {
+  constructor(events, pointsObserver) {
     this._events = events;
-    this._pointObserver = pointObserver;
+    this._pointsObserver = pointsObserver;
     this._element = this._getEventsGroupByDays();
 
     return this._element;
@@ -29,7 +29,7 @@ export default class EventsGroupByDays {
       const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
 
       if (previousDateTime === currentDateTime) {
-        const pointController = new PointController(currentEventsListElement, this._pointObserver);
+        const pointController = new PointController(currentEventsListElement, this._pointsObserver);
         pointController.render(event);
       } else {
         startDateTime = startDateTime ? startDateTime : currentDateTime;
@@ -40,7 +40,7 @@ export default class EventsGroupByDays {
 
         currentEventsListElement = new EventsListComponent();
         render(currentDayItemElement, currentEventsListElement, InsertionPosition.BEFOREEND);
-        const pointController = new PointController(currentEventsListElement, this._pointObserver);
+        const pointController = new PointController(currentEventsListElement, this._pointsObserver);
         pointController.render(event);
 
         previousDateTime = currentDateTime;

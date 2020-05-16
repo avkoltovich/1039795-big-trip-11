@@ -8,9 +8,9 @@ const Mode = {
 };
 
 export default class PointController {
-  constructor(container, pointObserver) {
+  constructor(container, pointsObserver) {
     this._container = container;
-    this._pointObserver = pointObserver;
+    this._pointsObserver = pointsObserver;
     this._mode = Mode.DEFAULT;
     this._collapsedEventComponent = null;
     this._editableEventComponent = null;
@@ -38,7 +38,7 @@ export default class PointController {
     });
 
     this._editableEventComponent.setFavoritesButtonClickHandler(() => {
-      this._pointObserver.syncData(this, event, Object.assign({}, event, {
+      this._pointsObserver.syncData(this, event, Object.assign({}, event, {
         isFavorite: !event.isFavorite,
       }));
     });
@@ -58,18 +58,18 @@ export default class PointController {
   }
 
   _replaceEventToEdit() {
-    this._pointObserver.collapse();
+    this._pointsObserver.collapse();
     replace(this._editableEventComponent, this._collapsedEventComponent);
     this._mode = Mode.EDIT;
     document.addEventListener(`keydown`, this._onEscKeyDown);
-    this._pointObserver.subscribe(this);
+    this._pointsObserver.subscribe(this);
   }
 
   _replaceEditToEvent() {
     replace(this._collapsedEventComponent, this._editableEventComponent);
     this._mode = Mode.DEFAULT;
     document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._pointObserver.unsubscribe(this);
+    this._pointsObserver.unsubscribe(this);
   }
 
   _onEscKeyDown(evt) {

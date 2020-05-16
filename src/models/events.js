@@ -1,12 +1,15 @@
+import {sortTypeMap} from '../helpers/const.js';
+
 export default class Events {
   constructor() {
     this._events = [];
+    this._activeSortType = sortTypeMap.DEFAULT;
 
     this._dataChangeHandlers = [];
   }
 
   getEvents() {
-    return this._events;
+    return this._getSortedEvents();
   }
 
   setEvents(events) {
@@ -28,8 +31,30 @@ export default class Events {
     return true;
   }
 
+  setSortType(sortType) {
+    this._activeSortType = sortType;
+  }
+
   setDataChangeHandler(handler) {
     this._dataChangeHandlers.push(handler);
+  }
+
+  _getSortedEvents() {
+    let sortedEvents = this._events.slice();
+
+    switch (this._activeSortType) {
+      default:
+        sortedEvents = sortedEvents.sort((a, b) => a.date.start - b.date.start);
+        break;
+      case sortTypeMap.TIME:
+        sortedEvents = sortedEvents.sort((a, b) => (b.date.end - b.date.start) - (a.date.end - a.date.start));
+        break;
+      case sortTypeMap.PRICE:
+        sortedEvents = sortedEvents.sort((a, b) => b.price - a.price);
+        break;
+    }
+
+    return sortedEvents;
   }
 
   _callHandlers(handlers) {
