@@ -2,8 +2,8 @@ import {sortTypeMap} from '../helpers/const.js';
 import {render, replace, InsertionPosition} from '../helpers/render.js';
 import SortingComponent from '../components/sorting.js';
 import BlankTripComponent from '../components/trip/blank-trip.js';
-import EventsGroupByDaysComponent from '../components/trip/events-group-by-days.js';
-import EventsGroupByTimeOrPriceComponent from '../components/trip/events-group-by-time-or-price.js';
+import EventsGroupByDaysComponent from '../components/trip/points-group-by-days.js';
+import EventsGroupByTimeOrPriceComponent from '../components/trip/points-group-by-time-or-price.js';
 import PointObserver from '../observers/point-observer.js';
 
 export default class TripController {

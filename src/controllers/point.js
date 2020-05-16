@@ -1,6 +1,6 @@
 import {render, replace, InsertionPosition} from '../helpers/render.js';
-import CollapsedEventComponent from '../components/trip/events/collapsed-event.js';
-import EditableEventComponent from '../components/trip/events/editable-event.js';
+import CollapsedEventComponent from '../components/trip/points/collapsed-points.js';
+import EditableEventComponent from '../components/trip/points/editable-point.js';
 
 const Mode = {
   DEFAULT: `default`,

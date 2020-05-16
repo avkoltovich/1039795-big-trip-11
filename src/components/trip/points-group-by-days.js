@@ -2,7 +2,7 @@ import {render, InsertionPosition} from '../../helpers/render.js';
 import {getISOStringDate} from '../../helpers/utils.js';
 import DayItemComponent from './days/day.js';
 import DaysListComponent from './days/days-list.js';
-import EventsListComponent from './events/events-list.js';
+import EventsListComponent from './points/points-list.js';
 import PointController from '../../controllers/point.js';
 
 export default class EventsGroupByDays {

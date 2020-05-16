@@ -1,7 +1,7 @@
 import {render, InsertionPosition} from '../../helpers/render.js';
 import DaysListComponent from './days/days-list.js';
 import DayItemBlankComponent from './days/day-blank.js';
-import EventsListComponent from './events/events-list.js';
+import EventsListComponent from './points/points-list.js';
 import PointController from '../../controllers/point.js';
 
 export default class EventsGroupByTimeOrPrice {
