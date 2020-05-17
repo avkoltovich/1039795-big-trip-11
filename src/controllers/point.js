@@ -1,5 +1,5 @@
 import {render, replace, InsertionPosition} from '../helpers/render.js';
-import CollapsedEventComponent from '../components/trip/points/collapsed-points.js';
+import CollapsedEventComponent from '../components/trip/points/collapsed-point.js';
 import EditableEventComponent from '../components/trip/points/editable-point.js';
 
 const Mode = {

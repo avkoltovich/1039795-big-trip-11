@@ -23,6 +23,6 @@ eventsModel.setEvents(randomEvents);
 const tripController = new TripController(tripEventsSection, eventsModel);
 
 renderHeader(infoContainer, menuContainer);
-const filterController = new FilterController(filterContainer);
+const filterController = new FilterController(filterContainer, eventsModel);
 filterController.render();
 tripController.render();

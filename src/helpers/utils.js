@@ -4,7 +4,7 @@ const castTimeFormat = (value) => {
   return String(value).padStart(2, `0`);
 };
 
-const getFormatTime24H = (date) => moment(date).format(`hh:mm`);
+const getFormatTime24H = (date) => moment(date).format(`HH:mm`);
 
 const getISOStringDate = (date) => {
   const isoDate = new Date(date);

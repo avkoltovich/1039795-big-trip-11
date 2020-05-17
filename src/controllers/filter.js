@@ -5,9 +5,14 @@ export default class FilterController {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
+    this._filterComponent = new FilterComponent();
   }
 
   render() {
-    render(this._container, new FilterComponent(), InsertionPosition.BEFOREEND);
+    this._filterComponent.setFilterTypeChangeHandler((filterType) => {
+      this._eventsModel.setFilterType(filterType);
+    });
+
+    render(this._container, this._filterComponent, InsertionPosition.BEFOREEND);
   }
 }

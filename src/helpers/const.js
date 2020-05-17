@@ -28,4 +28,10 @@ const sortTypeMap = {
   PRICE: `sort-price`
 };
 
-export {transferTypes, activityTypes, eventTypesMap, offerTitlesMap, sortTypeMap};
+const filterTypeMap = {
+  DEFAULT: `everything`,
+  FUTURE: `future`,
+  PAST: `past`
+};
+
+export {transferTypes, activityTypes, eventTypesMap, offerTitlesMap, sortTypeMap, filterTypeMap};

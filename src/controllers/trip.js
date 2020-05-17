@@ -10,10 +10,16 @@ export default class TripController {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
+    this._tripElement = null;
     this._blankTripComponent = new BlankTripComponent();
     this._sortingComponent = new SortingComponent();
-
     this._pointsObserver = new PointsObserver(this._eventsModel);
+
+    this._onSortChange = this._onSortChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
+
+    this._eventsModel.setSortHandlers(this._onSortChange);
+    this._eventsModel.setFilterHandlers(this._onFilterChange);
   }
 
   render() {
@@ -24,20 +30,17 @@ export default class TripController {
       return;
     }
 
-    this._sortingComponent.setSortTypeChangeHandler(() => {
-      const newSortedTripElement = this._getTripElement(this._sortingComponent.getSortType());
-      replace(newSortedTripElement, sortedTripElement);
-      sortedTripElement = newSortedTripElement;
+    this._sortingComponent.setSortTypeChangeHandler((sortType) => {
+      this._eventsModel.setSortType(sortType);
     });
 
     render(this._container, this._sortingComponent, InsertionPosition.BEFOREEND);
 
-    let sortedTripElement = this._getTripElement(this._sortingComponent.getSortType());
-    render(this._container, sortedTripElement, InsertionPosition.BEFOREEND);
+    this._tripElement = this._getTripElement(this._eventsModel.getSortType());
+    render(this._container, this._tripElement, InsertionPosition.BEFOREEND);
   }
 
   _getTripElement(sortType) {
-    this._eventsModel.setSortType(sortType);
     const sortedEvents = this._eventsModel.getEvents();
 
     if (sortType === sortTypeMap.DEFAULT) {
@@ -45,5 +48,23 @@ export default class TripController {
     }
 
     return new EventsGroupByTimeOrPriceComponent(sortedEvents, this._pointsObserver);
+  }
+
+  _onSortChange() {
+    const filteredAndSortedTripElement = this._getTripElement(this._eventsModel.getSortType());
+    replace(filteredAndSortedTripElement, this._tripElement);
+    this._tripElement = filteredAndSortedTripElement;
+  }
+
+  _onFilterChange() {
+    const sortingComponent = new SortingComponent();
+    replace(sortingComponent, this._sortingComponent);
+    this._sortingComponent = sortingComponent;
+
+    this._sortingComponent.setSortTypeChangeHandler((sortType) => {
+      this._eventsModel.setSortType(sortType);
+    });
+
+    this._onSortChange();
   }
 }

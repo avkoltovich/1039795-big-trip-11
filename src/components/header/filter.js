@@ -1,4 +1,5 @@
 import AbstractComponent from '../abstract-component.js';
+import {filterTypeMap} from '../../helpers/const.js';
 
 const FILTER_NAMES = [`everything`, `future`, `past`];
 
@@ -32,7 +33,37 @@ const createFilterTemplate = () => {
 };
 
 export default class Filter extends AbstractComponent {
+  constructor() {
+    super();
+
+    this._currentFilterType = filterTypeMap.DEFAULT;
+  }
+
   getTemplate() {
     return createFilterTemplate();
+  }
+
+  getFilterType() {
+    return this._currentSortType;
+  }
+
+  setFilterTypeChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `INPUT`) {
+        return;
+      }
+
+      const filterType = evt.target.value;
+
+      if (this._currentFilterType === filterType) {
+        return;
+      }
+
+      this._currentFilterType = filterType;
+
+      handler(this._currentFilterType);
+    });
   }
 }
