@@ -41,8 +41,8 @@ const createTripPhotoTemplate = (src) => {
 };
 
 const createEditableEventTemplate = (event, options = {}) => {
-  const {id, date, destinations, price, isFavorite, offers} = event;
-  const {placeholder, type, city} = options;
+  const {id, date, destinations, price, offers} = event;
+  const {placeholder, type, city, isFavorite} = options;
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
@@ -147,18 +147,6 @@ const createEditableEventTemplate = (event, options = {}) => {
   );
 };
 
-const parseFormData = (formData) => {
-  const startDate = formData.get(`event-start-time`);
-  const endDate = formData.get(`event-end-time`);
-
-  return {
-    date: {
-      start: new Date(startDate),
-      end: new Date(endDate)
-    }
-  };
-};
-
 export default class EditableEvent extends AbstractSmartComponent {
   constructor(event) {
     super();
@@ -166,6 +154,7 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._event = event;
     this._type = event.type;
     this._city = event.city;
+    this._isFavorite = event.isFavorite;
     this._placeholder = eventTypesMap[this._type];
     this._submitHandler = null;
     this._collapseHandler = null;
@@ -195,7 +184,8 @@ export default class EditableEvent extends AbstractSmartComponent {
     return createEditableEventTemplate(this._event, {
       type: this._type,
       city: this._city,
-      placeholder: this._placeholder
+      placeholder: this._placeholder,
+      isFavorite: this._isFavorite
     });
   }
 
@@ -203,7 +193,7 @@ export default class EditableEvent extends AbstractSmartComponent {
     const form = this.getElement().querySelector(`.event--edit`);
     const formData = new FormData(form);
 
-    return parseFormData(formData);
+    return this._parseFormData(formData);
   }
 
   removeElement() {
@@ -232,11 +222,6 @@ export default class EditableEvent extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
 
     this._collapseHandler = handler;
-  }
-
-  setFavoritesButtonClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`click`, handler);
   }
 
   setDeleteButtonClickHandler(handler) {
@@ -283,5 +268,27 @@ export default class EditableEvent extends AbstractSmartComponent {
 
       this.rerender();
     });
+
+    element.querySelector(`.event__favorite-checkbox`)
+    .addEventListener(`change`, () => {
+      this._isFavorite = !this._isFavorite;
+    });
+  }
+
+  _parseFormData(formData) {
+    const startDate = formData.get(`event-start-time`);
+    const endDate = formData.get(`event-end-time`);
+    const eventPrice = formData.get(`event-price`);
+
+    return {
+      date: {
+        start: new Date(startDate),
+        end: new Date(endDate)
+      },
+      type: this._type,
+      city: this._city,
+      price: eventPrice,
+      isFavorite: this._isFavorite
+    };
   }
 }

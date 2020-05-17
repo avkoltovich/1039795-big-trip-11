@@ -36,12 +36,6 @@ export default class PointPresenter {
       this._replaceEditToEvent();
     });
 
-    this._editableEventComponent.setFavoritesButtonClickHandler(() => {
-      this._pointsObserver.syncData(event, Object.assign({}, event, {
-        isFavorite: !event.isFavorite,
-      }));
-    });
-
     this._editableEventComponent.setDeleteButtonClickHandler(() => {
       this._pointsObserver.syncData(event, null);
     });
