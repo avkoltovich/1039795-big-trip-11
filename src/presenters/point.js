@@ -7,7 +7,7 @@ const Mode = {
   EDIT: `edit`,
 };
 
-export default class PointController {
+export default class PointPresenter {
   constructor(container, pointsObserver) {
     this._container = container;
     this._pointsObserver = pointsObserver;

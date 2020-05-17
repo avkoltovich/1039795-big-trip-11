@@ -1,7 +1,7 @@
 import FilterComponent from '../components/header/filter.js';
 import {InsertionPosition, render} from '../helpers/render.js';
 
-export default class FilterController {
+export default class FilterPresenter {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;

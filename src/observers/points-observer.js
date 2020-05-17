@@ -17,11 +17,11 @@ export default class PointsObserver {
     this.observers.forEach((it) => it.setDefaultView());
   }
 
-  syncData(pointController, oldData, newData) {
+  syncData(pointPresenter, oldData, newData) {
     const isSuccess = this._eventsModel.updateEvent(oldData.id, newData);
 
     if (isSuccess) {
-      pointController.render(newData);
+      pointPresenter.render(newData);
     }
   }
 }

@@ -1,8 +1,8 @@
 import EventsModel from './models/events.js';
 import InfoComponent from './components/header/info.js';
 import MenuComponent from './components/header/menu.js';
-import FilterController from './controllers/filter.js';
-import TripController from './controllers/trip.js';
+import FilterPresenter from './presenters/filter.js';
+import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
 import {getRandomEvents} from './mocks/events.js';
 
@@ -20,9 +20,9 @@ const tripEventsSection = document.querySelector(`.trip-events`);
 const randomEvents = getRandomEvents(POINTS_COUNT);
 const eventsModel = new EventsModel();
 eventsModel.setEvents(randomEvents);
-const tripController = new TripController(tripEventsSection, eventsModel);
+const tripPresenter = new TripPresenter(tripEventsSection, eventsModel);
 
 renderHeader(infoContainer, menuContainer);
-const filterController = new FilterController(filterContainer, eventsModel);
-filterController.render();
-tripController.render();
+const filterPresenter = new FilterPresenter(filterContainer, eventsModel);
+filterPresenter.render();
+tripPresenter.render();

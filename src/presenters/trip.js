@@ -6,7 +6,7 @@ import EventsGroupByDaysComponent from '../components/trip/points-group-by-days.
 import EventsGroupByTimeOrPriceComponent from '../components/trip/points-group-by-time-or-price.js';
 import PointsObserver from '../observers/points-observer.js';
 
-export default class TripController {
+export default class TripPresenter {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
