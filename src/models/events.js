@@ -3,6 +3,8 @@ import {filterTypeMap, sortTypeMap} from '../helpers/const.js';
 export default class Events {
   constructor() {
     this._events = [];
+    this._destinations = [];
+    this._offers = [];
     this._sortedByDayEvents = [];
     this._filteredAndSortedEvents = [];
     this._activeSortType = sortTypeMap.DEFAULT;
@@ -18,9 +20,27 @@ export default class Events {
     return this._filteredAndSortedEvents;
   }
 
+  getDestinations() {
+    return this._destinations;
+  }
+
+  getOffers() {
+    return this._offers;
+  }
+
   setEvents(events) {
     this._events = Array.from(events);
     this._sortedByDayEvents = this._getSortedEvents(this._events);
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
+  setDestinations(destinations) {
+    this._destinations = Array.from(destinations);
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
+  setOffers(offers) {
+    this._offers = Array.from(offers);
     this._callHandlers(this._dataChangeHandlers);
   }
 
@@ -82,13 +102,13 @@ export default class Events {
 
     switch (this._activeSortType) {
       default:
-        sortedEvents.sort((a, b) => a.date.start - b.date.start);
+        sortedEvents.sort((a, b) => a[`date_from`] - b[`date_from`]);
         break;
       case sortTypeMap.TIME:
-        sortedEvents.sort((a, b) => (b.date.end - b.date.start) - (a.date.end - a.date.start));
+        sortedEvents.sort((a, b) => (b[`date_to`] - b[`date_from`]) - (a[`date_to`] - a[`date_from`]));
         break;
       case sortTypeMap.PRICE:
-        sortedEvents.sort((a, b) => b.price - a.price);
+        sortedEvents.sort((a, b) => b[`base_price`] - a[`base_price`]);
         break;
     }
 
@@ -103,7 +123,7 @@ export default class Events {
 
   _getFilteredEvents(events) {
     const nowDate = new Date();
-    const index = this._sortedByDayEvents.findIndex((it) => it.date.start > nowDate);
+    const index = this._sortedByDayEvents.findIndex((it) => it[`date_from`] > nowDate);
     let filteredEvents = [];
 
     switch (this._activeFilterType) {

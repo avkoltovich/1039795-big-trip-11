@@ -15,9 +15,11 @@ const STRINGS = [
 ];
 
 const eventTypes = transferTypes.concat(activityTypes);
-const offers = Object.keys(offerTitlesMap).map((item) => {
-  return (item = {name: item, isChecked: Math.random() > 0.5});
-});
+// const offers = Object.keys(offerTitlesMap).map((item) => {
+//   return (item = {name: item, isChecked: Math.random() > 0.5});
+// });
+
+const offers = Object.values(offerTitlesMap);
 
 const getRandomIntegerNumber = (min, max) => {
   return Math.floor(Math.random() * (max + 1 - min)) + min;
@@ -61,53 +63,86 @@ const getRandomPhoto = () => {
   );
 };
 
-const getRandomPhotos = () => {
-  let photos = [];
+const getRandomPictures = () => {
+  let pictures = [];
   const length = getRandomIntegerNumber(1, 5);
   for (let i = 0; i < length; i++) {
-    photos.push(getRandomPhoto());
+    pictures.push({
+      'src': getRandomPhoto(),
+      'description': getRandomDestination(STRINGS)
+    });
   }
-  return photos;
+  return pictures;
 };
 
-const getCitiesDestinations = (cities) => {
-  let citiesDestinations = {};
-  cities.forEach((item) => {
-    citiesDestinations[item] = {
-      destination: getRandomDestination(STRINGS),
-      photos: getRandomPhotos()
-    };
+const getDestinations = () => {
+  let destinations = [];
+  CITIES.forEach((item) => {
+    destinations.push({
+      'description': getRandomDestination(STRINGS),
+      'name': item,
+      'pictures': getRandomPictures()
+    });
   });
 
-  return citiesDestinations;
+  return destinations;
+};
+
+const getOffer = () => {
+  return {
+    'title': getRandomArrayItem(offers),
+    'price': getRandomIntegerNumber(5, 160)
+  };
+};
+
+const getOffers = () => {
+  let randomOffers = [];
+
+  const count = getRandomIntegerNumber(1, 5);
+
+  for (let index = 0; index < count; index++) {
+    randomOffers.push(getOffer());
+  }
+
+  return randomOffers;
+};
+
+const getOffersByType = () => {
+  let offersByType = [];
+
+  for (const iterator of eventTypes) {
+    offersByType.push({
+      'type': iterator,
+      'offers': getOffers()
+    });
+  }
+
+  return offersByType;
 };
 
 const getRandomEvent = (idNumber) => {
   const randomDate = getRandomStartDate();
   const randomEndDate = getRandomEndDate(randomDate);
   return {
-    id: idNumber,
-    date: {
-      start: randomDate,
-      end: randomEndDate
-    },
-    type: getRandomArrayItem(eventTypes),
-    city: getRandomArrayItem(CITIES),
-    price: getRandomIntegerNumber(5, 160),
-    isFavorite: Math.random() > 0.5,
-    offers: offers.slice(getRandomIntegerNumber(0, 5)),
-    destinations: getCitiesDestinations(CITIES)
+    'base_price': getRandomIntegerNumber(5, 160),
+    'date_from': randomDate,
+    'date_to': randomEndDate,
+    'destination': getRandomArrayItem(CITIES),
+    'id': idNumber,
+    'is_favorite': Math.random() > 0.5,
+    'offers': getOffers(),
+    'type': getRandomArrayItem(eventTypes)
   };
 };
 
 const getRandomEvents = (count) => {
   let randomEvents = [];
 
-  for (let i = 0; i < count; i++) {
-    randomEvents.push(getRandomEvent(i));
+  for (let index = 0; index < count; index++) {
+    randomEvents.push(getRandomEvent(index));
   }
 
   return randomEvents;
 };
 
-export {getRandomEvent, getRandomEvents};
+export {getDestinations, getOffersByType, getRandomEvents};

@@ -6,8 +6,6 @@ import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
 
-const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
-
 const getStringDate = (date) => `${castTimeFormat(date.getDate())}/${castTimeFormat(date.getMonth())}/${date.getFullYear() % 100}`;
 
 const capitalizeFirstLetter = (word) => word[0].toUpperCase() + word.slice(1);
@@ -40,17 +38,29 @@ const createTripPhotoTemplate = (src) => {
   );
 };
 
-const createEditableEventTemplate = (event, options = {}) => {
-  const {id, date, destinations, price, offers} = event;
-  const {placeholder, type, city, isFavorite} = options;
+const getCityIndex = (city, destinations) => {
+  return destinations.findIndex((item) => item.name === city);
+};
+
+// const getOffersIndex = (type, offers) => {
+//   return offers.findIndex((item) => item.type === type);
+// };
+
+const createEditableEventTemplate = (event, destinations, allOffers, options = {}) => {
+  const CITIES = destinations.map((item) => item.name);
+  const {id, offers} = event;
+  const price = event[`base_price`];
+  const {placeholder, type, destination, isFavorite} = options;
+  const cityIndex = getCityIndex(destination, destinations);
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
-  const eventStartTime = `${getStringDate(date.start)} ${getFormatTime24H(date.start)}`;
-  const eventEndTime = `${getStringDate(date.end)} ${getFormatTime24H(date.end)}`;
+  const eventStartTime = `${getStringDate(event[`date_from`])} ${getFormatTime24H(event[`date_from`])}`;
+  const eventEndTime = `${getStringDate(event[`date_to`])} ${getFormatTime24H(event[`date_to`])}`;
   const favorite = `${isFavorite ? `checked` : ``}`;
   const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id)).join(`\n`);
-  const photosTape = destinations[city].photos.map((photo) => createTripPhotoTemplate(photo)).join(`\n`);
+  const cityDescription = destinations[cityIndex].description;
+  const photosTape = destinations[cityIndex].pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
 
   return (
     `<li class="trip-events__item">
@@ -80,7 +90,7 @@ const createEditableEventTemplate = (event, options = {}) => {
             <label class="event__label  event__type-output" for="event-destination-${id}">
               ${placeholder}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
+            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination}" list="destination-list-${id}">
             <datalist id="destination-list-${id}">
               ${destinationItems}
             </datalist>
@@ -133,7 +143,7 @@ const createEditableEventTemplate = (event, options = {}) => {
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destinations[city].destination}</p>
+            <p class="event__destination-description">${cityDescription}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
@@ -148,12 +158,14 @@ const createEditableEventTemplate = (event, options = {}) => {
 };
 
 export default class EditableEvent extends AbstractSmartComponent {
-  constructor(event) {
+  constructor(event, destinations, offers) {
     super();
 
     this._event = event;
+    this._destinations = destinations;
+    this._offers = offers;
     this._type = event.type;
-    this._city = event.city;
+    this._destination = event[`destination`];
     this._isFavorite = event.isFavorite;
     this._placeholder = eventTypesMap[this._type];
     this._submitHandler = null;
@@ -181,9 +193,9 @@ export default class EditableEvent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEditableEventTemplate(this._event, {
+    return createEditableEventTemplate(this._event, this._destinations, this._offers, {
       type: this._type,
-      city: this._city,
+      destination: this._destination,
       placeholder: this._placeholder,
       isFavorite: this._isFavorite
     });
@@ -238,7 +250,7 @@ export default class EditableEvent extends AbstractSmartComponent {
       altFormat: `d/m/y H:i`,
       altInput: true,
       [`time_24hr`]: true,
-      defaultDate: this._event.date.start,
+      defaultDate: this._event[`date_from`],
     });
 
     const dateEndInput = this.getElement().querySelector(`[name="event-end-time"]`);
@@ -247,7 +259,7 @@ export default class EditableEvent extends AbstractSmartComponent {
       altFormat: `d/m/y H:i`,
       altInput: true,
       [`time_24hr`]: true,
-      defaultDate: this._event.date.end,
+      defaultDate: this._event[`date_to`],
     });
   }
 

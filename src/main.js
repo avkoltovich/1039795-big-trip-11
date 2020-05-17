@@ -4,7 +4,7 @@ import MenuComponent from './components/header/menu.js';
 import FilterPresenter from './presenters/filter.js';
 import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
-import {getRandomEvents} from './mocks/events.js';
+import {getDestinations, getOffersByType, getRandomEvents} from './mocks/events.js';
 
 const POINTS_COUNT = 20;
 
@@ -18,8 +18,12 @@ const filterContainer = infoContainer.querySelector(`.trip-main__trip-controls`)
 const menuContainer = filterContainer.querySelector(`h2`);
 const tripEventsSection = document.querySelector(`.trip-events`);
 const randomEvents = getRandomEvents(POINTS_COUNT);
+const randomDestinations = getDestinations();
+const randomOffers = getOffersByType();
 const eventsModel = new EventsModel();
 eventsModel.setEvents(randomEvents);
+eventsModel.setDestinations(randomDestinations);
+eventsModel.setOffers(randomOffers);
 const tripPresenter = new TripPresenter(tripEventsSection, eventsModel);
 
 renderHeader(infoContainer, menuContainer);

@@ -6,8 +6,10 @@ import EventsListComponent from './points/points-list.js';
 import PointPresenter from '../../presenters/point.js';
 
 export default class EventsGroupByDays {
-  constructor(events, pointsObserver) {
+  constructor(events, destinations, offers, pointsObserver) {
     this._events = events;
+    this._destinations = destinations;
+    this._offers = offers;
     this._pointsObserver = pointsObserver;
     this._element = this._getEventsGroupByDays();
 
@@ -26,11 +28,11 @@ export default class EventsGroupByDays {
     let currentEventsListElement;
 
     for (let event of this._events) {
-      const currentDateTime = getISOStringDate(event.date.start).slice(0, 10);
+      const currentDateTime = getISOStringDate(event[`date_from`]).slice(0, 10);
 
       if (previousDateTime === currentDateTime) {
         const pointPresenter = new PointPresenter(currentEventsListElement, this._pointsObserver);
-        pointPresenter.render(event);
+        pointPresenter.render(event, this._destinations, this._offers);
       } else {
         startDateTime = startDateTime ? startDateTime : currentDateTime;
         daysPassed = daysPassed ? this._getPassedDays(startDateTime, currentDateTime) : 1;
@@ -41,7 +43,7 @@ export default class EventsGroupByDays {
         currentEventsListElement = new EventsListComponent();
         render(currentDayItemElement, currentEventsListElement, InsertionPosition.BEFOREEND);
         const pointPresenter = new PointPresenter(currentEventsListElement, this._pointsObserver);
-        pointPresenter.render(event);
+        pointPresenter.render(event, this._destinations, this._offers);
 
         previousDateTime = currentDateTime;
       }

@@ -10,6 +10,8 @@ export default class TripPresenter {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
+    this._destinations = this._eventsModel.getDestinations();
+    this._offers = this._eventsModel.getOffers();
     this._tripElement = null;
     this._blankTripComponent = new BlankTripComponent();
     this._sortingComponent = new SortingComponent();
@@ -46,10 +48,10 @@ export default class TripPresenter {
     const sortedEvents = this._eventsModel.getEvents();
 
     if (sortType === sortTypeMap.DEFAULT) {
-      return new EventsGroupByDaysComponent(sortedEvents, this._pointsObserver);
+      return new EventsGroupByDaysComponent(sortedEvents, this._destinations, this._offers, this._pointsObserver);
     }
 
-    return new EventsGroupByTimeOrPriceComponent(sortedEvents, this._pointsObserver);
+    return new EventsGroupByTimeOrPriceComponent(sortedEvents, this._destinations, this._offers, this._pointsObserver);
   }
 
   _onSortChange() {

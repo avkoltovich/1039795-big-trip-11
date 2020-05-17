@@ -5,8 +5,10 @@ import EventsListComponent from './points/points-list.js';
 import PointPresenter from '../../presenters/point.js';
 
 export default class EventsGroupByTimeOrPrice {
-  constructor(events, pointsObserver) {
+  constructor(events, destinations, offers, pointsObserver) {
     this._events = events;
+    this._destinations = destinations;
+    this._offers = offers;
     this._pointsObserver = pointsObserver;
     this._element = this._getEventsGroupByTimeOrPrice();
 
@@ -23,7 +25,7 @@ export default class EventsGroupByTimeOrPrice {
 
     for (let event of this._events) {
       const pointPresenter = new PointPresenter(eventsListComponent, this._pointsObserver);
-      pointPresenter.render(event);
+      pointPresenter.render(event, this._destinations, this._offers);
     }
 
     return daysListComponent;

@@ -18,9 +18,9 @@ export default class PointPresenter {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(event) {
-    this._collapsedEventComponent = new CollapsedEventComponent(event);
-    this._editableEventComponent = new EditableEventComponent(event);
+  render(event, destinations, offers) {
+    this._collapsedEventComponent = new CollapsedEventComponent(event, offers);
+    this._editableEventComponent = new EditableEventComponent(event, destinations, offers);
 
     this._collapsedEventComponent.setEditButtonClickHandler(() => {
       this._replaceEventToEdit();

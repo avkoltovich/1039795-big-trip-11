@@ -1,22 +1,22 @@
-import {offerTitlesMap} from '../../../helpers/const.js';
-
-const offerPricesMap = {
-  'event-offer-luggage': 30,
-  'event-offer-comfort': 100,
-  'event-offer-meal': 15,
-  'event-offer-seats': 5,
-  'event-offer-train': 40
+const offerTitlesMap = {
+  'Add luggage': `event-offer-luggage`,
+  'Switch to comfort class': `event-offer-comfort`,
+  'Add meal': `event-offer-meal`,
+  'Choose seats': `event-offer-seats`,
+  'Travel by train': `event-offer-train`
 };
 
 const createOfferCheckboxTemplate = (offer, formCount) => {
   const checked = `${offer.isChecked ? `checked` : ``}`;
-  const offerTitle = offerTitlesMap[offer.name];
-  const offerPrice = offerPricesMap[offer.name];
+  const offerTitle = offer.title;
+  const offerPrice = offer.price;
+  const name = `${offerTitlesMap[offer.title]}`;
+  const id = `${name}-${formCount}`;
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${offer.name}-${formCount}" type="checkbox" name="${offer}" ${checked}>
-      <label class="event__offer-label" for="${offer.name}-${formCount}">
+      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${name}" ${checked}>
+      <label class="event__offer-label" for="${id}">
         <span class="event__offer-title">${offerTitle}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${offerPrice}</span>
@@ -26,8 +26,8 @@ const createOfferCheckboxTemplate = (offer, formCount) => {
 };
 
 const createOfferItemTemplate = (offer) => {
-  const offerTitle = offerTitlesMap[offer.name];
-  const offerPrice = offerPricesMap[offer.name];
+  const offerTitle = offer.title;
+  const offerPrice = offer.price;
 
   return (
     `<li class="event__offer">
