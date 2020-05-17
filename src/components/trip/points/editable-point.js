@@ -147,6 +147,18 @@ const createEditableEventTemplate = (event, options = {}) => {
   );
 };
 
+const parseFormData = (formData) => {
+  const startDate = formData.get(`event-start-time`);
+  const endDate = formData.get(`event-end-time`);
+
+  return {
+    date: {
+      start: new Date(startDate),
+      end: new Date(endDate)
+    }
+  };
+};
+
 export default class EditableEvent extends AbstractSmartComponent {
   constructor(event) {
     super();
@@ -157,6 +169,7 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._placeholder = eventTypesMap[this._type];
     this._submitHandler = null;
     this._collapseHandler = null;
+    this._deleteButtonClickHandler = null;
 
     this._flatpickrStart = null;
     this._flatpickrEnd = null;
@@ -168,6 +181,7 @@ export default class EditableEvent extends AbstractSmartComponent {
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
     this.setCollapseHandler(this._collapseHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this._subscribeOnEvents();
   }
 
@@ -183,6 +197,13 @@ export default class EditableEvent extends AbstractSmartComponent {
       city: this._city,
       placeholder: this._placeholder
     });
+  }
+
+  getData() {
+    const form = this.getElement().querySelector(`.event--edit`);
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
   }
 
   removeElement() {
@@ -216,6 +237,13 @@ export default class EditableEvent extends AbstractSmartComponent {
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`)
       .addEventListener(`click`, handler);
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
   }
 
   _applyFlatpickr() {

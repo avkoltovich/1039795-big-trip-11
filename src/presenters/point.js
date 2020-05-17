@@ -19,9 +19,6 @@ export default class PointPresenter {
   }
 
   render(event) {
-    const oldCollapsedEventComponent = this._collapsedEventComponent;
-    const oldEditableEventComponent = this._editableEventComponent;
-
     this._collapsedEventComponent = new CollapsedEventComponent(event);
     this._editableEventComponent = new EditableEventComponent(event);
 
@@ -31,6 +28,8 @@ export default class PointPresenter {
 
     this._editableEventComponent.setSubmitHandler(() => {
       this._replaceEditToEvent();
+      const data = this._editableEventComponent.getData();
+      this._pointsObserver.syncData(event, Object.assign({}, event, data));
     });
 
     this._editableEventComponent.setCollapseHandler(() => {
@@ -38,17 +37,16 @@ export default class PointPresenter {
     });
 
     this._editableEventComponent.setFavoritesButtonClickHandler(() => {
-      this._pointsObserver.syncData(this, event, Object.assign({}, event, {
+      this._pointsObserver.syncData(event, Object.assign({}, event, {
         isFavorite: !event.isFavorite,
       }));
     });
 
-    if (oldCollapsedEventComponent && oldEditableEventComponent) {
-      replace(this._collapsedEventComponent, oldCollapsedEventComponent);
-      replace(this._editableEventComponent, oldEditableEventComponent);
-    } else {
-      render(this._container, this._collapsedEventComponent, InsertionPosition.BEFOREEND);
-    }
+    this._editableEventComponent.setDeleteButtonClickHandler(() => {
+      this._pointsObserver.syncData(event, null);
+    });
+
+    render(this._container, this._collapsedEventComponent, InsertionPosition.BEFOREEND);
   }
 
   setDefaultView() {

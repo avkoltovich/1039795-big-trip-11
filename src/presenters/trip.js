@@ -16,9 +16,11 @@ export default class TripPresenter {
     this._pointsObserver = new PointsObserver(this._eventsModel);
 
     this._onSortChange = this._onSortChange.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
 
     this._eventsModel.setSortHandlers(this._onSortChange);
+    this._eventsModel.setDataChangeHandler(this._onDataChange);
     this._eventsModel.setFilterHandlers(this._onFilterChange);
   }
 
@@ -54,6 +56,10 @@ export default class TripPresenter {
     const filteredAndSortedTripElement = this._getTripElement(this._eventsModel.getSortType());
     replace(filteredAndSortedTripElement, this._tripElement);
     this._tripElement = filteredAndSortedTripElement;
+  }
+
+  _onDataChange() {
+    this._onSortChange();
   }
 
   _onFilterChange() {

@@ -82,11 +82,11 @@ const getCitiesDestinations = (cities) => {
   return citiesDestinations;
 };
 
-const getRandomEvent = () => {
+const getRandomEvent = (idNumber) => {
   const randomDate = getRandomStartDate();
   const randomEndDate = getRandomEndDate(randomDate);
   return {
-    id: String(new Date() + Math.random()),
+    id: idNumber,
     date: {
       start: randomDate,
       end: randomEndDate
@@ -101,9 +101,13 @@ const getRandomEvent = () => {
 };
 
 const getRandomEvents = (count) => {
-  return new Array(count)
-    .fill(``)
-    .map(getRandomEvent);
+  let randomEvents = [];
+
+  for (let i = 0; i < count; i++) {
+    randomEvents.push(getRandomEvent(i));
+  }
+
+  return randomEvents;
 };
 
 export {getRandomEvent, getRandomEvents};
