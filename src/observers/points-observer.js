@@ -24,4 +24,8 @@ export default class PointsObserver {
       this._eventsModel.removeEvent(oldData.id);
     }
   }
+
+  syncFavorite(id, isFavorite) {
+    this._eventsModel.updateFavoriteEvent(id, isFavorite);
+  }
 }

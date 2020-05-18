@@ -38,19 +38,20 @@ const createTripPhotoTemplate = (src) => {
   );
 };
 
-const getCityIndex = (city, destinations) => {
+const getDestinationIndex = (city, destinations) => {
   return destinations.findIndex((item) => item.name === city);
 };
 
-// const getOffersIndex = (type, offers) => {
-//   return offers.findIndex((item) => item.type === type);
-// };
+const getOffersIndex = (type, offers) => {
+  return offers.findIndex((item) => item.type === type);
+};
 
-const createEditableEventTemplate = (event, destinations, allOffers, options = {}) => {
+const createEditableEventTemplate = (event, destinations, options = {}) => {
   const CITIES = destinations.map((item) => item.name);
-  const {id, offers} = event;
+  const {id} = event;
   const price = event[`base_price`];
-  const {placeholder, type, destination, isFavorite} = options;
+  const {placeholder, type, destination, offers} = options;
+  const isFavorite = event[`is_favorite`];
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
@@ -163,10 +164,10 @@ export default class EditableEvent extends AbstractSmartComponent {
 
     this._event = event;
     this._destinations = destinations;
-    this._offers = offers;
+    this._allOffers = offers;
+    this._offers = event.offers;
     this._type = event.type;
     this._destination = event.destination;
-    this._isFavorite = event.isFavorite;
     this._placeholder = eventTypesMap[this._type];
     this._city = event.destination.name;
     this._submitHandler = null;
@@ -194,11 +195,11 @@ export default class EditableEvent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEditableEventTemplate(this._event, this._destinations, this._offers, {
+    return createEditableEventTemplate(this._event, this._destinations, {
       type: this._type,
       destination: this._destination,
       placeholder: this._placeholder,
-      isFavorite: this._isFavorite
+      offers: this._offers
     });
   }
 
@@ -244,6 +245,11 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._deleteButtonClickHandler = handler;
   }
 
+  setFavoritesButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__favorite-checkbox`)
+      .addEventListener(`click`, handler);
+  }
+
   _applyFlatpickr() {
     const dateStartInput = this.getElement().querySelector(`[name="event-start-time"]`);
     this._flatpickrStart = flatpickr(dateStartInput, {
@@ -271,6 +277,7 @@ export default class EditableEvent extends AbstractSmartComponent {
       .addEventListener(`change`, (evt) => {
         this._type = evt.target.value;
         this._placeholder = eventTypesMap[this._type];
+        this._offers = this._allOffers[getOffersIndex(this._type, this._allOffers)].offers;
 
         this.rerender();
       });
@@ -278,13 +285,9 @@ export default class EditableEvent extends AbstractSmartComponent {
     element.querySelector(`.event__input--destination`)
     .addEventListener(`change`, (evt) => {
       this._city = evt.target.value;
+      this._destination = this._destinations[getDestinationIndex(this._city, this._destinations)];
 
       this.rerender();
-    });
-
-    element.querySelector(`.event__favorite-checkbox`)
-    .addEventListener(`change`, () => {
-      this._isFavorite = !this._isFavorite;
     });
   }
 
@@ -292,14 +295,13 @@ export default class EditableEvent extends AbstractSmartComponent {
     const startDate = formData.get(`event-start-time`);
     const endDate = formData.get(`event-end-time`);
     const eventPrice = formData.get(`event-price`);
-    const destinationIndex = getCityIndex(this._city, this._destinations);
 
     return {
       'base_price': eventPrice,
       'date_from': new Date(startDate),
       'date_to': new Date(endDate),
       'type': this._type,
-      'destination': this._destinations[destinationIndex],
+      'destination': this._destination,
       'is_favorite': this._isFavorite
     };
   }

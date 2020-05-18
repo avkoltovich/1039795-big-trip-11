@@ -58,6 +58,17 @@ export default class Events {
     return true;
   }
 
+  updateFavoriteEvent(id, isFavorite) {
+    const index = this._sortedByDayEvents.findIndex((item) => item.id === id);
+    if (index === -1) {
+      return false;
+    }
+
+    this._sortedByDayEvents[index][`is_favorite`] = isFavorite;
+
+    return true;
+  }
+
   removeEvent(id) {
     const index = this._sortedByDayEvents.findIndex((item) => item.id === id);
 

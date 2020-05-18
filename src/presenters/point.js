@@ -40,6 +40,10 @@ export default class PointPresenter {
       this._pointsObserver.syncData(event, null);
     });
 
+    this._editableEventComponent.setFavoritesButtonClickHandler(() => {
+      this._pointsObserver.syncFavorite(event.id, !(event[`is_favorite`]));
+    });
+
     render(this._container, this._collapsedEventComponent, InsertionPosition.BEFOREEND);
   }
 
