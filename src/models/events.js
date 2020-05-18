@@ -45,7 +45,7 @@ export default class Events {
   }
 
   updateEvent(id, event) {
-    const index = this._sortedByDayEvents.findIndex((it) => it.id === id);
+    const index = this._sortedByDayEvents.findIndex((item) => item.id === id);
 
     if (index === -1) {
       return false;
@@ -58,8 +58,8 @@ export default class Events {
     return true;
   }
 
-  removeTask(id) {
-    const index = this._sortedByDayEvents.findIndex((it) => it.id === id);
+  removeEvent(id) {
+    const index = this._sortedByDayEvents.findIndex((item) => item.id === id);
 
     if (index === -1) {
       return false;
@@ -123,7 +123,7 @@ export default class Events {
 
   _getFilteredEvents(events) {
     const nowDate = new Date();
-    const index = this._sortedByDayEvents.findIndex((it) => it[`date_from`] > nowDate);
+    const index = this._sortedByDayEvents.findIndex((item) => item[`date_from`] > nowDate);
     let filteredEvents = [];
 
     switch (this._activeFilterType) {

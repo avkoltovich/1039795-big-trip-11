@@ -5,23 +5,23 @@ export default class PointsObserver {
     this.observers = [];
   }
 
-  subscribe(fn) {
-    this.observers.push(fn);
+  subscribe(handler) {
+    this.observers.push(handler);
   }
 
-  unsubscribe(fn) {
-    this.observers = this.observers.filter((subscriber) => subscriber !== fn);
+  unsubscribe(handler) {
+    this.observers = this.observers.filter((subscriber) => subscriber !== handler);
   }
 
   collapse() {
-    this.observers.forEach((it) => it.setDefaultView());
+    this.observers.forEach((item) => item.setDefaultView());
   }
 
   syncData(oldData, newData) {
     if (newData) {
       this._eventsModel.updateEvent(oldData.id, newData);
     } else {
-      this._eventsModel.removeTask(oldData.id);
+      this._eventsModel.removeEvent(oldData.id);
     }
   }
 }

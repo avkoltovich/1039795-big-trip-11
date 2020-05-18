@@ -38,9 +38,9 @@ const createTripPhotoTemplate = (src) => {
   );
 };
 
-const getCityIndex = (city, destinations) => {
-  return destinations.findIndex((item) => item.name === city);
-};
+// const getCityIndex = (city, destinations) => {
+//   return destinations.findIndex((item) => item.name === city);
+// };
 
 // const getOffersIndex = (type, offers) => {
 //   return offers.findIndex((item) => item.type === type);
@@ -51,7 +51,6 @@ const createEditableEventTemplate = (event, destinations, allOffers, options = {
   const {id, offers} = event;
   const price = event[`base_price`];
   const {placeholder, type, destination, isFavorite} = options;
-  const cityIndex = getCityIndex(destination, destinations);
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
@@ -59,8 +58,9 @@ const createEditableEventTemplate = (event, destinations, allOffers, options = {
   const eventEndTime = `${getStringDate(event[`date_to`])} ${getFormatTime24H(event[`date_to`])}`;
   const favorite = `${isFavorite ? `checked` : ``}`;
   const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id)).join(`\n`);
-  const cityDescription = destinations[cityIndex].description;
-  const photosTape = destinations[cityIndex].pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
+  const city = destination.name;
+  const cityDescription = destination.description;
+  const photosTape = destination.pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
 
   return (
     `<li class="trip-events__item">
@@ -90,7 +90,7 @@ const createEditableEventTemplate = (event, destinations, allOffers, options = {
             <label class="event__label  event__type-output" for="event-destination-${id}">
               ${placeholder}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination}" list="destination-list-${id}">
+            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
             <datalist id="destination-list-${id}">
               ${destinationItems}
             </datalist>
@@ -165,7 +165,7 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._destinations = destinations;
     this._offers = offers;
     this._type = event.type;
-    this._destination = event[`destination`];
+    this._destination = event.destination;
     this._isFavorite = event.isFavorite;
     this._placeholder = eventTypesMap[this._type];
     this._submitHandler = null;

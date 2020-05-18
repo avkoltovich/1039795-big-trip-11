@@ -127,7 +127,7 @@ const getRandomEvent = (idNumber) => {
     'base_price': getRandomIntegerNumber(5, 160),
     'date_from': randomDate,
     'date_to': randomEndDate,
-    'destination': getRandomArrayItem(CITIES),
+    'destination': getRandomArrayItem(getDestinations()),
     'id': idNumber,
     'is_favorite': Math.random() > 0.5,
     'offers': getOffers(),

@@ -24,7 +24,8 @@ const getDurationString = (duration) => {
 };
 
 const createCollapsedEventTemplate = (event) => {
-  const {type, city, offers} = event;
+  const {type, offers} = event;
+  const city = event.destination.name;
   const price = event[`base_price`];
 
   const duration = (event[`date_to`] - event[`date_from`]);
