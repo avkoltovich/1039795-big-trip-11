@@ -38,9 +38,9 @@ const createTripPhotoTemplate = (src) => {
   );
 };
 
-// const getCityIndex = (city, destinations) => {
-//   return destinations.findIndex((item) => item.name === city);
-// };
+const getCityIndex = (city, destinations) => {
+  return destinations.findIndex((item) => item.name === city);
+};
 
 // const getOffersIndex = (type, offers) => {
 //   return offers.findIndex((item) => item.type === type);
@@ -168,6 +168,7 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._destination = event.destination;
     this._isFavorite = event.isFavorite;
     this._placeholder = eventTypesMap[this._type];
+    this._city = event.destination.name;
     this._submitHandler = null;
     this._collapseHandler = null;
     this._deleteButtonClickHandler = null;
@@ -291,16 +292,15 @@ export default class EditableEvent extends AbstractSmartComponent {
     const startDate = formData.get(`event-start-time`);
     const endDate = formData.get(`event-end-time`);
     const eventPrice = formData.get(`event-price`);
+    const destinationIndex = getCityIndex(this._city, this._destinations);
 
     return {
-      date: {
-        start: new Date(startDate),
-        end: new Date(endDate)
-      },
-      type: this._type,
-      city: this._city,
-      price: eventPrice,
-      isFavorite: this._isFavorite
+      'base_price': eventPrice,
+      'date_from': new Date(startDate),
+      'date_to': new Date(endDate),
+      'type': this._type,
+      'destination': this._destinations[destinationIndex],
+      'is_favorite': this._isFavorite
     };
   }
 }
