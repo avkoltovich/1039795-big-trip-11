@@ -50,7 +50,7 @@ const createEditableEventTemplate = (event, destinations, options = {}) => {
   const CITIES = destinations.map((item) => item.name);
   const {id} = event;
   const price = event[`base_price`];
-  const {placeholder, type, destination, offers} = options;
+  const {placeholder, type, destination, offers, selectedOffers} = options;
   const isFavorite = event[`is_favorite`];
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
@@ -58,7 +58,7 @@ const createEditableEventTemplate = (event, destinations, options = {}) => {
   const eventStartTime = `${getStringDate(event[`date_from`])} ${getFormatTime24H(event[`date_from`])}`;
   const eventEndTime = `${getStringDate(event[`date_to`])} ${getFormatTime24H(event[`date_to`])}`;
   const favorite = `${isFavorite ? `checked` : ``}`;
-  const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id)).join(`\n`);
+  const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
   const city = destination.name;
   const cityDescription = destination.description;
   const photosTape = destination.pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
@@ -164,9 +164,10 @@ export default class EditableEvent extends AbstractSmartComponent {
 
     this._event = event;
     this._destinations = destinations;
-    this._allOffers = offers;
-    this._offers = event.offers;
     this._type = event.type;
+    this._allOffers = offers;
+    this._allOffersByType = this._allOffers[getOffersIndex(this._type, this._allOffers)].offers;
+    this._selectedOffers = event.offers;
     this._destination = event.destination;
     this._placeholder = eventTypesMap[this._type];
     this._city = event.destination.name;
@@ -199,7 +200,8 @@ export default class EditableEvent extends AbstractSmartComponent {
       type: this._type,
       destination: this._destination,
       placeholder: this._placeholder,
-      offers: this._offers
+      offers: this._allOffersByType,
+      selectedOffers: this._selectedOffers
     });
   }
 
@@ -277,7 +279,7 @@ export default class EditableEvent extends AbstractSmartComponent {
       .addEventListener(`change`, (evt) => {
         this._type = evt.target.value;
         this._placeholder = eventTypesMap[this._type];
-        this._offers = this._allOffers[getOffersIndex(this._type, this._allOffers)].offers;
+        this._allOffersByType = this._allOffers[getOffersIndex(this._type, this._allOffers)].offers;
 
         this.rerender();
       });

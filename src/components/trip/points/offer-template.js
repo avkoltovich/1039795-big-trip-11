@@ -6,8 +6,9 @@ const offerTitlesMap = {
   'Travel by train': `event-offer-train`
 };
 
-const createOfferCheckboxTemplate = (offer, formCount) => {
-  const checked = `${offer.isChecked ? `checked` : ``}`;
+const createOfferCheckboxTemplate = (offer, formCount, selectedOffers) => {
+  const index = selectedOffers.findIndex((item) => item.title === offer.title);
+  const checked = `${index !== -1 ? `checked` : ``}`;
   const offerTitle = offer.title;
   const offerPrice = offer.price;
   const name = `${offerTitlesMap[offer.title]}`;
