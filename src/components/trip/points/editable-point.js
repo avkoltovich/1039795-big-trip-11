@@ -41,8 +41,7 @@ const createTripPhotoTemplate = (src) => {
 const createEditableEventTemplate = (event, destinations, options = {}) => {
   const CITIES = destinations.map((item) => item.name);
   const price = event[`base_price`];
-  const {placeholder, type, destination, offers, selectedOffers, id} = options;
-  const isFavorite = event[`is_favorite`];
+  const {placeholder, type, destination, offers, selectedOffers, id, isFavorite} = options;
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
@@ -163,6 +162,7 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._destination = event.destination;
     this._placeholder = eventTypesMap[this._type];
     this._city = event.destination.name;
+    this._isFavorite = event[`is_favorite`];
     this._submitHandler = null;
     this._collapseHandler = null;
     this._deleteButtonClickHandler = null;
@@ -194,7 +194,8 @@ export default class EditableEvent extends AbstractSmartComponent {
       destination: this._destination,
       placeholder: this._placeholder,
       offers: this._allOffersByType,
-      selectedOffers: this._selectedOffers
+      selectedOffers: this._selectedOffers,
+      isFavorite: this._isFavorite
     });
   }
 
@@ -308,11 +309,16 @@ export default class EditableEvent extends AbstractSmartComponent {
     return selectedOffers;
   }
 
+  _getFavoriteStatus() {
+    return (this.getElement().querySelector(`.event__favorite-checkbox:checked`)) ? true : false;
+  }
+
   _parseFormData(formData) {
     const startDate = formData.get(`event-start-time`);
     const endDate = formData.get(`event-end-time`);
     const eventPrice = formData.get(`event-price`);
     this._selectedOffers = this._getSelectedOffers();
+    this._isFavorite = this._getFavoriteStatus();
 
     return {
       'base_price': eventPrice,
