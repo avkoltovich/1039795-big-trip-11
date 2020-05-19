@@ -88,9 +88,9 @@ const getDestinations = () => {
   return destinations;
 };
 
-const getOffer = () => {
+const getOffer = (index) => {
   return {
-    'title': getRandomArrayItem(offers),
+    'title': offers[index],
     'price': getRandomIntegerNumber(5, 160)
   };
 };
@@ -101,7 +101,7 @@ const getOffers = () => {
   const count = getRandomIntegerNumber(1, 5);
 
   for (let index = 0; index < count; index++) {
-    randomOffers.push(getOffer());
+    randomOffers.push(getOffer(index));
   }
 
   return randomOffers;

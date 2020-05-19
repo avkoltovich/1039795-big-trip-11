@@ -1,4 +1,4 @@
-import {transferTypes, activityTypes, eventTypesMap} from '../../../helpers/const.js';
+import {transferTypes, activityTypes, eventTypesMap, offerTitlesMap} from '../../../helpers/const.js';
 import {createOfferCheckboxTemplate} from './offer-template.js';
 import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
 import AbstractSmartComponent from '../../abstract-smart-component.js';
@@ -38,19 +38,10 @@ const createTripPhotoTemplate = (src) => {
   );
 };
 
-const getDestinationIndex = (city, destinations) => {
-  return destinations.findIndex((item) => item.name === city);
-};
-
-const getOffersIndex = (type, offers) => {
-  return offers.findIndex((item) => item.type === type);
-};
-
 const createEditableEventTemplate = (event, destinations, options = {}) => {
   const CITIES = destinations.map((item) => item.name);
-  const {id} = event;
   const price = event[`base_price`];
-  const {placeholder, type, destination, offers, selectedOffers} = options;
+  const {placeholder, type, destination, offers, selectedOffers, id} = options;
   const isFavorite = event[`is_favorite`];
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
@@ -163,10 +154,11 @@ export default class EditableEvent extends AbstractSmartComponent {
     super();
 
     this._event = event;
+    this._id = event.id;
     this._destinations = destinations;
     this._type = event.type;
     this._allOffers = offers;
-    this._allOffersByType = this._allOffers[getOffersIndex(this._type, this._allOffers)].offers;
+    this._allOffersByType = this._allOffers[this._getOffersIndexByType(this._type)].offers;
     this._selectedOffers = event.offers;
     this._destination = event.destination;
     this._placeholder = eventTypesMap[this._type];
@@ -197,6 +189,7 @@ export default class EditableEvent extends AbstractSmartComponent {
 
   getTemplate() {
     return createEditableEventTemplate(this._event, this._destinations, {
+      id: this._id,
       type: this._type,
       destination: this._destination,
       placeholder: this._placeholder,
@@ -279,7 +272,7 @@ export default class EditableEvent extends AbstractSmartComponent {
       .addEventListener(`change`, (evt) => {
         this._type = evt.target.value;
         this._placeholder = eventTypesMap[this._type];
-        this._allOffersByType = this._allOffers[getOffersIndex(this._type, this._allOffers)].offers;
+        this._allOffersByType = this._allOffers[this._getOffersIndexByType(this._type)].offers;
 
         this.rerender();
       });
@@ -287,24 +280,49 @@ export default class EditableEvent extends AbstractSmartComponent {
     element.querySelector(`.event__input--destination`)
     .addEventListener(`change`, (evt) => {
       this._city = evt.target.value;
-      this._destination = this._destinations[getDestinationIndex(this._city, this._destinations)];
+      this._destination = this._destinations[this._getDestinationIndex(this._city)];
 
       this.rerender();
     });
+  }
+
+  _getDestinationIndex(city) {
+    return this._destinations.findIndex((item) => item.name === city);
+  }
+
+  _getOffersIndexByType(type) {
+    return this._allOffers.findIndex((item) => item.type === type);
+  }
+
+  _getOffersIndexByTitle(title) {
+    return this._allOffersByType.findIndex((item) => item.title === title);
+  }
+
+  _getSelectedOffers() {
+    let selectedOffers = [];
+    const offers = this.getElement().querySelectorAll(`.event__offer-checkbox:checked`);
+    offers.forEach((item) => {
+      selectedOffers.push(this._allOffersByType[this._getOffersIndexByTitle(offerTitlesMap[item.name])]);
+    });
+
+    return selectedOffers;
   }
 
   _parseFormData(formData) {
     const startDate = formData.get(`event-start-time`);
     const endDate = formData.get(`event-end-time`);
     const eventPrice = formData.get(`event-price`);
+    this._selectedOffers = this._getSelectedOffers();
 
     return {
       'base_price': eventPrice,
       'date_from': new Date(startDate),
       'date_to': new Date(endDate),
-      'type': this._type,
       'destination': this._destination,
-      'is_favorite': this._isFavorite
+      'id': this._id,
+      'is_favorite': this._isFavorite,
+      'offers': this._selectedOffers,
+      'type': this._type
     };
   }
 }
