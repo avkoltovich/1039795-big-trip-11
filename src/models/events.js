@@ -5,7 +5,6 @@ export default class Events {
     this._events = [];
     this._destinations = [];
     this._offers = [];
-    this._sortedByDayEvents = [];
     this._filteredAndSortedEvents = [];
     this._activeSortType = sortTypeMap.DEFAULT;
     this._activeFilterType = filterTypeMap.DEFAULT;
@@ -16,7 +15,7 @@ export default class Events {
   }
 
   getEvents() {
-    this._filteredAndSortedEvents = this._getSortedEvents(this._getFilteredEvents(this._sortedByDayEvents));
+    this._filteredAndSortedEvents = this._getSortedEvents(this._getFilteredEvents(this._events));
     return this._filteredAndSortedEvents;
   }
 
@@ -30,7 +29,7 @@ export default class Events {
 
   setEvents(events) {
     this._events = Array.from(events);
-    this._sortedByDayEvents = this._getSortedEvents(this._events);
+    this._events = this._getSortedEvents(this._events);
     this._callHandlers(this._dataChangeHandlers);
   }
 
@@ -44,14 +43,20 @@ export default class Events {
     this._callHandlers(this._dataChangeHandlers);
   }
 
+  addEvent(event) {
+    this._events.push(event);
+
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
   updateEvent(id, event) {
-    const index = this._sortedByDayEvents.findIndex((item) => item.id === id);
+    const index = this._events.findIndex((item) => item.id === id);
 
     if (index === -1) {
       return false;
     }
 
-    this._sortedByDayEvents = [].concat(this._sortedByDayEvents.slice(0, index), event, this._sortedByDayEvents.slice(index + 1));
+    this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
 
@@ -59,24 +64,24 @@ export default class Events {
   }
 
   updateFavoriteEvent(id, isFavorite) {
-    const index = this._sortedByDayEvents.findIndex((item) => item.id === id);
+    const index = this._events.findIndex((item) => item.id === id);
     if (index === -1) {
       return false;
     }
 
-    this._sortedByDayEvents[index][`is_favorite`] = isFavorite;
+    this._events[index][`is_favorite`] = isFavorite;
 
     return true;
   }
 
   removeEvent(id) {
-    const index = this._sortedByDayEvents.findIndex((item) => item.id === id);
+    const index = this._events.findIndex((item) => item.id === id);
 
     if (index === -1) {
       return false;
     }
 
-    this._sortedByDayEvents = [].concat(this._sortedByDayEvents.slice(0, index), this._sortedByDayEvents.slice(index + 1));
+    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
 
     this._callHandlers(this._dataChangeHandlers);
 
@@ -134,7 +139,7 @@ export default class Events {
 
   _getFilteredEvents(events) {
     const nowDate = new Date();
-    const index = this._sortedByDayEvents.findIndex((item) => item[`date_from`] > nowDate);
+    const index = this._events.findIndex((item) => item[`date_from`] > nowDate);
     let filteredEvents = [];
 
     switch (this._activeFilterType) {
