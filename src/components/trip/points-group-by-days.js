@@ -6,11 +6,11 @@ import EventsListComponent from './points/points-list.js';
 import PointPresenter from '../../presenters/point.js';
 
 export default class EventsGroupByDays {
-  constructor(events, destinations, offers, pointsObserver) {
+  constructor(events, destinations, offers, editablePointsPresenter) {
     this._events = events;
     this._destinations = destinations;
     this._offers = offers;
-    this._editablePointPresenter = pointsObserver;
+    this._editablePointPresenter = editablePointsPresenter;
     this._element = this._getEventsGroupByDays();
 
     return this._element;

@@ -9,9 +9,9 @@ const Mode = {
 };
 
 export default class PointPresenter {
-  constructor(container, pointsObserver) {
+  constructor(container, editablePointsPresenter) {
     this._container = container;
-    this._editablePointPresenter = pointsObserver;
+    this._editablePointPresenter = editablePointsPresenter;
     this._mode = Mode.DEFAULT;
     this._collapsedEventComponent = null;
     this._editableEventComponent = null;
