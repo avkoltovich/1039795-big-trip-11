@@ -1,31 +1,33 @@
 import {render, InsertionPosition} from '../../helpers/render.js';
+import {Mode} from '../../helpers/const.js';
 import DaysListComponent from './days/days-list.js';
 import DayItemBlankComponent from './days/day-blank.js';
-import EventsListComponent from './points/points-list.js';
+import PointsListComponent from './points/points-list.js';
+import PointItemComponent from './points/point-item.js';
 import PointPresenter from '../../presenters/point.js';
 
-export default class EventsGroupByTimeOrPrice {
-  constructor(events, destinations, offers, editablePointsPresenter) {
+export default class PointsGroupByTimeOrPrice {
+  constructor(events, pointsPresenter) {
     this._events = events;
-    this._destinations = destinations;
-    this._offers = offers;
-    this._editablePointPresenter = editablePointsPresenter;
-    this._element = this._getEventsGroupByTimeOrPrice();
+    this._pointsPresenter = pointsPresenter;
+    this._element = this._getPointsGroupByTimeOrPrice();
 
     return this._element;
   }
 
-  _getEventsGroupByTimeOrPrice() {
+  _getPointsGroupByTimeOrPrice() {
     const daysListComponent = new DaysListComponent();
     const dayItemComponent = new DayItemBlankComponent();
     render(daysListComponent, dayItemComponent, InsertionPosition.BEFOREEND);
 
-    const eventsListComponent = new EventsListComponent();
-    render(dayItemComponent, eventsListComponent, InsertionPosition.BEFOREEND);
+    const pointsListComponent = new PointsListComponent();
+    render(dayItemComponent, pointsListComponent, InsertionPosition.BEFOREEND);
 
     for (let event of this._events) {
-      const pointPresenter = new PointPresenter(eventsListComponent, this._editablePointPresenter);
-      pointPresenter.render(event, this._destinations, this._offers);
+      const pointItem = new PointItemComponent();
+      render(pointsListComponent, pointItem, InsertionPosition.BEFOREEND);
+      const pointPresenter = new PointPresenter(pointItem, event, this._pointsPresenter);
+      pointPresenter.render(Mode.DEFAULT);
     }
 
     return daysListComponent;

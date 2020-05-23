@@ -1,13 +1,13 @@
 import AbstractComponent from '../../abstract-component.js';
 
-const createEventsListTemplate = () => {
+const createPointsListTemplate = () => {
   return (
     `<ul class="trip-events__list"></ul>`
   );
 };
 
-export default class EventsList extends AbstractComponent {
+export default class PointsList extends AbstractComponent {
   getTemplate() {
-    return createEventsListTemplate();
+    return createPointsListTemplate();
   }
 }

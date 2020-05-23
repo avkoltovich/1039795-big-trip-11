@@ -1,72 +1,81 @@
 import {render, replace, InsertionPosition} from '../helpers/render.js';
-import CollapsedEventComponent from '../components/trip/points/collapsed-point.js';
-import EditableEventComponent from '../components/trip/points/editable-point.js';
+import {Mode} from '../helpers/const.js';
+import CollapsedPointComponent from '../components/trip/points/collapsed-point.js';
+import EditablePointComponent from '../components/trip/points/editable-point.js';
 
-const Mode = {
-  ADDING: `adding`,
-  DEFAULT: `default`,
-  EDIT: `edit`,
+const emptyEvent = {
+  'basePrice': 0,
+  'dateFrom': new Date(),
+  'dateTo': new Date(),
+  'destination': null,
+  'id': null,
+  'isFavorite': false,
+  'offers': null,
+  'type': `taxi`
 };
 
 export default class PointPresenter {
-  constructor(container, editablePointsPresenter) {
+  constructor(container, event, pointsPresenter) {
     this._container = container;
-    this._editablePointPresenter = editablePointsPresenter;
+    this._event = event;
+    this._pointsPresenter = pointsPresenter;
+    this._destinations = this._pointsPresenter.getDestinations();
+    this._offers = this._pointsPresenter.getOffers();
     this._mode = Mode.DEFAULT;
-    this._collapsedEventComponent = null;
-    this._editableEventComponent = null;
+    this._collapsedPointComponent = null;
+    this._editablePointComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(event, destinations, offers) {
-    this._collapsedEventComponent = new CollapsedEventComponent(event, offers);
-    this._editableEventComponent = new EditableEventComponent(event, destinations, offers);
+  render(mode) {
+    this._mode = mode;
 
-    this._collapsedEventComponent.setEditButtonClickHandler(() => {
-      this._replaceEventToEdit();
-    });
+    if (this._mode === Mode.DEFAULT) {
+      this._collapsedPointComponent = new CollapsedPointComponent(this._event, this._offers);
+      this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers);
 
-    this._editableEventComponent.setSubmitHandler(() => {
-      this._replaceEditToEvent();
-      const data = this._editableEventComponent.getData();
-      this._editablePointPresenter.syncData(event, Object.assign({}, event, data));
-    });
+      this._collapsedPointComponent.setEditButtonClickHandler(() => {
+        this._replaceEventToEdit();
+      });
 
-    this._editableEventComponent.setCollapseHandler(() => {
-      this._replaceEditToEvent();
-    });
+      this._editablePointComponent.setSubmitHandler(() => {
+        this._replaceEditToEvent();
+        const data = this._editablePointComponent.getData();
+        this._pointsPresenter.syncData(this._event, Object.assign({}, this._event, data));
+      });
 
-    this._editableEventComponent.setDeleteButtonClickHandler(() => {
-      this._editablePointPresenter.syncData(event, null);
-    });
+      this._editablePointComponent.setCollapseHandler(() => {
+        this._replaceEditToEvent();
+      });
 
-    this._editableEventComponent.setFavoritesButtonClickHandler(() => {
-      this._editablePointPresenter.syncFavorite(event.id, !(event[`isFavorite`]));
-    });
+      this._editablePointComponent.setDeleteButtonClickHandler(() => {
+        this._pointsPresenter.syncData(this._event, null);
+      });
 
-    render(this._container, this._collapsedEventComponent, InsertionPosition.BEFOREEND);
+      this._editablePointComponent.setFavoritesButtonClickHandler(() => {
+        this._pointsPresenter.syncFavorite(this._event.id, !(this._event[`isFavorite`]));
+      });
+
+    } else {
+      this._event = emptyEvent;
+      this._event[`id`] = this._pointsPresenter.getNewID();
+      this._event[`destination`] = this._destinations[0][`name`];
+      this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers);
+
+      this._editablePointComponent.setSubmitHandler(() => {
+        const data = this._editablePointComponent.getData();
+        this._pointsPresenter.syncData(null, data);
+      });
+    }
+
+    render(this._container, this._collapsedPointComponent, InsertionPosition.BEFOREEND);
   }
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();
     }
-  }
-
-  _replaceEventToEdit() {
-    this._editablePointPresenter.collapse();
-    replace(this._editableEventComponent, this._collapsedEventComponent);
-    this._mode = Mode.EDIT;
-    document.addEventListener(`keydown`, this._onEscKeyDown);
-    this._editablePointPresenter.subscribe(this);
-  }
-
-  _replaceEditToEvent() {
-    replace(this._collapsedEventComponent, this._editableEventComponent);
-    this._mode = Mode.DEFAULT;
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._editablePointPresenter.unsubscribe(this);
   }
 
   _onEscKeyDown(evt) {
@@ -76,5 +85,20 @@ export default class PointPresenter {
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
+  }
+
+  _replaceEditToEvent() {
+    replace(this._collapsedPointComponent, this._editablePointComponent);
+    this._mode = Mode.DEFAULT;
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._pointsPresenter.unsubscribe(this);
+  }
+
+  _replaceEventToEdit() {
+    this._pointsPresenter.collapse();
+    replace(this._editablePointComponent, this._collapsedPointComponent);
+    this._mode = Mode.EDIT;
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._pointsPresenter.subscribe(this);
   }
 }

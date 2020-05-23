@@ -4,18 +4,16 @@ import SortingComponent from '../components/sorting.js';
 import BlankTripComponent from '../components/trip/blank-trip.js';
 import EventsGroupByDaysComponent from '../components/trip/points-group-by-days.js';
 import EventsGroupByTimeOrPriceComponent from '../components/trip/points-group-by-time-or-price.js';
-import EditablePointPresenter from './editable-points.js';
+import PointPresenter from './points.js';
 
 export default class TripPresenter {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
-    this._destinations = this._eventsModel.getDestinations();
-    this._offers = this._eventsModel.getOffers();
     this._tripElement = null;
     this._blankTripComponent = new BlankTripComponent();
     this._sortingComponent = new SortingComponent();
-    this._editablePointPresenter = new EditablePointPresenter(this._eventsModel);
+    this._pointsPresenter = new PointPresenter(this._eventsModel);
 
     this._onSortChange = this._onSortChange.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
@@ -48,10 +46,10 @@ export default class TripPresenter {
     const sortedEvents = this._eventsModel.getEvents();
 
     if (sortType === sortTypeMap.DEFAULT) {
-      return new EventsGroupByDaysComponent(sortedEvents, this._destinations, this._offers, this._editablePointPresenter);
+      return new EventsGroupByDaysComponent(sortedEvents, this._pointsPresenter);
     }
 
-    return new EventsGroupByTimeOrPriceComponent(sortedEvents, this._destinations, this._offers, this._editablePointPresenter);
+    return new EventsGroupByTimeOrPriceComponent(sortedEvents, this._pointsPresenter);
   }
 
   _onSortChange() {

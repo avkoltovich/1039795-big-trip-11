@@ -10,7 +10,7 @@ const getStringDate = (date) => `${castTimeFormat(date.getDate())}/${castTimeFor
 
 const capitalizeFirstLetter = (word) => word[0].toUpperCase() + word.slice(1);
 
-const createEventTypeItemTemplate = (type, isChecked, id) => {
+const createPointTypeItemTemplate = (type, isChecked, id) => {
   const eventTypeString = capitalizeFirstLetter(type);
   const checked = `${type}" ${isChecked ? `checked` : ``}`;
 
@@ -23,7 +23,7 @@ const createEventTypeItemTemplate = (type, isChecked, id) => {
 };
 
 const createTypesFieldsetTemplate = (typesList, type, id) => {
-  return typesList.map((typeItem) => createEventTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
+  return typesList.map((typeItem) => createPointTypeItemTemplate(typeItem, typeItem === type, id)).join(`\n`);
 };
 
 const createDestinationItemTemplate = (city) => {
@@ -38,7 +38,7 @@ const createTripPhotoTemplate = (src) => {
   );
 };
 
-const createEditableEventTemplate = (event, destinations, options = {}) => {
+const createEditablePointTemplate = (event, destinations, options = {}) => {
   const CITIES = destinations.map((item) => item.name);
   const price = event[`basePrice`];
   const {placeholder, type, destination, offers, selectedOffers, id, isFavorite} = options;
@@ -54,8 +54,7 @@ const createEditableEventTemplate = (event, destinations, options = {}) => {
   const photosTape = destination.pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
 
   return (
-    `<li class="trip-events__item">
-      <form class="event  event--edit" action="#" method="post">
+    `<form class="event  event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
@@ -143,12 +142,11 @@ const createEditableEventTemplate = (event, destinations, options = {}) => {
             </div>
           </section>
         </section>
-      </form>
-    </li>`
+      </form>`
   );
 };
 
-export default class EditableEvent extends AbstractSmartComponent {
+export default class EditablePoint extends AbstractSmartComponent {
   constructor(event, destinations, offers) {
     super();
 
@@ -188,7 +186,7 @@ export default class EditableEvent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEditableEventTemplate(this._event, this._destinations, {
+    return createEditablePointTemplate(this._event, this._destinations, {
       id: this._id,
       type: this._type,
       destination: this._destination,
@@ -221,8 +219,7 @@ export default class EditableEvent extends AbstractSmartComponent {
   }
 
   setSubmitHandler(handler) {
-    this.getElement().querySelector(`form`)
-      .addEventListener(`submit`, handler);
+    this.getElement().addEventListener(`submit`, handler);
 
     this._submitHandler = handler;
   }

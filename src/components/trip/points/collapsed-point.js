@@ -23,7 +23,7 @@ const getDurationString = (duration) => {
   return (formattedDuration += `${minutes}M`);
 };
 
-const createCollapsedEventTemplate = (event) => {
+const createCollapsedPointTemplate = (event) => {
   const {type, offers} = event;
   const city = event.destination.name;
   const price = event[`basePrice`];
@@ -38,8 +38,7 @@ const createCollapsedEventTemplate = (event) => {
   const selectedOffers = offers.slice(0, SHOWING_OFFERS_COUNT).map((offer) => createOfferItemTemplate(offer)).join(`\n`);
 
   return (
-    `<li class="trip-events__item">
-      <div class="event">
+    `<div class="event">
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
@@ -66,12 +65,11 @@ const createCollapsedEventTemplate = (event) => {
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
-      </div>
-    </li>`
+      </div>`
   );
 };
 
-export default class CollapsedEvent extends AbstractComponent {
+export default class CollapsedPoint extends AbstractComponent {
   constructor(event) {
     super();
 
@@ -79,7 +77,7 @@ export default class CollapsedEvent extends AbstractComponent {
   }
 
   getTemplate() {
-    return createCollapsedEventTemplate(this._event);
+    return createCollapsedPointTemplate(this._event);
   }
 
   setEditButtonClickHandler(handler) {

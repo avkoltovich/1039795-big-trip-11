@@ -3,6 +3,7 @@ import {filterTypeMap, sortTypeMap} from '../helpers/const.js';
 export default class Events {
   constructor() {
     this._events = [];
+    this._ids = [];
     this._destinations = [];
     this._offers = [];
     this._filteredAndSortedEvents = [];
@@ -14,20 +15,27 @@ export default class Events {
     this._filterHandlers = [];
   }
 
+  getDestinations() {
+    return this._destinations;
+  }
+
   getEvents() {
     this._filteredAndSortedEvents = this._getSortedEvents(this._getFilteredEvents(this._events));
     return this._filteredAndSortedEvents;
-  }
-
-  getDestinations() {
-    return this._destinations;
   }
 
   getOffers() {
     return this._offers;
   }
 
+  getNewID() {
+    const newID = ++this._ids[this._ids.length - 1];
+    this._ids.push(newID);
+    return newID;
+  }
+
   setEvents(events) {
+    this._ids = events.map((item) => item.id).sort((a, b) => a - b);
     this._events = Array.from(events);
     this._events = this._getSortedEvents(this._events);
     this._callHandlers(this._dataChangeHandlers);
