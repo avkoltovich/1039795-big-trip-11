@@ -28,7 +28,7 @@ export default class EventsGroupByDays {
     let currentEventsListElement;
 
     for (let event of this._events) {
-      const currentDateTime = getISOStringDate(event[`date_from`]).slice(0, 10);
+      const currentDateTime = getISOStringDate(event[`dateFrom`]).slice(0, 10);
 
       if (previousDateTime === currentDateTime) {
         const pointPresenter = new PointPresenter(currentEventsListElement, this._pointsObserver);

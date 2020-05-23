@@ -69,7 +69,7 @@ export default class Events {
       return false;
     }
 
-    this._events[index][`is_favorite`] = isFavorite;
+    this._events[index][`isFavorite`] = isFavorite;
 
     return true;
   }
@@ -118,13 +118,13 @@ export default class Events {
 
     switch (this._activeSortType) {
       default:
-        sortedEvents.sort((a, b) => a[`date_from`] - b[`date_from`]);
+        sortedEvents.sort((a, b) => a[`dateFrom`] - b[`dateFrom`]);
         break;
       case sortTypeMap.TIME:
-        sortedEvents.sort((a, b) => (b[`date_to`] - b[`date_from`]) - (a[`date_to`] - a[`date_from`]));
+        sortedEvents.sort((a, b) => (b[`dateTo`] - b[`dateFrom`]) - (a[`dateTo`] - a[`dateFrom`]));
         break;
       case sortTypeMap.PRICE:
-        sortedEvents.sort((a, b) => b[`base_price`] - a[`base_price`]);
+        sortedEvents.sort((a, b) => b[`basePrice`] - a[`basePrice`]);
         break;
     }
 
@@ -139,7 +139,7 @@ export default class Events {
 
   _getFilteredEvents(events) {
     const nowDate = new Date();
-    const index = this._events.findIndex((item) => item[`date_from`] > nowDate);
+    const index = this._events.findIndex((item) => item[`dateFrom`] > nowDate);
     let filteredEvents = [];
 
     switch (this._activeFilterType) {

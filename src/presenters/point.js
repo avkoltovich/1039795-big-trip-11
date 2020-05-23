@@ -41,7 +41,7 @@ export default class PointPresenter {
     });
 
     this._editableEventComponent.setFavoritesButtonClickHandler(() => {
-      this._pointsObserver.syncFavorite(event.id, !(event[`is_favorite`]));
+      this._pointsObserver.syncFavorite(event.id, !(event[`isFavorite`]));
     });
 
     render(this._container, this._collapsedEventComponent, InsertionPosition.BEFOREEND);

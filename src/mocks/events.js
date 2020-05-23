@@ -124,12 +124,12 @@ const getRandomEvent = (idNumber) => {
   const randomDate = getRandomStartDate();
   const randomEndDate = getRandomEndDate(randomDate);
   return {
-    'base_price': getRandomIntegerNumber(5, 160),
-    'date_from': randomDate,
-    'date_to': randomEndDate,
+    'basePrice': getRandomIntegerNumber(5, 160),
+    'dateFrom': randomDate,
+    'dateTo': randomEndDate,
     'destination': getRandomArrayItem(getDestinations()),
     'id': idNumber,
-    'is_favorite': Math.random() > 0.5,
+    'isFavorite': Math.random() > 0.5,
     'offers': getOffers(),
     'type': getRandomArrayItem(eventTypes)
   };

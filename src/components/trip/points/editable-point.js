@@ -40,13 +40,13 @@ const createTripPhotoTemplate = (src) => {
 
 const createEditableEventTemplate = (event, destinations, options = {}) => {
   const CITIES = destinations.map((item) => item.name);
-  const price = event[`base_price`];
+  const price = event[`basePrice`];
   const {placeholder, type, destination, offers, selectedOffers, id, isFavorite} = options;
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
-  const eventStartTime = `${getStringDate(event[`date_from`])} ${getFormatTime24H(event[`date_from`])}`;
-  const eventEndTime = `${getStringDate(event[`date_to`])} ${getFormatTime24H(event[`date_to`])}`;
+  const eventStartTime = `${getStringDate(event[`dateFrom`])} ${getFormatTime24H(event[`dateFrom`])}`;
+  const eventEndTime = `${getStringDate(event[`dateTo`])} ${getFormatTime24H(event[`dateTo`])}`;
   const favorite = `${isFavorite ? `checked` : ``}`;
   const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
   const city = destination.name;
@@ -162,7 +162,7 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._destination = event.destination;
     this._placeholder = eventTypesMap[this._type];
     this._city = event.destination.name;
-    this._isFavorite = event[`is_favorite`];
+    this._isFavorite = event[`isFavorite`];
     this._submitHandler = null;
     this._collapseHandler = null;
     this._deleteButtonClickHandler = null;
@@ -253,7 +253,7 @@ export default class EditableEvent extends AbstractSmartComponent {
       altFormat: `d/m/y H:i`,
       altInput: true,
       [`time_24hr`]: true,
-      defaultDate: this._event[`date_from`],
+      defaultDate: this._event[`dateFrom`],
     });
 
     const dateEndInput = this.getElement().querySelector(`[name="event-end-time"]`);
@@ -262,7 +262,7 @@ export default class EditableEvent extends AbstractSmartComponent {
       altFormat: `d/m/y H:i`,
       altInput: true,
       [`time_24hr`]: true,
-      defaultDate: this._event[`date_to`],
+      defaultDate: this._event[`dateTo`],
     });
   }
 
@@ -321,12 +321,12 @@ export default class EditableEvent extends AbstractSmartComponent {
     this._isFavorite = this._getFavoriteStatus();
 
     return {
-      'base_price': eventPrice,
-      'date_from': new Date(startDate),
-      'date_to': new Date(endDate),
+      'basePrice': eventPrice,
+      'dateFrom': new Date(startDate),
+      'dateTo': new Date(endDate),
       'destination': this._destination,
       'id': this._id,
-      'is_favorite': this._isFavorite,
+      'isFavorite': this._isFavorite,
       'offers': this._selectedOffers,
       'type': this._type
     };

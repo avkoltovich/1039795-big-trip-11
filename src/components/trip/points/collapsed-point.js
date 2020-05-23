@@ -26,15 +26,15 @@ const getDurationString = (duration) => {
 const createCollapsedEventTemplate = (event) => {
   const {type, offers} = event;
   const city = event.destination.name;
-  const price = event[`base_price`];
+  const price = event[`basePrice`];
 
-  const duration = (event[`date_to`] - event[`date_from`]);
+  const duration = (event[`dateTo`] - event[`dateFrom`]);
   const durationString = getDurationString(duration);
   const eventType = eventTypesMap[type];
-  const dataTimeStart = getISOStringDate(event[`date_from`]).slice(0, 16);
-  const dataTimeStart24H = getFormatTime24H(event[`date_from`]);
-  const dataTimeEnd = getISOStringDate(event[`date_to`]).slice(0, 16);
-  const dataTimeEnd24H = getFormatTime24H(event[`date_to`]);
+  const dataTimeStart = getISOStringDate(event[`dateFrom`]).slice(0, 16);
+  const dataTimeStart24H = getFormatTime24H(event[`dateFrom`]);
+  const dataTimeEnd = getISOStringDate(event[`dateTo`]).slice(0, 16);
+  const dataTimeEnd24H = getFormatTime24H(event[`dateTo`]);
   const selectedOffers = offers.slice(0, SHOWING_OFFERS_COUNT).map((offer) => createOfferItemTemplate(offer)).join(`\n`);
 
   return (
