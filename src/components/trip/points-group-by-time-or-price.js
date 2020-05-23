@@ -9,7 +9,7 @@ export default class EventsGroupByTimeOrPrice {
     this._events = events;
     this._destinations = destinations;
     this._offers = offers;
-    this._pointsObserver = pointsObserver;
+    this._editablePointPresenter = pointsObserver;
     this._element = this._getEventsGroupByTimeOrPrice();
 
     return this._element;
@@ -24,7 +24,7 @@ export default class EventsGroupByTimeOrPrice {
     render(dayItemComponent, eventsListComponent, InsertionPosition.BEFOREEND);
 
     for (let event of this._events) {
-      const pointPresenter = new PointPresenter(eventsListComponent, this._pointsObserver);
+      const pointPresenter = new PointPresenter(eventsListComponent, this._editablePointPresenter);
       pointPresenter.render(event, this._destinations, this._offers);
     }
 

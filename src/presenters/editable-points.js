@@ -1,4 +1,4 @@
-export default class PointsObserver {
+export default class EditablePointPresenter {
   constructor(eventsModel) {
     this._eventsModel = eventsModel;
     this._syncData = null;

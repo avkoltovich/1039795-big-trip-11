@@ -10,7 +10,7 @@ export default class EventsGroupByDays {
     this._events = events;
     this._destinations = destinations;
     this._offers = offers;
-    this._pointsObserver = pointsObserver;
+    this._editablePointPresenter = pointsObserver;
     this._element = this._getEventsGroupByDays();
 
     return this._element;
@@ -31,7 +31,7 @@ export default class EventsGroupByDays {
       const currentDateTime = getISOStringDate(event[`dateFrom`]).slice(0, 10);
 
       if (previousDateTime === currentDateTime) {
-        const pointPresenter = new PointPresenter(currentEventsListElement, this._pointsObserver);
+        const pointPresenter = new PointPresenter(currentEventsListElement, this._editablePointPresenter);
         pointPresenter.render(event, this._destinations, this._offers);
       } else {
         startDateTime = startDateTime ? startDateTime : currentDateTime;
@@ -42,7 +42,7 @@ export default class EventsGroupByDays {
 
         currentEventsListElement = new EventsListComponent();
         render(currentDayItemElement, currentEventsListElement, InsertionPosition.BEFOREEND);
-        const pointPresenter = new PointPresenter(currentEventsListElement, this._pointsObserver);
+        const pointPresenter = new PointPresenter(currentEventsListElement, this._editablePointPresenter);
         pointPresenter.render(event, this._destinations, this._offers);
 
         previousDateTime = currentDateTime;
