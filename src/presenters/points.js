@@ -10,6 +10,13 @@ export default class PointPresenter {
     this._observers.forEach((item) => item.setDefaultView());
   }
 
+  collapseAndUnsubscribeAll() {
+    if (this._observers.length > 0) {
+      this.collapse();
+      this._observers = [];
+    }
+  }
+
   getDestinations() {
     return this._destinations;
   }

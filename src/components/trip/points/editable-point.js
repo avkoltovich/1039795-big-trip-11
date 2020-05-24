@@ -161,6 +161,7 @@ export default class EditablePoint extends AbstractSmartComponent {
     super();
 
     this.applyFlatpickr = this.applyFlatpickr.bind(this);
+    this.removeFlatpickr = this.removeFlatpickr.bind(this);
     this.subscribeOnEvents = this.subscribeOnEvents.bind(this);
 
     this._allOffers = offers;

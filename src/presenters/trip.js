@@ -74,6 +74,7 @@ export default class TripPresenter {
 
   _onSortChange() {
     if (this._newPointPresenter) {
+      this._pointsPresenter.collapseAndUnsubscribeAll();
       this._newPointPresenter.remove();
     }
     const filteredAndSortedTripElement = this._getTripElement(this._eventsModel.getSortType());
