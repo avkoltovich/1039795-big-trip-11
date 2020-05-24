@@ -65,8 +65,12 @@ export default class PointPresenter {
   }
 
   setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
+    if (this._mode === Mode.EDIT) {
       this._replaceEditToEvent();
+    }
+
+    if (this._mode === Mode.ADDING) {
+      this._deleteAddNewEventForm();
     }
   }
 
@@ -78,8 +82,7 @@ export default class PointPresenter {
     this._editablePointComponent.subscribeOnEvents();
 
     this._editablePointComponent.setDeleteButtonClickHandler(() => {
-      this._editablePointComponent.removeFlatpickr();
-      this._editablePointComponent.getElement().remove();
+      this._deleteAddNewEventForm();
     });
 
     this._editablePointComponent.setSubmitHandler((evt) => {
@@ -88,9 +91,19 @@ export default class PointPresenter {
       const data = this._editablePointComponent.getData();
       this._editablePointComponent.getElement().remove();
       this._pointsPresenter.syncData(null, data);
+      this._pointsPresenter.unsubscribe(this);
     });
 
+    this._pointsPresenter.subscribe(this);
+
     document.addEventListener(`keydown`, this._onEscKeyDownNewEvent);
+  }
+
+  _deleteAddNewEventForm() {
+    this._editablePointComponent.removeFlatpickr();
+    this._editablePointComponent.getElement().remove();
+    this._pointsPresenter.unsubscribe(this);
+    document.removeEventListener(`keydown`, this._onEscKeyDownNewEvent);
   }
 
   _onEscKeyDown(evt) {
@@ -106,9 +119,7 @@ export default class PointPresenter {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      this._editablePointComponent.removeFlatpickr();
-      this._editablePointComponent.getElement().remove();
-      document.removeEventListener(`keydown`, this._onEscKeyDownNewEvent);
+      this._deleteAddNewEventForm();
     }
   }
 
