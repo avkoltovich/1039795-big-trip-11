@@ -85,6 +85,7 @@ const getDestinations = () => {
     });
   });
 
+  console.log(destinations)
   return destinations;
 };
 

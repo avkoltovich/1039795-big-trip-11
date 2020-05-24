@@ -115,7 +115,7 @@ const createEditablePointTemplate = (event, destinations, options = {}, mode) =>
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-${id}" type="number" min="0" name="event-price" value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -173,9 +173,11 @@ export default class EditablePoint extends AbstractSmartComponent {
     this._deleteButtonClickHandler = null;
     this._destination = event.destination;
     this._destinations = destinations;
+    this._destinationIndex = this._getDestinationIndex(this._city);
     this._event = event;
     this._id = event.id;
     this._isFavorite = event[`isFavorite`];
+    this._isValidCity = this._destinationIndex > 0;
     this._flatpickrEnd = null;
     this._flatpickrStart = null;
     this._mode = mode;
@@ -185,6 +187,8 @@ export default class EditablePoint extends AbstractSmartComponent {
 
     this._allOffersByType = this._allOffers[this._getOffersIndexByType(this._type)].offers;
     this._placeholder = eventTypesMap[this._type];
+
+    this._isValid();
   }
 
   applyFlatpickr() {
@@ -297,11 +301,19 @@ export default class EditablePoint extends AbstractSmartComponent {
       });
 
     element.querySelector(`.event__input--destination`)
-    .addEventListener(`change`, (evt) => {
+    .addEventListener(`input`, (evt) => {
       this._city = evt.target.value;
-      this._destination = this._destinations[this._getDestinationIndex(this._city)];
+      this._destinationIndex = this._getDestinationIndex(this._city);
+      if (this._destinationIndex > 0) {
+        this._destination = this._destinations[this._destinationIndex];
+        this._isValidCity = true;
 
-      this.rerender();
+        this.rerender();
+      } else {
+        this._isValidCity = false;
+
+        this._isValid();
+      }
     });
 
     element.querySelector(`[name="event-start-time"]`)
@@ -349,6 +361,11 @@ export default class EditablePoint extends AbstractSmartComponent {
     });
 
     return selectedOffers;
+  }
+
+  _isValid() {
+    this.getElement().querySelector(`.event__save-btn`)
+    .disabled = this._isValidCity ? `` : `disabled`;
   }
 
   _parseFormData() {
