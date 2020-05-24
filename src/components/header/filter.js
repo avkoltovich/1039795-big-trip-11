@@ -52,6 +52,12 @@ export default class Filter extends AbstractSmartComponent {
     this.setFilterTypeChangeHandler(this._setFilterTypeChangeHandler);
   }
 
+  rerender() {
+    super.rerender();
+
+    this._currentFilterType = filterTypeMap.DEFAULT;
+  }
+
   setFilterTypeChangeHandler(handler) {
     this._setFilterTypeChangeHandler = handler;
     this.getElement().addEventListener(`change`, (evt) => {
