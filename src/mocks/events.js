@@ -15,9 +15,6 @@ const STRINGS = [
 ];
 
 const eventTypes = transferTypes.concat(activityTypes);
-// const offers = Object.keys(offerTitlesMap).map((item) => {
-//   return (item = {name: item, isChecked: Math.random() > 0.5});
-// });
 
 const offers = Object.values(offerTitlesMap);
 
@@ -85,7 +82,6 @@ const getDestinations = () => {
     });
   });
 
-  console.log(destinations)
   return destinations;
 };
 
