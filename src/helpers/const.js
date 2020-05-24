@@ -22,6 +22,7 @@ const filterTypeMap = {
 const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
+  EDIT: `edit`
 };
 
 const offerTitlesMap = {

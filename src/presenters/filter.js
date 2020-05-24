@@ -6,13 +6,21 @@ export default class FilterPresenter {
     this._container = container;
     this._eventsModel = eventsModel;
     this._filterComponent = new FilterComponent();
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+  }
+
+  _filterTypeChangeHandler(filterType) {
+    this._eventsModel.setFilterType(filterType);
   }
 
   render() {
-    this._filterComponent.setFilterTypeChangeHandler((filterType) => {
-      this._eventsModel.setFilterType(filterType);
-    });
+    this._filterComponent.setFilterTypeChangeHandler(this._filterTypeChangeHandler);
 
     render(this._container, this._filterComponent, InsertionPosition.BEFOREEND);
+  }
+
+  reset() {
+    this._eventsModel.resetFilterType();
+    this._filterComponent.rerender();
   }
 }

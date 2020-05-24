@@ -3,17 +3,6 @@ import {Mode} from '../helpers/const.js';
 import CollapsedPointComponent from '../components/trip/points/collapsed-point.js';
 import EditablePointComponent from '../components/trip/points/editable-point.js';
 
-const emptyEvent = {
-  'basePrice': 0,
-  'dateFrom': new Date(),
-  'dateTo': new Date(),
-  'destination': null,
-  'id': null,
-  'isFavorite': false,
-  'offers': null,
-  'type': `taxi`
-};
-
 export default class PointPresenter {
   constructor(container, event, pointsPresenter) {
     this._container = container;
@@ -26,6 +15,15 @@ export default class PointPresenter {
     this._editablePointComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._onEscKeyDownNewEvent = this._onEscKeyDownNewEvent.bind(this);
+    this.setDefaultView = this.setDefaultView.bind(this);
+  }
+
+  remove() {
+    if (this._editablePointComponent) {
+      this._editablePointComponent.getElement().remove();
+      this._editablePointComponent = null;
+    }
   }
 
   render(mode) {
@@ -33,13 +31,14 @@ export default class PointPresenter {
 
     if (this._mode === Mode.DEFAULT) {
       this._collapsedPointComponent = new CollapsedPointComponent(this._event, this._offers);
-      this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers);
+      this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers, this._mode);
 
       this._collapsedPointComponent.setEditButtonClickHandler(() => {
         this._replaceEventToEdit();
       });
 
-      this._editablePointComponent.setSubmitHandler(() => {
+      this._editablePointComponent.setSubmitHandler((evt) => {
+        evt.preventDefault();
         this._replaceEditToEvent();
         const data = this._editablePointComponent.getData();
         this._pointsPresenter.syncData(this._event, Object.assign({}, this._event, data));
@@ -57,25 +56,41 @@ export default class PointPresenter {
         this._pointsPresenter.syncFavorite(this._event.id, !(this._event[`isFavorite`]));
       });
 
+      render(this._container, this._collapsedPointComponent, InsertionPosition.BEFOREEND);
     } else {
-      this._event = emptyEvent;
-      this._event[`id`] = this._pointsPresenter.getNewID();
-      this._event[`destination`] = this._destinations[0][`name`];
-      this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers);
+      this._addNewEvent();
 
-      this._editablePointComponent.setSubmitHandler(() => {
-        const data = this._editablePointComponent.getData();
-        this._pointsPresenter.syncData(null, data);
-      });
+      render(this._container, this._editablePointComponent, InsertionPosition.AFTEREND);
     }
-
-    render(this._container, this._collapsedPointComponent, InsertionPosition.BEFOREEND);
   }
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();
     }
+  }
+
+  _addNewEvent() {
+    this._event[`id`] = this._pointsPresenter.getNewID();
+    this._event[`destination`] = this._destinations[0];
+    this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers, this._mode);
+    this._editablePointComponent.applyFlatpickr();
+    this._editablePointComponent.subscribeOnEvents();
+
+    this._editablePointComponent.setDeleteButtonClickHandler(() => {
+      this._editablePointComponent.removeFlatpickr();
+      this._editablePointComponent.getElement().remove();
+    });
+
+    this._editablePointComponent.setSubmitHandler((evt) => {
+      evt.preventDefault();
+      this._editablePointComponent.removeFlatpickr();
+      const data = this._editablePointComponent.getData();
+      this._editablePointComponent.getElement().remove();
+      this._pointsPresenter.syncData(null, data);
+    });
+
+    document.addEventListener(`keydown`, this._onEscKeyDownNewEvent);
   }
 
   _onEscKeyDown(evt) {
@@ -87,8 +102,19 @@ export default class PointPresenter {
     }
   }
 
+  _onEscKeyDownNewEvent(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      this._editablePointComponent.removeFlatpickr();
+      this._editablePointComponent.getElement().remove();
+      document.removeEventListener(`keydown`, this._onEscKeyDownNewEvent);
+    }
+  }
+
   _replaceEditToEvent() {
     replace(this._collapsedPointComponent, this._editablePointComponent);
+    this._editablePointComponent.removeFlatpickr();
     this._mode = Mode.DEFAULT;
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._pointsPresenter.unsubscribe(this);
@@ -100,5 +126,7 @@ export default class PointPresenter {
     this._mode = Mode.EDIT;
     document.addEventListener(`keydown`, this._onEscKeyDown);
     this._pointsPresenter.subscribe(this);
+    this._editablePointComponent.applyFlatpickr();
+    this._editablePointComponent.subscribeOnEvents();
   }
 }

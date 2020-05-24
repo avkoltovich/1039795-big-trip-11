@@ -17,6 +17,7 @@ const infoContainer = document.querySelector(`.trip-main`);
 const filterContainer = infoContainer.querySelector(`.trip-main__trip-controls`);
 const menuContainer = filterContainer.querySelector(`h2`);
 const tripEventsSection = document.querySelector(`.trip-events`);
+const newEventButton = infoContainer.querySelector(`.trip-main__event-add-btn`);
 const randomEvents = getRandomEvents(POINTS_COUNT);
 const randomDestinations = getDestinations();
 const randomOffers = getOffersByType();
@@ -30,3 +31,11 @@ renderHeader(infoContainer, menuContainer);
 const filterPresenter = new FilterPresenter(filterContainer, eventsModel);
 filterPresenter.render();
 tripPresenter.render();
+
+const onNewEventClick = () => {
+  // newEventButton.disabled = `disabled`;
+  filterPresenter.reset();
+  tripPresenter.newEvent();
+};
+
+newEventButton.addEventListener(`click`, onNewEventClick);

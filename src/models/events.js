@@ -96,6 +96,12 @@ export default class Events {
     return true;
   }
 
+  resetFilterType() {
+    this._activeFilterType = filterTypeMap.DEFAULT;
+    this._resetSortType();
+    this._callHandlers(this._filterHandlers);
+  }
+
   setSortType(sortType) {
     this._activeSortType = sortType;
     this._callHandlers(this._sortHandlers);

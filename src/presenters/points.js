@@ -27,8 +27,10 @@ export default class PointPresenter {
   }
 
   syncData(oldData, newData) {
-    if (newData) {
+    if (oldData && newData) {
       this._eventsModel.updateEvent(oldData.id, newData);
+    } else if (!oldData) {
+      this._eventsModel.addEvent(newData);
     } else {
       this._eventsModel.removeEvent(oldData.id);
     }

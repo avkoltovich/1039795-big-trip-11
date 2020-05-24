@@ -1,6 +1,7 @@
 import {transferTypes, activityTypes, eventTypesMap, offerTitlesMap} from '../../../helpers/const.js';
 import {createOfferCheckboxTemplate} from './offer-template.js';
 import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
+import {Mode} from '../../../helpers/const.js';
 import AbstractSmartComponent from '../../abstract-smart-component.js';
 import flatpickr from 'flatpickr';
 
@@ -38,23 +39,34 @@ const createTripPhotoTemplate = (src) => {
   );
 };
 
-const createEditablePointTemplate = (event, destinations, options = {}) => {
+const createRollupButton = () => {
+  return (
+    `<button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`
+  );
+};
+
+const createEditablePointTemplate = (event, destinations, options = {}, mode) => {
   const CITIES = destinations.map((item) => item.name);
-  const price = event[`basePrice`];
-  const {placeholder, type, destination, offers, selectedOffers, id, isFavorite} = options;
-  const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
+  const {placeholder, type, destination, offers, selectedOffers, id, isFavorite, dateFrom, dateTo, basePrice} = options;
+
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
-  const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
-  const eventStartTime = `${getStringDate(event[`dateFrom`])} ${getFormatTime24H(event[`dateFrom`])}`;
-  const eventEndTime = `${getStringDate(event[`dateTo`])} ${getFormatTime24H(event[`dateTo`])}`;
-  const favorite = `${isFavorite ? `checked` : ``}`;
-  const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
   const city = destination.name;
   const cityDescription = destination.description;
+  const dateFromValue = `${getStringDate(dateFrom)} ${getFormatTime24H(dateFrom)}`;
+  const dateToValue = `${getStringDate(dateTo)} ${getFormatTime24H(dateTo)}`;
+  const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
+  const favorite = `${isFavorite ? `checked` : ``}`;
+  const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
   const photosTape = destination.pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
+  const resetButtonName = `${mode === Mode.DEFAULT ? `Delete` : `Cancel`}`;
+  const rollupButton = `${mode === Mode.DEFAULT ? createRollupButton() : ``}`;
+  const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
+  const tripEventsItem = `${mode === Mode.DEFAULT ? `` : `trip-events__item`}`;
 
   return (
-    `<form class="event  event--edit" action="#" method="post">
+    `<form class="${tripEventsItem} event event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
@@ -90,12 +102,12 @@ const createEditablePointTemplate = (event, destinations, options = {}) => {
             <label class="visually-hidden" for="event-start-time-${id}">
               From
             </label>
-            <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${eventStartTime}">
+            <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dateFromValue}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-${id}">
               To
             </label>
-            <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${eventEndTime}">
+            <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dateToValue}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -103,11 +115,11 @@ const createEditablePointTemplate = (event, destinations, options = {}) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset">${resetButtonName}</button>
 
           <input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${favorite}>
           <label class="event__favorite-btn" for="event-favorite-${id}">
@@ -117,9 +129,7 @@ const createEditablePointTemplate = (event, destinations, options = {}) => {
             </svg>
           </label>
 
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
+          ${rollupButton}
         </header>
 
         <section class="event__details">
@@ -147,64 +157,90 @@ const createEditablePointTemplate = (event, destinations, options = {}) => {
 };
 
 export default class EditablePoint extends AbstractSmartComponent {
-  constructor(event, destinations, offers) {
+  constructor(event, destinations, offers, mode) {
     super();
 
+    this.applyFlatpickr = this.applyFlatpickr.bind(this);
+    this.subscribeOnEvents = this.subscribeOnEvents.bind(this);
+
+    this._allOffers = offers;
+    this._basePrice = event[`basePrice`];
+    this._city = event.destination.name;
+    this._collapseHandler = null;
+    this._dateFrom = event[`dateFrom`];
+    this._dateTo = event[`dateTo`];
+    this._deleteButtonClickHandler = null;
+    this._destination = event.destination;
+    this._destinations = destinations;
     this._event = event;
     this._id = event.id;
-    this._destinations = destinations;
-    this._type = event.type;
-    this._allOffers = offers;
-    this._allOffersByType = this._allOffers[this._getOffersIndexByType(this._type)].offers;
-    this._selectedOffers = event.offers;
-    this._destination = event.destination;
-    this._placeholder = eventTypesMap[this._type];
-    this._city = event.destination.name;
     this._isFavorite = event[`isFavorite`];
-    this._submitHandler = null;
-    this._collapseHandler = null;
-    this._deleteButtonClickHandler = null;
-
-    this._flatpickrStart = null;
     this._flatpickrEnd = null;
-    this._applyFlatpickr();
+    this._flatpickrStart = null;
+    this._mode = mode;
+    this._selectedOffers = event.offers;
+    this._submitHandler = null;
+    this._type = event.type;
 
-    this._subscribeOnEvents();
+    this._allOffersByType = this._allOffers[this._getOffersIndexByType(this._type)].offers;
+    this._placeholder = eventTypesMap[this._type];
   }
 
-  recoveryListeners() {
-    this.setSubmitHandler(this._submitHandler);
-    this.setCollapseHandler(this._collapseHandler);
-    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
-    this._subscribeOnEvents();
-  }
+  applyFlatpickr() {
+    const dateStartInput = this.getElement().querySelector(`[name="event-start-time"]`);
+    this._flatpickrStart = flatpickr(dateStartInput, {
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+      altInput: true,
+      [`time_24hr`]: true,
+      defaultDate: this._dateFrom,
+    });
 
-  rerender() {
-    super.rerender();
-
-    this._applyFlatpickr();
-  }
-
-  getTemplate() {
-    return createEditablePointTemplate(this._event, this._destinations, {
-      id: this._id,
-      type: this._type,
-      destination: this._destination,
-      placeholder: this._placeholder,
-      offers: this._allOffersByType,
-      selectedOffers: this._selectedOffers,
-      isFavorite: this._isFavorite
+    const dateEndInput = this.getElement().querySelector(`[name="event-end-time"]`);
+    this._flatpickrEnd = flatpickr(dateEndInput, {
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+      altInput: true,
+      [`time_24hr`]: true,
+      defaultDate: this._dateTo,
     });
   }
 
   getData() {
-    const form = this.getElement().querySelector(`.event--edit`);
-    const formData = new FormData(form);
+    return this._parseFormData();
+  }
 
-    return this._parseFormData(formData);
+  getTemplate() {
+    return createEditablePointTemplate(this._event, this._destinations, {
+      basePrice: this._basePrice,
+      dateFrom: this._dateFrom,
+      dateTo: this._dateTo,
+      destination: this._destination,
+      id: this._id,
+      isFavorite: this._isFavorite,
+      offers: this._allOffersByType,
+      placeholder: this._placeholder,
+      selectedOffers: this._selectedOffers,
+      type: this._type
+    }, this._mode);
+  }
+
+  recoveryListeners() {
+    if (this._mode === Mode.DEFAULT) {
+      this.setCollapseHandler(this._collapseHandler);
+    }
+
+    this.setSubmitHandler(this._submitHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.subscribeOnEvents();
   }
 
   removeElement() {
+    this.removeFlatpickr();
+    super.removeElement();
+  }
+
+  removeFlatpickr() {
     if (this._flatpickrStart) {
       this._flatpickrStart.destroy();
       this._flatpickrStart = null;
@@ -214,14 +250,12 @@ export default class EditablePoint extends AbstractSmartComponent {
       this._flatpickrEnd.destroy();
       this._flatpickrEnd = null;
     }
-
-    super.removeElement();
   }
 
-  setSubmitHandler(handler) {
-    this.getElement().addEventListener(`submit`, handler);
+  rerender() {
+    super.rerender();
 
-    this._submitHandler = handler;
+    this.applyFlatpickr();
   }
 
   setCollapseHandler(handler) {
@@ -240,30 +274,16 @@ export default class EditablePoint extends AbstractSmartComponent {
 
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`click`, handler);
+      .addEventListener(`change`, handler);
   }
 
-  _applyFlatpickr() {
-    const dateStartInput = this.getElement().querySelector(`[name="event-start-time"]`);
-    this._flatpickrStart = flatpickr(dateStartInput, {
-      enableTime: true,
-      altFormat: `d/m/y H:i`,
-      altInput: true,
-      [`time_24hr`]: true,
-      defaultDate: this._event[`dateFrom`],
-    });
+  setSubmitHandler(handler) {
+    this.getElement().addEventListener(`submit`, handler);
 
-    const dateEndInput = this.getElement().querySelector(`[name="event-end-time"]`);
-    this._flatpickrEnd = flatpickr(dateEndInput, {
-      enableTime: true,
-      altFormat: `d/m/y H:i`,
-      altInput: true,
-      [`time_24hr`]: true,
-      defaultDate: this._event[`dateTo`],
-    });
+    this._submitHandler = handler;
   }
 
-  _subscribeOnEvents() {
+  subscribeOnEvents() {
     const element = this.getElement();
 
     element.querySelector(`.event__type-list`)
@@ -282,18 +302,42 @@ export default class EditablePoint extends AbstractSmartComponent {
 
       this.rerender();
     });
+
+    element.querySelector(`[name="event-start-time"]`)
+    .addEventListener(`change`, (evt) => {
+      this._dateFrom = new Date(evt.target.value);
+    });
+
+    element.querySelector(`[name="event-end-time"]`)
+    .addEventListener(`change`, (evt) => {
+      this._dateTo = new Date(evt.target.value);
+    });
+
+    element.querySelector(`.event__input--price`)
+    .addEventListener(`change`, (evt) => {
+      this._basePrice = evt.target.value;
+    });
+
+    element.querySelector(`.event__favorite-checkbox`)
+    .addEventListener(`change`, () => {
+      this._isFavorite = !this._isFavorite;
+    });
   }
 
   _getDestinationIndex(city) {
     return this._destinations.findIndex((item) => item.name === city);
   }
 
-  _getOffersIndexByType(type) {
-    return this._allOffers.findIndex((item) => item.type === type);
+  _getFavoriteStatus() {
+    return (this.getElement().querySelector(`.event__favorite-checkbox:checked`)) ? true : false;
   }
 
   _getOffersIndexByTitle(title) {
     return this._allOffersByType.findIndex((item) => item.title === title);
+  }
+
+  _getOffersIndexByType(type) {
+    return this._allOffers.findIndex((item) => item.type === type);
   }
 
   _getSelectedOffers() {
@@ -306,21 +350,14 @@ export default class EditablePoint extends AbstractSmartComponent {
     return selectedOffers;
   }
 
-  _getFavoriteStatus() {
-    return (this.getElement().querySelector(`.event__favorite-checkbox:checked`)) ? true : false;
-  }
-
-  _parseFormData(formData) {
-    const startDate = formData.get(`event-start-time`);
-    const endDate = formData.get(`event-end-time`);
-    const eventPrice = formData.get(`event-price`);
+  _parseFormData() {
     this._selectedOffers = this._getSelectedOffers();
     this._isFavorite = this._getFavoriteStatus();
 
     return {
-      'basePrice': eventPrice,
-      'dateFrom': new Date(startDate),
-      'dateTo': new Date(endDate),
+      'basePrice': this._basePrice,
+      'dateFrom': this._dateFrom,
+      'dateTo': this._dateTo,
       'destination': this._destination,
       'id': this._id,
       'isFavorite': this._isFavorite,

@@ -1,27 +1,47 @@
-import {sortTypeMap} from '../helpers/const.js';
+import {Mode, sortTypeMap} from '../helpers/const.js';
 import {render, replace, InsertionPosition} from '../helpers/render.js';
 import SortingComponent from '../components/sorting.js';
 import BlankTripComponent from '../components/trip/blank-trip.js';
 import EventsGroupByDaysComponent from '../components/trip/points-group-by-days.js';
 import EventsGroupByTimeOrPriceComponent from '../components/trip/points-group-by-time-or-price.js';
-import PointPresenter from './points.js';
+import PointsPresenter from './points.js';
+import PointPresenter from './point.js';
+
+const emptyEvent = {
+  'basePrice': 0,
+  'dateFrom': new Date(),
+  'dateTo': new Date(),
+  'destination': null,
+  'id': null,
+  'isFavorite': false,
+  'offers': null,
+  'type': `taxi`
+};
 
 export default class TripPresenter {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
     this._tripElement = null;
+    this._emptyEvent = emptyEvent;
     this._blankTripComponent = new BlankTripComponent();
     this._sortingComponent = new SortingComponent();
-    this._pointsPresenter = new PointPresenter(this._eventsModel);
+    this._pointsPresenter = new PointsPresenter(this._eventsModel);
+    this._newPointPresenter = null;
 
     this._onSortChange = this._onSortChange.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
+    this.newEvent = this.newEvent.bind(this);
 
     this._eventsModel.setSortHandlers(this._onSortChange);
     this._eventsModel.setDataChangeHandler(this._onDataChange);
     this._eventsModel.setFilterHandlers(this._onFilterChange);
+  }
+
+  newEvent() {
+    this._newPointPresenter = new PointPresenter(this._sortingComponent, this._emptyEvent, this._pointsPresenter);
+    this._newPointPresenter.render(Mode.ADDING);
   }
 
   render() {
@@ -53,6 +73,9 @@ export default class TripPresenter {
   }
 
   _onSortChange() {
+    if (this._newPointPresenter) {
+      this._newPointPresenter.remove();
+    }
     const filteredAndSortedTripElement = this._getTripElement(this._eventsModel.getSortType());
     replace(filteredAndSortedTripElement, this._tripElement);
     this._tripElement = filteredAndSortedTripElement;
