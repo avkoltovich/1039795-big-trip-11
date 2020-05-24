@@ -9,10 +9,6 @@ export default class FilterPresenter {
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
-  _filterTypeChangeHandler(filterType) {
-    this._eventsModel.setFilterType(filterType);
-  }
-
   render() {
     this._filterComponent.setFilterTypeChangeHandler(this._filterTypeChangeHandler);
 
@@ -22,5 +18,9 @@ export default class FilterPresenter {
   reset() {
     this._eventsModel.resetFilterType();
     this._filterComponent.rerender();
+  }
+
+  _filterTypeChangeHandler(filterType) {
+    this._eventsModel.setFilterType(filterType);
   }
 }

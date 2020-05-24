@@ -6,13 +6,14 @@ import EditablePointComponent from '../components/trip/points/editable-point.js'
 export default class PointPresenter {
   constructor(container, event, pointsPresenter) {
     this._container = container;
-    this._event = event;
-    this._pointsPresenter = pointsPresenter;
-    this._destinations = this._pointsPresenter.getDestinations();
-    this._offers = this._pointsPresenter.getOffers();
-    this._mode = Mode.DEFAULT;
     this._collapsedPointComponent = null;
     this._editablePointComponent = null;
+    this._event = event;
+    this._mode = Mode.DEFAULT;
+    this._pointsPresenter = pointsPresenter;
+
+    this._destinations = this._pointsPresenter.getDestinations();
+    this._offers = this._pointsPresenter.getOffers();
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onEscKeyDownNewEvent = this._onEscKeyDownNewEvent.bind(this);
@@ -103,6 +104,7 @@ export default class PointPresenter {
     this._editablePointComponent.removeFlatpickr();
     this._editablePointComponent.getElement().remove();
     this._pointsPresenter.unsubscribe(this);
+    this._pointsPresenter.callEnableNewEventButtonHandler();
     document.removeEventListener(`keydown`, this._onEscKeyDownNewEvent);
   }
 

@@ -2,17 +2,23 @@ import {filterTypeMap, sortTypeMap} from '../helpers/const.js';
 
 export default class Events {
   constructor() {
-    this._events = [];
-    this._ids = [];
-    this._destinations = [];
-    this._offers = [];
-    this._filteredAndSortedEvents = [];
-    this._activeSortType = sortTypeMap.DEFAULT;
     this._activeFilterType = filterTypeMap.DEFAULT;
+    this._activeSortType = sortTypeMap.DEFAULT;
+    this._destinations = [];
+    this._events = [];
+    this._filteredAndSortedEvents = [];
+    this._ids = [];
+    this._offers = [];
 
     this._dataChangeHandlers = [];
-    this._sortHandlers = [];
     this._filterHandlers = [];
+    this._sortHandlers = [];
+  }
+
+  addEvent(event) {
+    this._events.push(event);
+
+    this._callHandlers(this._dataChangeHandlers);
   }
 
   getDestinations() {
@@ -24,14 +30,47 @@ export default class Events {
     return this._filteredAndSortedEvents;
   }
 
-  getOffers() {
-    return this._offers;
-  }
-
   getNewID() {
     const newID = ++this._ids[this._ids.length - 1];
     this._ids.push(newID);
     return newID;
+  }
+
+  getOffers() {
+    return this._offers;
+  }
+
+  getSortType() {
+    return this._activeSortType;
+  }
+
+  removeEvent(id) {
+    const index = this._events.findIndex((item) => item.id === id);
+
+    if (index === -1) {
+      return false;
+    }
+
+    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
+
+    this._callHandlers(this._dataChangeHandlers);
+
+    return true;
+  }
+
+  resetFilterType() {
+    this._activeFilterType = filterTypeMap.DEFAULT;
+    this._resetSortType();
+    this._callHandlers(this._filterHandlers);
+  }
+
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
+  }
+
+  setDestinations(destinations) {
+    this._destinations = Array.from(destinations);
+    this._callHandlers(this._dataChangeHandlers);
   }
 
   setEvents(events) {
@@ -41,9 +80,14 @@ export default class Events {
     this._callHandlers(this._dataChangeHandlers);
   }
 
-  setDestinations(destinations) {
-    this._destinations = Array.from(destinations);
-    this._callHandlers(this._dataChangeHandlers);
+  setFilterHandlers(handler) {
+    this._filterHandlers.push(handler);
+  }
+
+  setFilterType(filterType) {
+    this._resetSortType();
+    this._activeFilterType = filterType;
+    this._callHandlers(this._filterHandlers);
   }
 
   setOffers(offers) {
@@ -51,10 +95,13 @@ export default class Events {
     this._callHandlers(this._dataChangeHandlers);
   }
 
-  addEvent(event) {
-    this._events.push(event);
+  setSortHandlers(handler) {
+    this._sortHandlers.push(handler);
+  }
 
-    this._callHandlers(this._dataChangeHandlers);
+  setSortType(sortType) {
+    this._activeSortType = sortType;
+    this._callHandlers(this._sortHandlers);
   }
 
   updateEvent(id, event) {
@@ -82,73 +129,8 @@ export default class Events {
     return true;
   }
 
-  removeEvent(id) {
-    const index = this._events.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
-
-    this._callHandlers(this._dataChangeHandlers);
-
-    return true;
-  }
-
-  resetFilterType() {
-    this._activeFilterType = filterTypeMap.DEFAULT;
-    this._resetSortType();
-    this._callHandlers(this._filterHandlers);
-  }
-
-  setSortType(sortType) {
-    this._activeSortType = sortType;
-    this._callHandlers(this._sortHandlers);
-  }
-
-  getSortType() {
-    return this._activeSortType;
-  }
-
-  _resetSortType() {
-    this._activeSortType = sortTypeMap.DEFAULT;
-  }
-
-  setDataChangeHandler(handler) {
-    this._dataChangeHandlers.push(handler);
-  }
-
-  setSortHandlers(handler) {
-    this._sortHandlers.push(handler);
-  }
-
-  setFilterHandlers(handler) {
-    this._filterHandlers.push(handler);
-  }
-
-  _getSortedEvents(events) {
-    let sortedEvents = events.slice();
-
-    switch (this._activeSortType) {
-      default:
-        sortedEvents.sort((a, b) => a[`dateFrom`] - b[`dateFrom`]);
-        break;
-      case sortTypeMap.TIME:
-        sortedEvents.sort((a, b) => (b[`dateTo`] - b[`dateFrom`]) - (a[`dateTo`] - a[`dateFrom`]));
-        break;
-      case sortTypeMap.PRICE:
-        sortedEvents.sort((a, b) => b[`basePrice`] - a[`basePrice`]);
-        break;
-    }
-
-    return sortedEvents;
-  }
-
-  setFilterType(filterType) {
-    this._resetSortType();
-    this._activeFilterType = filterType;
-    this._callHandlers(this._filterHandlers);
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
   }
 
   _getFilteredEvents(events) {
@@ -171,7 +153,25 @@ export default class Events {
     return filteredEvents;
   }
 
-  _callHandlers(handlers) {
-    handlers.forEach((handler) => handler());
+  _getSortedEvents(events) {
+    let sortedEvents = events.slice();
+
+    switch (this._activeSortType) {
+      default:
+        sortedEvents.sort((a, b) => a[`dateFrom`] - b[`dateFrom`]);
+        break;
+      case sortTypeMap.TIME:
+        sortedEvents.sort((a, b) => (b[`dateTo`] - b[`dateFrom`]) - (a[`dateTo`] - a[`dateFrom`]));
+        break;
+      case sortTypeMap.PRICE:
+        sortedEvents.sort((a, b) => b[`basePrice`] - a[`basePrice`]);
+        break;
+    }
+
+    return sortedEvents;
+  }
+
+  _resetSortType() {
+    this._activeSortType = sortTypeMap.DEFAULT;
   }
 }

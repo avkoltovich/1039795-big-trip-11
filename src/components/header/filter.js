@@ -40,12 +40,12 @@ export default class Filter extends AbstractSmartComponent {
     this._setFilterTypeChangeHandler = null;
   }
 
-  getTemplate() {
-    return createFilterTemplate();
-  }
-
   getFilterType() {
     return this._currentSortType;
+  }
+
+  getTemplate() {
+    return createFilterTemplate();
   }
 
   recoveryListeners() {

@@ -20,25 +20,27 @@ const emptyEvent = {
 
 export default class TripPresenter {
   constructor(container, eventsModel) {
+    this._blankTripComponent = new BlankTripComponent();
     this._container = container;
     this._eventsModel = eventsModel;
-    this._tripElement = null;
     this._emptyEvent = emptyEvent;
-    this._blankTripComponent = new BlankTripComponent();
-    this._sortingComponent = new SortingComponent();
-    this._pointsPresenter = new PointsPresenter(this._eventsModel);
+    this._enableNewEventButtonHandler = null;
     this._newPointPresenter = null;
+    this._pointsPresenter = new PointsPresenter(this._eventsModel);
+    this._sortingComponent = new SortingComponent();
+    this._tripElement = null;
 
-    this._onSortChange = this._onSortChange.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
+    this._onSortChange = this._onSortChange.bind(this);
     this.newEvent = this.newEvent.bind(this);
 
-    this._eventsModel.setSortHandlers(this._onSortChange);
     this._eventsModel.setDataChangeHandler(this._onDataChange);
     this._eventsModel.setFilterHandlers(this._onFilterChange);
+    this._eventsModel.setSortHandlers(this._onSortChange);
 
-    this._newEventButtonHandler = null;
+    this._pointsPresenter.setEnableNewEventButtonHandler(this._enableNewEventButtonHandler);
+
   }
 
   newEvent() {
@@ -64,8 +66,9 @@ export default class TripPresenter {
     render(this._container, this._tripElement, InsertionPosition.BEFOREEND);
   }
 
-  setSortChangeHandler(handler) {
-    this._newEventButtonHandler = handler;
+  setEnableNewEventButtonHandler(handler) {
+    this._enableNewEventButtonHandler = handler;
+    this._pointsPresenter.setEnableNewEventButtonHandler(this._enableNewEventButtonHandler);
   }
 
   _getTripElement(sortType) {
@@ -76,20 +79,6 @@ export default class TripPresenter {
     }
 
     return new EventsGroupByTimeOrPriceComponent(sortedEvents, this._pointsPresenter);
-  }
-
-  _onSortChange() {
-    if (this._newEventButtonHandler) {
-      this._newEventButtonHandler();
-    }
-
-    if (this._newPointPresenter) {
-      this._pointsPresenter.collapseAndUnsubscribeAll();
-      this._newPointPresenter.remove();
-    }
-    const filteredAndSortedTripElement = this._getTripElement(this._eventsModel.getSortType());
-    replace(filteredAndSortedTripElement, this._tripElement);
-    this._tripElement = filteredAndSortedTripElement;
   }
 
   _onDataChange() {
@@ -106,5 +95,19 @@ export default class TripPresenter {
     });
 
     this._onSortChange();
+  }
+
+  _onSortChange() {
+    if (this._enableNewEventButtonHandler) {
+      this._enableNewEventButtonHandler();
+    }
+
+    if (this._newPointPresenter) {
+      this._pointsPresenter.collapseAndUnsubscribeAll();
+      this._newPointPresenter.remove();
+    }
+    const filteredAndSortedTripElement = this._getTripElement(this._eventsModel.getSortType());
+    replace(filteredAndSortedTripElement, this._tripElement);
+    this._tripElement = filteredAndSortedTripElement;
   }
 }

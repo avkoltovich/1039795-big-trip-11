@@ -27,14 +27,14 @@ eventsModel.setDestinations(randomDestinations);
 eventsModel.setOffers(randomOffers);
 const tripPresenter = new TripPresenter(tripEventsSection, eventsModel);
 
-const onSortChange = () => {
+const enableNewEventButton = () => {
   newEventButton.disabled = ``;
 };
 
 renderHeader(infoContainer, menuContainer);
 const filterPresenter = new FilterPresenter(filterContainer, eventsModel);
 filterPresenter.render();
-tripPresenter.setSortChangeHandler(onSortChange);
+tripPresenter.setEnableNewEventButtonHandler(enableNewEventButton);
 tripPresenter.render();
 
 const onNewEventButtonClick = () => {
