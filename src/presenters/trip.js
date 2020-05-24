@@ -37,6 +37,8 @@ export default class TripPresenter {
     this._eventsModel.setSortHandlers(this._onSortChange);
     this._eventsModel.setDataChangeHandler(this._onDataChange);
     this._eventsModel.setFilterHandlers(this._onFilterChange);
+
+    this._newEventButtonHandler = null;
   }
 
   newEvent() {
@@ -62,6 +64,10 @@ export default class TripPresenter {
     render(this._container, this._tripElement, InsertionPosition.BEFOREEND);
   }
 
+  setSortChangeHandler(handler) {
+    this._newEventButtonHandler = handler;
+  }
+
   _getTripElement(sortType) {
     const sortedEvents = this._eventsModel.getEvents();
 
@@ -73,6 +79,10 @@ export default class TripPresenter {
   }
 
   _onSortChange() {
+    if (this._newEventButtonHandler) {
+      this._newEventButtonHandler();
+    }
+
     if (this._newPointPresenter) {
       this._pointsPresenter.collapseAndUnsubscribeAll();
       this._newPointPresenter.remove();
