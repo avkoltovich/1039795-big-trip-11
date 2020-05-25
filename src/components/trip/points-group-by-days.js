@@ -34,7 +34,7 @@ export default class PointsGroupByDays {
         const pointItem = new PointItemComponent();
         render(currentPointsListElement, pointItem, InsertionPosition.BEFOREEND);
         const pointPresenter = new PointPresenter(pointItem, event, this._pointsPresenter);
-        pointPresenter.render(Mode.DEFAULT);
+        pointPresenter.render(Mode.VIEW);
       } else {
         startDateTime = startDateTime ? startDateTime : currentDateTime;
         daysPassed = daysPassed ? this._getPassedDays(startDateTime, currentDateTime) : 1;
@@ -47,7 +47,7 @@ export default class PointsGroupByDays {
         const pointItem = new PointItemComponent();
         render(currentPointsListElement, pointItem, InsertionPosition.BEFOREEND);
         const pointPresenter = new PointPresenter(pointItem, event, this._pointsPresenter);
-        pointPresenter.render(Mode.DEFAULT);
+        pointPresenter.render(Mode.VIEW);
 
         previousDateTime = currentDateTime;
       }

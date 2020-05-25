@@ -27,7 +27,7 @@ export default class PointsGroupByTimeOrPrice {
       const pointItem = new PointItemComponent();
       render(pointsListComponent, pointItem, InsertionPosition.BEFOREEND);
       const pointPresenter = new PointPresenter(pointItem, event, this._pointsPresenter);
-      pointPresenter.render(Mode.DEFAULT);
+      pointPresenter.render(Mode.VIEW);
     }
 
     return daysListComponent;

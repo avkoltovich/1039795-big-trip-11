@@ -20,8 +20,8 @@ const filterTypeMap = {
 };
 
 const Mode = {
-  ADDING: `adding`,
-  DEFAULT: `default`,
+  CREATE: `create`,
+  VIEW: `view`,
   EDIT: `edit`
 };
 

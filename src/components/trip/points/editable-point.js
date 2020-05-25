@@ -60,10 +60,10 @@ const createEditablePointTemplate = (event, destinations, options = {}, mode) =>
   const favorite = `${isFavorite ? `checked` : ``}`;
   const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
   const photosTape = destination.pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
-  const resetButtonName = `${mode === Mode.DEFAULT ? `Delete` : `Cancel`}`;
-  const rollupButton = `${mode === Mode.DEFAULT ? createRollupButton() : ``}`;
+  const resetButtonName = `${mode === Mode.VIEW ? `Delete` : `Cancel`}`;
+  const rollupButton = `${mode === Mode.VIEW ? createRollupButton() : ``}`;
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
-  const tripEventsItem = `${mode === Mode.DEFAULT ? `` : `trip-events__item`}`;
+  const tripEventsItem = `${mode === Mode.VIEW ? `` : `trip-events__item`}`;
 
   return (
     `<form class="${tripEventsItem} event event--edit" action="#" method="post">
@@ -231,7 +231,7 @@ export default class EditablePoint extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
-    if (this._mode === Mode.DEFAULT) {
+    if (this._mode === Mode.VIEW) {
       this.setCollapseHandler(this._collapseHandler);
     }
 

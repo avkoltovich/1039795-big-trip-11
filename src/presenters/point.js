@@ -9,7 +9,7 @@ export default class PointPresenter {
     this._collapsedPointComponent = null;
     this._editablePointComponent = null;
     this._event = event;
-    this._mode = Mode.DEFAULT;
+    this._mode = Mode.VIEW;
     this._pointsPresenter = pointsPresenter;
 
     this._destinations = this._pointsPresenter.getDestinations();
@@ -30,7 +30,7 @@ export default class PointPresenter {
   render(mode) {
     this._mode = mode;
 
-    if (this._mode === Mode.DEFAULT) {
+    if (this._mode === Mode.VIEW) {
       this._collapsedPointComponent = new CollapsedPointComponent(this._event, this._offers);
       this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers, this._mode);
 
@@ -70,7 +70,7 @@ export default class PointPresenter {
       this._replaceEditToEvent();
     }
 
-    if (this._mode === Mode.ADDING) {
+    if (this._mode === Mode.CREATE) {
       this._deleteAddNewEventForm();
     }
   }
@@ -128,7 +128,7 @@ export default class PointPresenter {
   _replaceEditToEvent() {
     replace(this._collapsedPointComponent, this._editablePointComponent);
     this._editablePointComponent.removeFlatpickr();
-    this._mode = Mode.DEFAULT;
+    this._mode = Mode.VIEW;
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._pointsPresenter.unsubscribe(this);
   }

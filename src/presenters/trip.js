@@ -45,7 +45,7 @@ export default class TripPresenter {
 
   newEvent() {
     this._newPointPresenter = new PointPresenter(this._sortingComponent, this._emptyEvent, this._pointsPresenter);
-    this._newPointPresenter.render(Mode.ADDING);
+    this._newPointPresenter.render(Mode.CREATE);
   }
 
   render() {
