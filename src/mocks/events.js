@@ -46,7 +46,7 @@ const getRandomEndDate = (startDate) => {
 };
 
 const getRandomDestination = (strings) => {
-  let destinations = [];
+  const destinations = [];
   const length = getRandomIntegerNumber(1, 5);
   for (let i = 0; i < length; i++) {
     destinations.push(getRandomArrayItem(strings));
@@ -61,7 +61,7 @@ const getRandomPhoto = () => {
 };
 
 const getRandomPictures = () => {
-  let pictures = [];
+  const pictures = [];
   const length = getRandomIntegerNumber(1, 5);
   for (let i = 0; i < length; i++) {
     pictures.push({
@@ -73,7 +73,7 @@ const getRandomPictures = () => {
 };
 
 const getDestinations = () => {
-  let destinations = [];
+  const destinations = [];
   CITIES.forEach((item) => {
     destinations.push({
       'description': getRandomDestination(STRINGS),
@@ -93,7 +93,7 @@ const getOffer = (index) => {
 };
 
 const getOffers = () => {
-  let randomOffers = [];
+  const randomOffers = [];
 
   const count = getRandomIntegerNumber(1, 5);
 
@@ -105,7 +105,7 @@ const getOffers = () => {
 };
 
 const getOffersByType = () => {
-  let offersByType = [];
+  const offersByType = [];
 
   for (const iterator of eventTypes) {
     offersByType.push({
@@ -133,7 +133,7 @@ const getRandomEvent = (idNumber) => {
 };
 
 const getRandomEvents = (count) => {
-  let randomEvents = [];
+  const randomEvents = [];
 
   for (let index = 0; index < count; index++) {
     randomEvents.push(getRandomEvent(index));
