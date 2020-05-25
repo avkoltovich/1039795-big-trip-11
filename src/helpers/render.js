@@ -1,5 +1,11 @@
 import AbstractComponent from '../components/abstract-component.js';
 
+const InsertionPosition = {
+  AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
+  BEFOREEND: `beforeend`
+};
+
 const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
@@ -7,10 +13,8 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-const InsertionPosition = {
-  AFTERBEGIN: `afterbegin`,
-  AFTEREND: `afterend`,
-  BEFOREEND: `beforeend`
+const remove = (element) => {
+  element.remove();
 };
 
 const render = (container, component, position) => {
@@ -42,8 +46,4 @@ const replace = (newComponent, oldComponent) => {
   }
 };
 
-const remove = (element) => {
-  element.remove();
-};
-
-export {createElement, InsertionPosition, render, replace, remove};
+export {InsertionPosition, createElement, remove, render, replace};

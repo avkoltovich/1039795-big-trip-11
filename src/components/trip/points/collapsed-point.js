@@ -23,21 +23,21 @@ const getDurationString = (duration) => {
   return (formattedDuration += `${minutes}M`);
 };
 
-const createCollapsedEventTemplate = (event) => {
-  const {date, type, city, price, offers} = event;
-
-  const duration = (date.end - date.start);
+const createCollapsedPointTemplate = (event) => {
+  const {type, offers} = event;
+  const city = event.destination.name;
+  const dataTimeStart = getISOStringDate(event[`dateFrom`]).slice(0, 16);
+  const dataTimeStart24H = getFormatTime24H(event[`dateFrom`]);
+  const dataTimeEnd = getISOStringDate(event[`dateTo`]).slice(0, 16);
+  const dataTimeEnd24H = getFormatTime24H(event[`dateTo`]);
+  const duration = (event[`dateTo`] - event[`dateFrom`]);
   const durationString = getDurationString(duration);
   const eventType = eventTypesMap[type];
-  const dataTimeStart = getISOStringDate(date.start).slice(0, 16);
-  const dataTimeStart24H = getFormatTime24H(date.start);
-  const dataTimeEnd = getISOStringDate(date.end).slice(0, 16);
-  const dataTimeEnd24H = getFormatTime24H(date.end);
+  const price = event[`basePrice`];
   const selectedOffers = offers.slice(0, SHOWING_OFFERS_COUNT).map((offer) => createOfferItemTemplate(offer)).join(`\n`);
 
   return (
-    `<li class="trip-events__item">
-      <div class="event">
+    `<div class="event">
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
@@ -64,12 +64,11 @@ const createCollapsedEventTemplate = (event) => {
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
-      </div>
-    </li>`
+      </div>`
   );
 };
 
-export default class CollapsedEvent extends AbstractComponent {
+export default class CollapsedPoint extends AbstractComponent {
   constructor(event) {
     super();
 
@@ -77,7 +76,7 @@ export default class CollapsedEvent extends AbstractComponent {
   }
 
   getTemplate() {
-    return createCollapsedEventTemplate(this._event);
+    return createCollapsedPointTemplate(this._event);
   }
 
   setEditButtonClickHandler(handler) {

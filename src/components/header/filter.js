@@ -1,4 +1,5 @@
-import AbstractComponent from '../abstract-component.js';
+import AbstractSmartComponent from '../abstract-smart-component.js';
+import {filterTypeMap} from '../../helpers/const.js';
 
 const FILTER_NAMES = [`everything`, `future`, `past`];
 
@@ -31,8 +32,50 @@ const createFilterTemplate = () => {
   );
 };
 
-export default class Filter extends AbstractComponent {
+export default class Filter extends AbstractSmartComponent {
+  constructor() {
+    super();
+
+    this._currentFilterType = filterTypeMap.DEFAULT;
+    this._setFilterTypeChangeHandler = null;
+  }
+
+  getFilterType() {
+    return this._currentSortType;
+  }
+
   getTemplate() {
     return createFilterTemplate();
+  }
+
+  recoveryListeners() {
+    this.setFilterTypeChangeHandler(this._setFilterTypeChangeHandler);
+  }
+
+  rerender() {
+    super.rerender();
+
+    this._currentFilterType = filterTypeMap.DEFAULT;
+  }
+
+  setFilterTypeChangeHandler(handler) {
+    this._setFilterTypeChangeHandler = handler;
+    this.getElement().addEventListener(`change`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `INPUT`) {
+        return;
+      }
+
+      const filterType = evt.target.value;
+
+      if (this._currentFilterType === filterType) {
+        return;
+      }
+
+      this._currentFilterType = filterType;
+
+      this._setFilterTypeChangeHandler(this._currentFilterType);
+    });
   }
 }

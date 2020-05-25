@@ -17,9 +17,8 @@ const MONTH_NAMES = [
 ];
 
 const createDayItemTemplate = (event, count) => {
-  const {date} = event;
-  const dateTime = getISOStringDate(date.start).slice(0, 10);
-  const monthAndDate = `${MONTH_NAMES[date.start.getMonth()]} ${date.start.getDate()}`;
+  const dateTime = getISOStringDate(event[`dateFrom`]).slice(0, 10);
+  const monthAndDate = `${MONTH_NAMES[event[`dateFrom`].getMonth()]} ${event[`dateFrom`].getDate()}`;
 
   return (
     `<li class="trip-days__item  day">

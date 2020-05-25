@@ -1,4 +1,3 @@
-const transferTypes = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
 const activityTypes = [`check-in`, `sightseeing`, `restaurant`];
 
 const eventTypesMap = {
@@ -12,6 +11,18 @@ const eventTypesMap = {
   'check-in': `Check-in in `,
   'sightseeing': `Sightseeing in `,
   'restaurant': `Restaurant in `
+};
+
+const filterTypeMap = {
+  DEFAULT: `everything`,
+  FUTURE: `future`,
+  PAST: `past`
+};
+
+const Mode = {
+  CREATE: `create`,
+  VIEW: `view`,
+  EDIT: `edit`
 };
 
 const offerTitlesMap = {
@@ -28,4 +39,6 @@ const sortTypeMap = {
   PRICE: `sort-price`
 };
 
-export {transferTypes, activityTypes, eventTypesMap, offerTitlesMap, sortTypeMap};
+const transferTypes = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
+
+export {activityTypes, eventTypesMap, filterTypeMap, Mode, offerTitlesMap, sortTypeMap, transferTypes};
