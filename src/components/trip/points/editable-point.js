@@ -47,19 +47,44 @@ const createRollupButton = () => {
   );
 };
 
+const createDestinationSectionTemplate = (cityDescription, photosTape) => {
+  return (
+    `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${cityDescription}</p>
+
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+        ${photosTape}
+        </div>
+      </div>
+    </section>`
+  );
+};
+
 const createEditablePointTemplate = (event, destinations, options = {}, mode) => {
   const CITIES = destinations.map((item) => item.name);
+
   const {placeholder, type, destination, offers, selectedOffers, id, isFavorite, dateFrom, dateTo, basePrice} = options;
 
+  let city = ``;
+  let cityDescription = ``;
+  let destinationSection = ``;
+  let photosTape = ``;
+
+  if (destination) {
+    city = destination.name;
+    cityDescription = destination.description;
+    photosTape = destination.pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
+    destinationSection = createDestinationSectionTemplate(cityDescription, photosTape);
+  }
+
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
-  const city = destination.name;
-  const cityDescription = destination.description;
   const dateFromValue = `${getStringDate(dateFrom)} ${getFormatTime24H(dateFrom)}`;
   const dateToValue = `${getStringDate(dateTo)} ${getFormatTime24H(dateTo)}`;
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
   const favorite = `${isFavorite ? `checked` : ``}`;
   const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
-  const photosTape = destination.pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
   const resetButtonName = `${mode === Mode.VIEW ? `Delete` : `Cancel`}`;
   const rollupButton = `${mode === Mode.VIEW ? createRollupButton() : ``}`;
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
@@ -141,16 +166,7 @@ const createEditablePointTemplate = (event, destinations, options = {}, mode) =>
             </div>
           </section>
 
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${cityDescription}</p>
-
-            <div class="event__photos-container">
-              <div class="event__photos-tape">
-              ${photosTape}
-              </div>
-            </div>
-          </section>
+          ${destinationSection}
         </section>
       </form>`
   );
@@ -177,7 +193,7 @@ export default class EditablePoint extends AbstractSmartComponent {
     this._event = event;
     this._id = event.id;
     this._isFavorite = event[`isFavorite`];
-    this._isValidCity = this._destinationIndex > 0;
+    this._isValidCity = this._destinationIndex !== -1;
     this._flatpickrEnd = null;
     this._flatpickrStart = null;
     this._mode = mode;
