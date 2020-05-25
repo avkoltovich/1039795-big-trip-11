@@ -62,7 +62,7 @@ const createDestinationSectionTemplate = (cityDescription, photosTape) => {
   );
 };
 
-const createEditablePointTemplate = (event, destinations, options = {}, mode) => {
+const createEditablePointTemplate = (destinations, options = {}, mode) => {
   const CITIES = destinations.map((item) => item.name);
 
   const {placeholder, type, destination, offers, selectedOffers, id, isFavorite, dateFrom, dateTo, basePrice} = options;
@@ -232,7 +232,7 @@ export default class EditablePoint extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEditablePointTemplate(this._event, this._destinations, {
+    return createEditablePointTemplate(this._destinations, {
       basePrice: this._basePrice,
       dateFrom: this._dateFrom,
       dateTo: this._dateTo,
@@ -316,8 +316,13 @@ export default class EditablePoint extends AbstractSmartComponent {
         this.rerender();
       });
 
-    element.querySelector(`.event__input--destination`)
-    .addEventListener(`input`, (evt) => {
+    const destinationInput = element.querySelector(`.event__input--destination`);
+
+    destinationInput.addEventListener(`click`, () => {
+      destinationInput.value = ``;
+    });
+
+    destinationInput.addEventListener(`input`, (evt) => {
       this._city = evt.target.value;
       this._destinationIndex = this._getDestinationIndex(this._city);
       if (this._destinationIndex > 0) {
