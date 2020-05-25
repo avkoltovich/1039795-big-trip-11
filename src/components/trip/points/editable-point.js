@@ -4,6 +4,7 @@ import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
 import {Mode} from '../../../helpers/const.js';
 import AbstractSmartComponent from '../../abstract-smart-component.js';
 import flatpickr from 'flatpickr';
+import {encode} from 'he';
 
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -370,7 +371,7 @@ export default class EditablePoint extends AbstractSmartComponent {
 
     element.querySelector(`.event__input--price`)
     .addEventListener(`change`, (evt) => {
-      this._basePrice = +(evt.target.value);
+      this._basePrice = +(encode((evt.target.value)));
     });
 
     element.querySelector(`.event__favorite-checkbox`)
