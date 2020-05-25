@@ -7,7 +7,6 @@ export default class Events {
     this._destinations = [];
     this._events = [];
     this._filteredAndSortedEvents = [];
-    this._ids = [];
     this._offers = [];
 
     this._dataChangeHandlers = [];
@@ -31,9 +30,7 @@ export default class Events {
   }
 
   getNewID() {
-    const newID = ++this._ids[this._ids.length - 1];
-    this._ids.push(newID);
-    return newID;
+    return +(new Date());
   }
 
   getOffers() {
@@ -74,7 +71,6 @@ export default class Events {
   }
 
   setEvents(events) {
-    this._ids = events.map((item) => item.id).sort((a, b) => a - b);
     this._events = Array.from(events);
     this._events = this._getSortedEvents(this._events);
     this._callHandlers(this._dataChangeHandlers);
