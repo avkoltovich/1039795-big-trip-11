@@ -328,7 +328,7 @@ export default class EditablePoint extends AbstractSmartComponent {
 
     element.querySelector(`.event__input--price`)
     .addEventListener(`change`, (evt) => {
-      this._basePrice = evt.target.value;
+      this._basePrice = +(evt.target.value);
     });
 
     element.querySelector(`.event__favorite-checkbox`)
