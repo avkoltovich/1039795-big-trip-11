@@ -340,11 +340,21 @@ export default class EditablePoint extends AbstractSmartComponent {
     element.querySelector(`[name="event-start-time"]`)
     .addEventListener(`change`, (evt) => {
       this._dateFrom = new Date(evt.target.value);
+
+      if (this._dateFrom > this._dateTo) {
+        this._flatpickrEnd.setDate(this._dateFrom);
+      }
     });
 
     element.querySelector(`[name="event-end-time"]`)
     .addEventListener(`change`, (evt) => {
-      this._dateTo = new Date(evt.target.value);
+      const newDate = new Date(evt.target.value);
+
+      if (newDate > this._dateFrom) {
+        this._dateTo = newDate;
+      } else {
+        this._flatpickrEnd.setDate(this._dateFrom);
+      }
     });
 
     element.querySelector(`.event__input--price`)
