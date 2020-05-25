@@ -62,6 +62,18 @@ const createDestinationSectionTemplate = (cityDescription, photosTape) => {
   );
 };
 
+const createOffersSectionTemplate = (offersCheckboxes) => {
+  return (
+    `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+      <div class="event__available-offers">
+        ${offersCheckboxes}
+      </div>
+    </section>`
+  );
+};
+
 const createEditablePointTemplate = (destinations, options = {}, mode) => {
   const CITIES = destinations.map((item) => item.name);
 
@@ -71,6 +83,7 @@ const createEditablePointTemplate = (destinations, options = {}, mode) => {
   let cityDescription = ``;
   let destinationSection = ``;
   let photosTape = ``;
+  let offersSection = ``;
 
   if (destination) {
     city = destination.name;
@@ -79,12 +92,16 @@ const createEditablePointTemplate = (destinations, options = {}, mode) => {
     destinationSection = createDestinationSectionTemplate(cityDescription, photosTape);
   }
 
+  if (offers) {
+    const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
+    offersSection = createOffersSectionTemplate(offersCheckboxes);
+  }
+
   const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
   const dateFromValue = `${getStringDate(dateFrom)} ${getFormatTime24H(dateFrom)}`;
   const dateToValue = `${getStringDate(dateTo)} ${getFormatTime24H(dateTo)}`;
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
   const favorite = `${isFavorite ? `checked` : ``}`;
-  const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
   const resetButtonName = `${mode === Mode.VIEW ? `Delete` : `Cancel`}`;
   const rollupButton = `${mode === Mode.VIEW ? createRollupButton() : ``}`;
   const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
@@ -158,13 +175,7 @@ const createEditablePointTemplate = (destinations, options = {}, mode) => {
         </header>
 
         <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-            <div class="event__available-offers">
-              ${offersCheckboxes}
-            </div>
-          </section>
+          ${offersSection}
 
           ${destinationSection}
         </section>
@@ -201,7 +212,7 @@ export default class EditablePoint extends AbstractSmartComponent {
     this._submitHandler = null;
     this._type = event.type;
 
-    this._allOffersByType = this._allOffers[this._getOffersIndexByType(this._type)].offers;
+    this._allOffersByType = this._getOffersByType(this._type);
     this._placeholder = eventTypesMap[this._type];
 
     this._isValid();
@@ -311,7 +322,7 @@ export default class EditablePoint extends AbstractSmartComponent {
       .addEventListener(`change`, (evt) => {
         this._type = evt.target.value;
         this._placeholder = eventTypesMap[this._type];
-        this._allOffersByType = this._allOffers[this._getOffersIndexByType(this._type)].offers;
+        this._allOffersByType = this._getOffersByType(this._type);
 
         this.rerender();
       });
@@ -376,12 +387,18 @@ export default class EditablePoint extends AbstractSmartComponent {
     return (this.getElement().querySelector(`.event__favorite-checkbox:checked`)) ? true : false;
   }
 
-  _getOffersIndexByTitle(title) {
-    return this._allOffersByType.findIndex((item) => item.title === title);
+  _getOffersByType(type) {
+    const index = this._allOffers.findIndex((item) => item.type === type);
+
+    if (index !== -1) {
+      return this._allOffers[index].offers;
+    }
+
+    return null;
   }
 
-  _getOffersIndexByType(type) {
-    return this._allOffers.findIndex((item) => item.type === type);
+  _getOffersIndexByTitle(title) {
+    return this._allOffersByType.findIndex((item) => item.title === title);
   }
 
   _getSelectedOffers() {
