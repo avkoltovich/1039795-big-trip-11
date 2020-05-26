@@ -53,17 +53,17 @@ const sortTypeMap = {
 
 const TRANSFER_TYPE = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
 
-const tripPointIconMap = new Map([
-  [`taxi`, `🚕`],
-  [`bus`, `🚌`],
-  [`train`, `🚂`],
-  [`ship`, `🚢`],
-  [`transport`, `🚆`],
-  [`drive`, `🚗`],
-  [`flight`, `✈️`],
-  [`check-in`, `🏨`],
-  [`sightseeing`, `🏛`],
-  [`restaurant`, `🍴`],
-]);
+const tripPointIconMap = {
+  'taxi': `🚕`,
+  'bus': `🚌`,
+  'train': `🚂`,
+  'ship': `🚢`,
+  'transport': `🚆`,
+  'drive': `🚗`,
+  'flight': `✈️`,
+  'check-in': `🏨`,
+  'sightseeing': `🏛`,
+  'restaurant': `🍴`,
+};
 
 export {BAR_HEIGHT, ChartValues, ACTIVITY_TYPES, eventTypesMap, filterTypeMap, Mode, offerTitlesMap, sortTypeMap, TRANSFER_TYPE, tripPointIconMap};
