@@ -48,8 +48,8 @@ const statsButtonHandler = () => {
   tripPresenter.remove();
 };
 
-menuPresenter.setTableButtonHandler(tableButtonHandler.bind(this));
-menuPresenter.setStatsButtonHandler(statsButtonHandler.bind(this));
+menuPresenter.setTableButtonHandler(tableButtonHandler.bind());
+menuPresenter.setStatsButtonHandler(statsButtonHandler.bind());
 menuPresenter.render();
 
 const filterPresenter = new FilterPresenter(filterContainer, eventsModel);
