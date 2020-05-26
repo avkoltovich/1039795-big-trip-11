@@ -1,4 +1,16 @@
-const activityTypes = [`check-in`, `sightseeing`, `restaurant`];
+const ACTIVITY_TYPES = [`check-in`, `sightseeing`, `restaurant`];
+
+const BAR_HEIGHT = 55;
+
+const ChartValues = {
+  BAR_THICKNESS: 44,
+  MIN_BAR_LENGTH: 50,
+  LABELS_FONT_SIZE: 13,
+  TITLE_FONT_SIZE: 23,
+  LAYOUT_PADDING_LEFT: 45,
+  SCALES_Y_PADDING: 5,
+  SCALES_Y_FONTSIZE: 13,
+};
 
 const eventTypesMap = {
   'taxi': `Taxi to `,
@@ -39,6 +51,19 @@ const sortTypeMap = {
   PRICE: `sort-price`
 };
 
-const transferTypes = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
+const TRANSFER_TYPE = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
 
-export {activityTypes, eventTypesMap, filterTypeMap, Mode, offerTitlesMap, sortTypeMap, transferTypes};
+const tripPointIconMap = {
+  'taxi': `🚕`,
+  'bus': `🚌`,
+  'train': `🚂`,
+  'ship': `🚢`,
+  'transport': `🚆`,
+  'drive': `🚗`,
+  'flight': `✈️`,
+  'check-in': `🏨`,
+  'sightseeing': `🏛`,
+  'restaurant': `🍴`,
+};
+
+export {BAR_HEIGHT, ChartValues, ACTIVITY_TYPES, eventTypesMap, filterTypeMap, Mode, offerTitlesMap, sortTypeMap, TRANSFER_TYPE, tripPointIconMap};

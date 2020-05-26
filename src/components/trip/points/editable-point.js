@@ -1,9 +1,10 @@
-import {transferTypes, activityTypes, eventTypesMap, offerTitlesMap} from '../../../helpers/const.js';
+import {TRANSFER_TYPE, ACTIVITY_TYPES, eventTypesMap, offerTitlesMap} from '../../../helpers/const.js';
 import {createOfferCheckboxTemplate} from './offer-template.js';
 import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
 import {Mode} from '../../../helpers/const.js';
 import AbstractSmartComponent from '../../abstract-smart-component.js';
 import flatpickr from 'flatpickr';
+import {encode} from 'he';
 
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -47,22 +48,64 @@ const createRollupButton = () => {
   );
 };
 
-const createEditablePointTemplate = (event, destinations, options = {}, mode) => {
+const createDestinationSectionTemplate = (cityDescription, photosTape) => {
+  return (
+    `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${cityDescription}</p>
+
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+        ${photosTape}
+        </div>
+      </div>
+    </section>`
+  );
+};
+
+const createOffersSectionTemplate = (offersCheckboxes) => {
+  return (
+    `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+      <div class="event__available-offers">
+        ${offersCheckboxes}
+      </div>
+    </section>`
+  );
+};
+
+const createEditablePointTemplate = (destinations, options = {}, mode) => {
   const CITIES = destinations.map((item) => item.name);
+
   const {placeholder, type, destination, offers, selectedOffers, id, isFavorite, dateFrom, dateTo, basePrice} = options;
 
-  const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
-  const city = destination.name;
-  const cityDescription = destination.description;
+  let city = ``;
+  let cityDescription = ``;
+  let destinationSection = ``;
+  let photosTape = ``;
+  let offersSection = ``;
+
+  if (destination) {
+    city = destination.name;
+    cityDescription = destination.description;
+    photosTape = destination.pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
+    destinationSection = createDestinationSectionTemplate(cityDescription, photosTape);
+  }
+
+  if (offers) {
+    const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
+    offersSection = createOffersSectionTemplate(offersCheckboxes);
+  }
+
+  const activityTypesFieldsetItems = createTypesFieldsetTemplate(ACTIVITY_TYPES, type, id);
   const dateFromValue = `${getStringDate(dateFrom)} ${getFormatTime24H(dateFrom)}`;
   const dateToValue = `${getStringDate(dateTo)} ${getFormatTime24H(dateTo)}`;
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
   const favorite = `${isFavorite ? `checked` : ``}`;
-  const offersCheckboxes = offers.map((offer) => createOfferCheckboxTemplate(offer, id, selectedOffers)).join(`\n`);
-  const photosTape = destination.pictures.map((picture) => createTripPhotoTemplate(picture.src)).join(`\n`);
   const resetButtonName = `${mode === Mode.VIEW ? `Delete` : `Cancel`}`;
   const rollupButton = `${mode === Mode.VIEW ? createRollupButton() : ``}`;
-  const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
+  const transferTypesFieldsetItems = createTypesFieldsetTemplate(TRANSFER_TYPE, type, id);
   const tripEventsItem = `${mode === Mode.VIEW ? `` : `trip-events__item`}`;
 
   return (
@@ -133,24 +176,9 @@ const createEditablePointTemplate = (event, destinations, options = {}, mode) =>
         </header>
 
         <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+          ${offersSection}
 
-            <div class="event__available-offers">
-              ${offersCheckboxes}
-            </div>
-          </section>
-
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${cityDescription}</p>
-
-            <div class="event__photos-container">
-              <div class="event__photos-tape">
-              ${photosTape}
-              </div>
-            </div>
-          </section>
+          ${destinationSection}
         </section>
       </form>`
   );
@@ -177,7 +205,7 @@ export default class EditablePoint extends AbstractSmartComponent {
     this._event = event;
     this._id = event.id;
     this._isFavorite = event[`isFavorite`];
-    this._isValidCity = this._destinationIndex > 0;
+    this._isValidCity = this._destinationIndex !== -1;
     this._flatpickrEnd = null;
     this._flatpickrStart = null;
     this._mode = mode;
@@ -185,7 +213,7 @@ export default class EditablePoint extends AbstractSmartComponent {
     this._submitHandler = null;
     this._type = event.type;
 
-    this._allOffersByType = this._allOffers[this._getOffersIndexByType(this._type)].offers;
+    this._allOffersByType = this._getOffersByType(this._type);
     this._placeholder = eventTypesMap[this._type];
 
     this._isValid();
@@ -216,7 +244,7 @@ export default class EditablePoint extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEditablePointTemplate(this._event, this._destinations, {
+    return createEditablePointTemplate(this._destinations, {
       basePrice: this._basePrice,
       dateFrom: this._dateFrom,
       dateTo: this._dateTo,
@@ -295,13 +323,18 @@ export default class EditablePoint extends AbstractSmartComponent {
       .addEventListener(`change`, (evt) => {
         this._type = evt.target.value;
         this._placeholder = eventTypesMap[this._type];
-        this._allOffersByType = this._allOffers[this._getOffersIndexByType(this._type)].offers;
+        this._allOffersByType = this._getOffersByType(this._type);
 
         this.rerender();
       });
 
-    element.querySelector(`.event__input--destination`)
-    .addEventListener(`input`, (evt) => {
+    const destinationInput = element.querySelector(`.event__input--destination`);
+
+    destinationInput.addEventListener(`click`, () => {
+      destinationInput.value = ``;
+    });
+
+    destinationInput.addEventListener(`input`, (evt) => {
       this._city = evt.target.value;
       this._destinationIndex = this._getDestinationIndex(this._city);
       if (this._destinationIndex > 0) {
@@ -319,16 +352,26 @@ export default class EditablePoint extends AbstractSmartComponent {
     element.querySelector(`[name="event-start-time"]`)
     .addEventListener(`change`, (evt) => {
       this._dateFrom = new Date(evt.target.value);
+
+      if (this._dateFrom > this._dateTo) {
+        this._flatpickrEnd.setDate(this._dateFrom);
+      }
     });
 
     element.querySelector(`[name="event-end-time"]`)
     .addEventListener(`change`, (evt) => {
-      this._dateTo = new Date(evt.target.value);
+      const newDate = new Date(evt.target.value);
+
+      if (newDate > this._dateFrom) {
+        this._dateTo = newDate;
+      } else {
+        this._flatpickrEnd.setDate(this._dateFrom);
+      }
     });
 
     element.querySelector(`.event__input--price`)
     .addEventListener(`change`, (evt) => {
-      this._basePrice = evt.target.value;
+      this._basePrice = +(encode((evt.target.value)));
     });
 
     element.querySelector(`.event__favorite-checkbox`)
@@ -345,12 +388,18 @@ export default class EditablePoint extends AbstractSmartComponent {
     return (this.getElement().querySelector(`.event__favorite-checkbox:checked`)) ? true : false;
   }
 
-  _getOffersIndexByTitle(title) {
-    return this._allOffersByType.findIndex((item) => item.title === title);
+  _getOffersByType(type) {
+    const index = this._allOffers.findIndex((item) => item.type === type);
+
+    if (index !== -1) {
+      return this._allOffers[index].offers;
+    }
+
+    return null;
   }
 
-  _getOffersIndexByType(type) {
-    return this._allOffers.findIndex((item) => item.type === type);
+  _getOffersIndexByTitle(title) {
+    return this._allOffersByType.findIndex((item) => item.title === title);
   }
 
   _getSelectedOffers() {

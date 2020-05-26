@@ -16,8 +16,13 @@ export default class Events {
 
   addEvent(event) {
     this._events.push(event);
+    this._events = this._getSortedEvents(this._events);
 
     this._callHandlers(this._dataChangeHandlers);
+  }
+
+  getAllEvents() {
+    return this._events;
   }
 
   getDestinations() {
@@ -72,7 +77,7 @@ export default class Events {
 
   setEvents(events) {
     this._events = Array.from(events);
-    this._events = this._getSortedEvents(this._events);
+    this._events = this._getSortedEventsByDays(this._events);
     this._callHandlers(this._dataChangeHandlers);
   }
 
@@ -107,7 +112,10 @@ export default class Events {
       return false;
     }
 
-    this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
+    this._events.splice(index, 1);
+    this._events.push(event);
+
+    this._events = this._getSortedEventsByDays(this._events);
 
     this._callHandlers(this._dataChangeHandlers);
 
@@ -154,7 +162,7 @@ export default class Events {
 
     switch (this._activeSortType) {
       default:
-        sortedEvents.sort((a, b) => a[`dateFrom`] - b[`dateFrom`]);
+        sortedEvents = this._getSortedEventsByDays(events);
         break;
       case sortTypeMap.TIME:
         sortedEvents.sort((a, b) => (b[`dateTo`] - b[`dateFrom`]) - (a[`dateTo`] - a[`dateFrom`]));
@@ -165,6 +173,10 @@ export default class Events {
     }
 
     return sortedEvents;
+  }
+
+  _getSortedEventsByDays(events) {
+    return events.slice().sort((a, b) => a[`dateFrom`] - b[`dateFrom`]);
   }
 
   _resetSortType() {
