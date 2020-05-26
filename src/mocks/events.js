@@ -1,4 +1,4 @@
-import {transferTypes, activityTypes, offerTitlesMap} from '../helpers/const.js';
+import {TRANSFER_TYPE, ACTIVITY_TYPES, offerTitlesMap} from '../helpers/const.js';
 
 const CITIES = [`London`, `Berlin`, `Moscow`, `Krasnodar`, `Paris`, `Amsterdam`, `Oslo`];
 const STRINGS = [
@@ -14,7 +14,7 @@ const STRINGS = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
-const eventTypes = transferTypes.concat(activityTypes);
+const eventTypes = TRANSFER_TYPE.concat(ACTIVITY_TYPES);
 
 const offers = Object.values(offerTitlesMap);
 

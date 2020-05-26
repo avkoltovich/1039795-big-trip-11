@@ -1,4 +1,4 @@
-import {transferTypes, activityTypes, eventTypesMap, offerTitlesMap} from '../../../helpers/const.js';
+import {TRANSFER_TYPE, ACTIVITY_TYPES, eventTypesMap, offerTitlesMap} from '../../../helpers/const.js';
 import {createOfferCheckboxTemplate} from './offer-template.js';
 import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
 import {Mode} from '../../../helpers/const.js';
@@ -98,14 +98,14 @@ const createEditablePointTemplate = (destinations, options = {}, mode) => {
     offersSection = createOffersSectionTemplate(offersCheckboxes);
   }
 
-  const activityTypesFieldsetItems = createTypesFieldsetTemplate(activityTypes, type, id);
+  const activityTypesFieldsetItems = createTypesFieldsetTemplate(ACTIVITY_TYPES, type, id);
   const dateFromValue = `${getStringDate(dateFrom)} ${getFormatTime24H(dateFrom)}`;
   const dateToValue = `${getStringDate(dateTo)} ${getFormatTime24H(dateTo)}`;
   const destinationItems = CITIES.map((destinationItem) => createDestinationItemTemplate(destinationItem)).join(`\n`);
   const favorite = `${isFavorite ? `checked` : ``}`;
   const resetButtonName = `${mode === Mode.VIEW ? `Delete` : `Cancel`}`;
   const rollupButton = `${mode === Mode.VIEW ? createRollupButton() : ``}`;
-  const transferTypesFieldsetItems = createTypesFieldsetTemplate(transferTypes, type, id);
+  const transferTypesFieldsetItems = createTypesFieldsetTemplate(TRANSFER_TYPE, type, id);
   const tripEventsItem = `${mode === Mode.VIEW ? `` : `trip-events__item`}`;
 
   return (

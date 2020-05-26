@@ -36,12 +36,11 @@ export default class Stats extends AbstractComponent {
     return createStatisticsTemplate();
   }
 
-  hide() {
-    super.hide();
+  remove() {
+    this.getElement().remove();
   }
 
-  show() {
-    super.show();
+  render() {
     this._renderCharts();
   }
 

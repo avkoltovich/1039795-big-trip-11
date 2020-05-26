@@ -1,4 +1,4 @@
-import {BAR_HEIGHT, ChartVariables, tripPointIconMap} from '../../../helpers/const.js';
+import {BAR_HEIGHT, ChartValues, tripPointIconMap} from '../../../helpers/const.js';
 
 import Moment from 'moment';
 import Chart from 'chart.js';
@@ -30,14 +30,14 @@ export const timeSpendChart = (ctx, events) => {
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
         anchor: `start`,
-        barThickness: ChartVariables.BAR_THICKNESS,
-        minBarLength: ChartVariables.MIN_BAR_LENGTH,
+        barThickness: ChartValues.BAR_THICKNESS,
+        minBarLength: ChartValues.MIN_BAR_LENGTH,
       }],
     },
     options: {
       plugins: {
         datalabels: {
-          fontSize: ChartVariables.LABELS_FONT_SIZE,
+          fontSize: ChartValues.LABELS_FONT_SIZE,
           color: `#000000`,
           anchor: `end`,
           align: `start`,
@@ -48,20 +48,20 @@ export const timeSpendChart = (ctx, events) => {
         display: true,
         text: `TIME SPEND`,
         fontColor: `#000000`,
-        fontSize: ChartVariables.TITLE_FONT_SIZE,
+        fontSize: ChartValues.TITLE_FONT_SIZE,
         position: `left`
       },
       layout: {
         padding: {
-          left: ChartVariables.LAYOUT_PADDING_LEFT,
+          left: ChartValues.LAYOUT_PADDING_LEFT,
         }
       },
       scales: {
         yAxes: [{
           ticks: {
             fontColor: `#000000`,
-            padding: ChartVariables.SCALES_Y_PADDING,
-            fontSize: ChartVariables.SCALES_Y_FONTSIZE,
+            padding: ChartValues.SCALES_Y_PADDING,
+            fontSize: ChartValues.SCALES_Y_FONTSIZE,
           },
           gridLines: {
             display: false,

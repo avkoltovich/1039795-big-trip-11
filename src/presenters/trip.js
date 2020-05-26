@@ -48,6 +48,11 @@ export default class TripPresenter {
     this._newPointPresenter.render(Mode.CREATE);
   }
 
+  remove() {
+    this._sortingComponent.getElement().remove();
+    this._tripElement.getElement().remove();
+  }
+
   render() {
     const events = this._eventsModel.getEvents();
 
@@ -64,6 +69,11 @@ export default class TripPresenter {
 
     this._tripElement = this._getTripElement(this._eventsModel.getSortType());
     render(this._container, this._tripElement, InsertionPosition.BEFOREEND);
+  }
+
+  rerender() {
+    this._onDataChange();
+    this.render();
   }
 
   setEnableNewEventButtonHandler(handler) {

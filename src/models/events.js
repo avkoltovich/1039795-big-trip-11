@@ -21,6 +21,10 @@ export default class Events {
     this._callHandlers(this._dataChangeHandlers);
   }
 
+  getAllEvents() {
+    return this._events;
+  }
+
   getDestinations() {
     return this._destinations;
   }
