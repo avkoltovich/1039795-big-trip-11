@@ -24,7 +24,7 @@ export const timeSpendChart = (ctx, events) => {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
     data: {
-      labels: Object.keys(data).map((label) => `${tripPointIconMap.get(label)} ${label.toUpperCase()}`),
+      labels: Object.keys(data).map((label) => `${tripPointIconMap[label]} ${label.toUpperCase()}`),
       datasets: [{
         data: Object.values(data),
         backgroundColor: `#ffffff`,

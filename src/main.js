@@ -2,7 +2,7 @@ import EventsModel from './models/events.js';
 import FilterPresenter from './presenters/filter.js';
 import InfoComponent from './components/header/info.js';
 import MenuPresenter from './presenters/menu.js';
-import StatsComponent from './components/stats/stats.js'
+import StatsComponent from './components/stats/stats.js';
 import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
 import {getDestinations, getOffersByType, getRandomEvents} from './mocks/events.js';
