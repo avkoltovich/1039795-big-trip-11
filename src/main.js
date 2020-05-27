@@ -1,3 +1,4 @@
+import API from './api.js';
 import EventsModel from './models/events.js';
 import FilterPresenter from './presenters/filter.js';
 import InfoComponent from './components/header/info.js';
@@ -5,9 +6,9 @@ import MenuPresenter from './presenters/menu.js';
 import StatsComponent from './components/stats/stats.js';
 import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
-import {getDestinations, getOffersByType, getRandomEvents} from './mocks/events.js';
+import {getDestinations, getOffersByType} from './mocks/events.js';
 
-const POINTS_COUNT = 20;
+const AUTHORIZATION = `Basic z2StXBzjFLjS18cOMlo8wl5HcxPg7rjb`;
 
 const renderHeader = (infoContainer) => {
   render(infoContainer, new InfoComponent(), InsertionPosition.AFTERBEGIN);
@@ -24,12 +25,12 @@ const enableNewEventButton = () => {
   newEventButton.disabled = ``;
 };
 
-const randomEvents = getRandomEvents(POINTS_COUNT);
 const randomDestinations = getDestinations();
 const randomOffers = getOffersByType();
 
+const api = new API(AUTHORIZATION);
 const eventsModel = new EventsModel();
-eventsModel.setEvents(randomEvents);
+
 eventsModel.setDestinations(randomDestinations);
 eventsModel.setOffers(randomOffers);
 
@@ -57,7 +58,6 @@ filterPresenter.render();
 
 const tripPresenter = new TripPresenter(tripEventsSection, eventsModel);
 tripPresenter.setEnableNewEventButtonHandler(enableNewEventButton);
-tripPresenter.render();
 
 const statsComponent = new StatsComponent(eventsModel);
 
@@ -68,3 +68,9 @@ const onNewEventButtonClick = () => {
 };
 
 newEventButton.addEventListener(`click`, onNewEventButtonClick);
+
+api.getEvents()
+  .then((events) => {
+    eventsModel.setEvents(events);
+    tripPresenter.render();
+  });

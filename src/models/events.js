@@ -78,7 +78,6 @@ export default class Events {
   setEvents(events) {
     this._events = Array.from(events);
     this._events = this._getSortedEventsByDays(this._events);
-    this._callHandlers(this._dataChangeHandlers);
   }
 
   setFilterHandlers(handler) {

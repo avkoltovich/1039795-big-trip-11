@@ -35,7 +35,7 @@ export default class Stats extends AbstractComponent {
     super();
     this._eventsModel = eventsModel;
 
-    this._events = this._eventsModel.getAllEvents();
+    this._events = null;
     this._moneyChart = null;
     this._timeSpendChart = null;
     this._transportChart = null;
@@ -81,6 +81,7 @@ export default class Stats extends AbstractComponent {
 
   _getSortedDataByChartType(type) {
     let dataByType = {};
+    this._events = this._eventsModel.getAllEvents();
 
     switch (type) {
       case chartTypeMap.transport:
