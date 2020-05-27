@@ -6,7 +6,6 @@ import MenuPresenter from './presenters/menu.js';
 import StatsComponent from './components/stats/stats.js';
 import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
-import {getDestinations, getOffersByType} from './mocks/events.js';
 
 const AUTHORIZATION = `Basic z2StXBzjFLjS18cOMlo8wl5HcxPg7rjb`;
 
@@ -25,14 +24,8 @@ const enableNewEventButton = () => {
   newEventButton.disabled = ``;
 };
 
-const randomDestinations = getDestinations();
-const randomOffers = getOffersByType();
-
 const api = new API(AUTHORIZATION);
 const eventsModel = new EventsModel();
-
-eventsModel.setDestinations(randomDestinations);
-eventsModel.setOffers(randomOffers);
 
 renderHeader(infoContainer);
 const menuPresenter = new MenuPresenter(menuContainer);
@@ -69,8 +62,10 @@ const onNewEventButtonClick = () => {
 
 newEventButton.addEventListener(`click`, onNewEventButtonClick);
 
-api.getEvents()
-  .then((events) => {
-    eventsModel.setEvents(events);
+api.getData()
+  .then((data) => {
+    eventsModel.setEvents(data.events);
+    eventsModel.setDestinations(data.destinations);
+    eventsModel.setOffers(data.offers);
     tripPresenter.render();
   });

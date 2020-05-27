@@ -72,7 +72,6 @@ export default class Events {
 
   setDestinations(destinations) {
     this._destinations = Array.from(destinations);
-    this._callHandlers(this._dataChangeHandlers);
   }
 
   setEvents(events) {
@@ -92,7 +91,6 @@ export default class Events {
 
   setOffers(offers) {
     this._offers = Array.from(offers);
-    this._callHandlers(this._dataChangeHandlers);
   }
 
   setSortHandlers(handler) {

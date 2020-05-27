@@ -5,7 +5,23 @@ const API = class {
     this._authorization = authorization;
   }
 
-  getEvents() {
+  getData() {
+    return Promise.all([
+      this._getEvents(),
+      this._getOffers(),
+      this._getDestinations(),
+    ])
+      .then((response) => {
+        const [events, offers, destinations] = response;
+        return {
+          events,
+          offers,
+          destinations,
+        };
+      });
+  }
+
+  _getEvents() {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
 
@@ -14,7 +30,7 @@ const API = class {
       .then(EventAdapter.parseEvents);
   }
 
-  getDestinations() {
+  _getDestinations() {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
 
@@ -22,7 +38,7 @@ const API = class {
       .then((response) => response.json());
   }
 
-  getOffers() {
+  _getOffers() {
     const headers = new Headers();
     headers.append(`Authorization`, this._authorization);
 
