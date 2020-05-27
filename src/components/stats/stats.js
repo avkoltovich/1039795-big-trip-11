@@ -53,11 +53,10 @@ export default class Stats extends AbstractComponent {
     this._renderCharts();
   }
 
-  _getTransportCountByType(events, type) {
-    return events.filter((event) => type.includes(event.type))
-    .reduce((count, event) => {
-      count[event.type] = (count[event.type] || 0) + 1;
-      return count;
+  _getMoneyCountByType(events) {
+    return events.reduce((sum, event) => {
+      sum[event.type] = (sum[event.type] || 0) + event.basePrice;
+      return sum;
     }, {});
   }
 
@@ -72,10 +71,11 @@ export default class Stats extends AbstractComponent {
     }, {});
   }
 
-  _getMoneyCountByType(events) {
-    return events.reduce((sum, event) => {
-      sum[event.type] = (sum[event.type] || 0) + event.basePrice;
-      return sum;
+  _getTransportCountByType(events, type) {
+    return events.filter((event) => type.includes(event.type))
+    .reduce((count, event) => {
+      count[event.type] = (count[event.type] || 0) + 1;
+      return count;
     }, {});
   }
 
