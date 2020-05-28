@@ -23,6 +23,7 @@ export default class EventAdapter {
       'offers': this.offers,
       'destination': this.destination,
     };
+    console.log(RAWObj)
     return RAWObj;
   }
 

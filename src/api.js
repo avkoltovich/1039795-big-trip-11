@@ -1,7 +1,7 @@
 import EventAdapter from './models/event.js';
 
 const ServerUrl = {
-  EVENTS: `https://11.ecmascript.pages.academy/big-trip/points`,
+  POINTS: `https://11.ecmascript.pages.academy/big-trip/points`,
   OFFERS: `https://11.ecmascript.pages.academy/big-trip/offers`,
   DESTINATIONS: `https://11.ecmascript.pages.academy/big-trip/destinations`
 };
@@ -29,7 +29,7 @@ export default class API {
 
   updateEvent(id, data) {
     return this._loadData({
-      url: `${ServerUrl.EVENTS}/${id}`,
+      url: `${ServerUrl.POINTS}/${id}`,
       method: `PUT`,
       body: JSON.stringify(data.toRAW()),
     })
@@ -47,7 +47,7 @@ export default class API {
   }
 
   _getEvents() {
-    return this._loadData({url: ServerUrl.EVENTS})
+    return this._loadData({url: ServerUrl.POINTS})
       .then((response) => response.json())
       .then(EventAdapter.parseEvents);
   }

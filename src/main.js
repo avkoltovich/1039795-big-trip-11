@@ -7,7 +7,7 @@ import StatsComponent from './components/stats/stats.js';
 import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
 
-const AUTHORIZATION = `Basic z2StXBzjFLjS18cOMlo8wl5HcxPg7rjb`;
+const AUTHORIZATION = `Basic eo0w5110ik99819a`;
 
 const renderHeader = (infoContainer) => {
   render(infoContainer, new InfoComponent(), InsertionPosition.AFTERBEGIN);
