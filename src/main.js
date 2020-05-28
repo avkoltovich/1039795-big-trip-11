@@ -50,7 +50,6 @@ const filterPresenter = new FilterPresenter(filterContainer, eventsModel);
 filterPresenter.render();
 
 const tripPresenter = new TripPresenter(tripEventsSection, eventsModel);
-tripPresenter.setEnableNewEventButtonHandler(enableNewEventButton);
 
 const statsComponent = new StatsComponent(eventsModel);
 
@@ -67,5 +66,6 @@ api.getData()
     eventsModel.setEvents(data.events);
     eventsModel.setDestinations(data.destinations);
     eventsModel.setOffers(data.offers);
+    tripPresenter.setEnableNewEventButtonHandler(enableNewEventButton);
     tripPresenter.render();
   });

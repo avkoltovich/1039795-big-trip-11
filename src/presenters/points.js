@@ -2,8 +2,6 @@ export default class PointPresenter {
   constructor(eventsModel) {
     this._enableNewEventButtonHandler = null;
     this._eventsModel = eventsModel;
-    this._destinations = this._eventsModel.getDestinations();
-    this._offers = this._eventsModel.getOffers();
     this._observers = [];
   }
 
@@ -23,7 +21,7 @@ export default class PointPresenter {
   }
 
   getDestinations() {
-    return this._destinations;
+    return this._eventsModel.getDestinations();
   }
 
   getNewID() {
@@ -31,7 +29,7 @@ export default class PointPresenter {
   }
 
   getOffers() {
-    return this._offers;
+    return this._eventsModel.getOffers();
   }
 
   setEnableNewEventButtonHandler(handler) {
