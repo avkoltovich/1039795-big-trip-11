@@ -1,10 +1,4 @@
-const offerTitlesMap = {
-  'Add luggage': `event-offer-luggage`,
-  'Switch to comfort class': `event-offer-comfort`,
-  'Add meal': `event-offer-meal`,
-  'Choose seats': `event-offer-seats`,
-  'Travel by train': `event-offer-train`
-};
+import {getCebabName} from '../../../helpers/utils.js';
 
 const createOfferCheckboxTemplate = (offer, formCount, selectedOffers) => {
   let checked = ``;
@@ -14,7 +8,7 @@ const createOfferCheckboxTemplate = (offer, formCount, selectedOffers) => {
   }
   const offerTitle = offer.title;
   const offerPrice = offer.price;
-  const name = `${offerTitlesMap[offer.title]}`;
+  const name = `${getCebabName(offer.title)}`;
   const id = `${name}-${formCount}`;
 
   return (

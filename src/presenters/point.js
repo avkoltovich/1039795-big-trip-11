@@ -14,6 +14,7 @@ export default class PointPresenter {
 
     this._destinations = this._pointsPresenter.getDestinations();
     this._offers = this._pointsPresenter.getOffers();
+    this._offersTitleMap = this._pointsPresenter.getOffersTitleMap();
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onEscKeyDownNewEvent = this._onEscKeyDownNewEvent.bind(this);
@@ -32,7 +33,7 @@ export default class PointPresenter {
 
     if (this._mode === Mode.VIEW) {
       this._collapsedPointComponent = new CollapsedPointComponent(this._event, this._offers);
-      this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers, this._mode);
+      this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers, this._offersTitleMap, this._mode);
 
       this._collapsedPointComponent.setEditButtonClickHandler(() => {
         this._replaceEventToEdit();
@@ -42,7 +43,7 @@ export default class PointPresenter {
         evt.preventDefault();
         this._replaceEditToEvent();
         const data = this._editablePointComponent.getData();
-        this._pointsPresenter.syncData(this._event, Object.assign({}, this._event, data));
+        this._pointsPresenter.syncData(this._event, data);
       });
 
       this._editablePointComponent.setCollapseHandler(() => {
@@ -78,7 +79,7 @@ export default class PointPresenter {
   _addNewEvent() {
     this._event[`id`] = this._pointsPresenter.getNewID();
     this._event[`destination`] = ``;
-    this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers, this._mode);
+    this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers, this._offersTitleMap, this._mode);
     this._editablePointComponent.applyFlatpickr();
     this._editablePointComponent.subscribeOnEvents();
 

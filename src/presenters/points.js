@@ -32,6 +32,10 @@ export default class PointPresenter {
     return this._eventsModel.getOffers();
   }
 
+  getOffersTitleMap() {
+    return this._eventsModel.getOffersTitleMap();
+  }
+
   setEnableNewEventButtonHandler(handler) {
     this._enableNewEventButtonHandler = handler;
   }

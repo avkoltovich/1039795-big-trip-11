@@ -25,7 +25,7 @@ const enableNewEventButton = () => {
 };
 
 const api = new API(AUTHORIZATION);
-const eventsModel = new EventsModel();
+const eventsModel = new EventsModel(api);
 
 renderHeader(infoContainer);
 const menuPresenter = new MenuPresenter(menuContainer);

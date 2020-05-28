@@ -1,13 +1,16 @@
 import {filterTypeMap, sortTypeMap} from '../helpers/const.js';
+import {getCebabName} from '../helpers/utils.js';
 
 export default class Events {
-  constructor() {
+  constructor(api) {
     this._activeFilterType = filterTypeMap.DEFAULT;
     this._activeSortType = sortTypeMap.DEFAULT;
+    this._api = api;
     this._destinations = [];
     this._events = [];
     this._filteredAndSortedEvents = [];
     this._offers = [];
+    this._offersTitleMap = {};
 
     this._dataChangeHandlers = [];
     this._filterHandlers = [];
@@ -40,6 +43,10 @@ export default class Events {
 
   getOffers() {
     return this._offers;
+  }
+
+  getOffersTitleMap() {
+    return this._offersTitleMap;
   }
 
   getSortType() {
@@ -91,6 +98,11 @@ export default class Events {
 
   setOffers(offers) {
     this._offers = Array.from(offers);
+    this._offers.map((items) => {
+      items.offers.map((offer) => {
+        this._offersTitleMap[getCebabName(offer.title)] = offer.title;
+      });
+    });
   }
 
   setSortHandlers(handler) {
@@ -109,14 +121,14 @@ export default class Events {
       return false;
     }
 
-    this._events.splice(index, 1);
-    this._events.push(event);
+    this._api.updateEvent(id, event)
+      .then(() => {
+        this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
 
-    this._events = this._getSortedEventsByDays(this._events);
+        this._callHandlers(this._dataChangeHandlers);
 
-    this._callHandlers(this._dataChangeHandlers);
-
-    return true;
+        return true;
+      });
   }
 
   updateFavoriteEvent(id, isFavorite) {

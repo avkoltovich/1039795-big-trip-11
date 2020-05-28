@@ -27,6 +27,17 @@ export default class API {
       });
   }
 
+  updateEvent(id, data) {
+    return this._loadData({
+      url: `${ServerUrl.EVENTS}/${id}`,
+      method: `PUT`,
+      body: JSON.stringify(data.toRAW()),
+    })
+    .then(this._checkStatus)
+    .then((response) => response.json())
+    .then(EventAdapter.parseTripEvent);
+  }
+
   _checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
       return response;

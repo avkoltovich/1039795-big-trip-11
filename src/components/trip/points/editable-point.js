@@ -1,4 +1,4 @@
-import {TRANSFER_TYPE, ACTIVITY_TYPES, eventTypesMap, offerTitlesMap} from '../../../helpers/const.js';
+import {TRANSFER_TYPE, ACTIVITY_TYPES, eventTypesMap} from '../../../helpers/const.js';
 import {createOfferCheckboxTemplate} from './offer-template.js';
 import {getFormatTime24H, castTimeFormat} from '../../../helpers/utils.js';
 import {Mode} from '../../../helpers/const.js';
@@ -185,33 +185,35 @@ const createEditablePointTemplate = (destinations, options = {}, mode) => {
 };
 
 export default class EditablePoint extends AbstractSmartComponent {
-  constructor(event, destinations, offers, mode) {
+  constructor(event, destinations, offers, offersTitleMap, mode) {
     super();
 
     this.applyFlatpickr = this.applyFlatpickr.bind(this);
     this.removeFlatpickr = this.removeFlatpickr.bind(this);
     this.subscribeOnEvents = this.subscribeOnEvents.bind(this);
 
+    this._event = event;
+
     this._allOffers = offers;
-    this._basePrice = event[`basePrice`];
-    this._city = event.destination.name;
+    this._basePrice = this._event[`basePrice`];
+    this._city = this._event.destination.name;
     this._collapseHandler = null;
-    this._dateFrom = event[`dateFrom`];
-    this._dateTo = event[`dateTo`];
+    this._dateFrom = this._event[`dateFrom`];
+    this._dateTo = this._event[`dateTo`];
     this._deleteButtonClickHandler = null;
-    this._destination = event.destination;
+    this._destination = this._event.destination;
     this._destinations = destinations;
     this._destinationIndex = this._getDestinationIndex(this._city);
-    this._event = event;
-    this._id = event.id;
-    this._isFavorite = event[`isFavorite`];
+    this._id = this._event.id;
+    this._isFavorite = this._event[`isFavorite`];
     this._isValidCity = this._destinationIndex !== -1;
     this._flatpickrEnd = null;
     this._flatpickrStart = null;
     this._mode = mode;
-    this._selectedOffers = event.offers;
+    this._offersTitleMap = offersTitleMap;
+    this._selectedOffers = this._event.offers;
     this._submitHandler = null;
-    this._type = event.type;
+    this._type = this._event.type;
 
     this._allOffersByType = this._getOffersByType(this._type);
     this._placeholder = eventTypesMap[this._type];
@@ -406,7 +408,7 @@ export default class EditablePoint extends AbstractSmartComponent {
     let selectedOffers = [];
     const offers = this.getElement().querySelectorAll(`.event__offer-checkbox:checked`);
     offers.forEach((item) => {
-      selectedOffers.push(this._allOffersByType[this._getOffersIndexByTitle(offerTitlesMap[item.name])]);
+      selectedOffers.push(this._allOffersByType[this._getOffersIndexByTitle(this._offersTitleMap[item.name])]);
     });
 
     return selectedOffers;
@@ -421,15 +423,15 @@ export default class EditablePoint extends AbstractSmartComponent {
     this._selectedOffers = this._getSelectedOffers();
     this._isFavorite = this._getFavoriteStatus();
 
-    return {
-      'basePrice': this._basePrice,
-      'dateFrom': this._dateFrom,
-      'dateTo': this._dateTo,
-      'destination': this._destination,
-      'id': this._id,
-      'isFavorite': this._isFavorite,
-      'offers': this._selectedOffers,
-      'type': this._type
-    };
+    this._event[`basePrice`] = this._basePrice;
+    this._event[`dateFrom`] = this._dateFrom;
+    this._event[`dateTo`] = this._dateTo;
+    this._event[`destination`] = this._destination;
+    this._event[`id`] = this._id;
+    this._event[`isFavorite`] = this._isFavorite;
+    this._event[`offers`] = this._selectedOffers;
+    this._event[`type`] = this._type;
+
+    return this._event;
   }
 }
