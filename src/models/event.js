@@ -10,9 +10,6 @@ export default class EventAdapter {
     this.isFavorite = Boolean(data[`is_favorite`]);
     this.offers = data[`offers`];
     this.type = data[`type`];
-
-    console.log(data[`date_from`])
-    console.log(data[`date_to`])
   }
 
   toRAW() {
