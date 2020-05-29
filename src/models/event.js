@@ -13,7 +13,7 @@ export default class EventAdapter {
   }
 
   toRAW() {
-    const RAWObj = {
+    return {
       'id': this.id,
       'type': this.type,
       'date_from': moment.parseZone(this.start).utc().format(),
@@ -23,8 +23,6 @@ export default class EventAdapter {
       'offers': this.offers,
       'destination': this.destination,
     };
-    console.log(RAWObj)
-    return RAWObj;
   }
 
   static parseEvent(data) {

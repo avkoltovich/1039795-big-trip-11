@@ -7,7 +7,7 @@ import StatsComponent from './components/stats/stats.js';
 import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
 
-const AUTHORIZATION = `Basic eo0w5110ik99819a`;
+const AUTHORIZATION = `Basic eo0w5110ik99819b`;
 
 const renderHeader = (infoContainer) => {
   render(infoContainer, new InfoComponent(), InsertionPosition.AFTERBEGIN);
@@ -49,7 +49,7 @@ menuPresenter.render();
 const filterPresenter = new FilterPresenter(filterContainer, eventsModel);
 filterPresenter.render();
 
-const tripPresenter = new TripPresenter(tripEventsSection, eventsModel);
+const tripPresenter = new TripPresenter(tripEventsSection, api, eventsModel);
 
 const statsComponent = new StatsComponent(eventsModel);
 

@@ -19,14 +19,15 @@ const emptyEvent = {
 };
 
 export default class TripPresenter {
-  constructor(container, eventsModel) {
+  constructor(container, api, eventsModel) {
+    this._api = api;
     this._blankTripComponent = new BlankTripComponent();
     this._container = container;
     this._eventsModel = eventsModel;
     this._emptyEvent = emptyEvent;
     this._enableNewEventButtonHandler = null;
     this._newPointPresenter = null;
-    this._pointsPresenter = new PointsPresenter(this._eventsModel);
+    this._pointsPresenter = new PointsPresenter(this._api, this._eventsModel);
     this._sortingComponent = new SortingComponent();
     this._tripElement = null;
 

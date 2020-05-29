@@ -1,5 +1,6 @@
 export default class PointPresenter {
-  constructor(eventsModel) {
+  constructor(api, eventsModel) {
+    this._api = api;
     this._enableNewEventButtonHandler = null;
     this._eventsModel = eventsModel;
     this._observers = [];
@@ -46,7 +47,10 @@ export default class PointPresenter {
 
   syncData(oldData, newData) {
     if (oldData && newData) {
-      this._eventsModel.updateEvent(oldData.id, newData);
+      this._api.updateEvent(oldData.id, newData)
+      .then(() => {
+        this._eventsModel.updateEvent(oldData.id, newData);
+      });
     } else if (!oldData) {
       this._eventsModel.addEvent(newData);
     } else {

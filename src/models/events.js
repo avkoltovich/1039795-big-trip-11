@@ -121,14 +121,14 @@ export default class Events {
       return false;
     }
 
-    this._api.updateEvent(id, event)
-      .then(() => {
-        this._events = [].concat(this._events.slice(0, index), event, this._events.slice(index + 1));
+    this._events.splice(index, 1);
+    this._events.push(event);
 
-        this._callHandlers(this._dataChangeHandlers);
+    this._events = this._getSortedEventsByDays(this._events);
 
-        return true;
-      });
+    this._callHandlers(this._dataChangeHandlers);
+
+    return true;
   }
 
   updateFavoriteEvent(id, isFavorite) {
