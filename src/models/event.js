@@ -10,14 +10,17 @@ export default class EventAdapter {
     this.isFavorite = Boolean(data[`is_favorite`]);
     this.offers = data[`offers`];
     this.type = data[`type`];
+
+    console.log(data[`date_from`])
+    console.log(data[`date_to`])
   }
 
   toRAW() {
     return {
       'id': this.id,
       'type': this.type,
-      'date_from': moment.parseZone(this.start).utc().format(),
-      'date_to': moment.parseZone(this.end).utc().format(),
+      'date_from': moment.parseZone(this.dateFrom).utc().format(),
+      'date_to': moment.parseZone(this.dateTo).utc().format(),
       'is_favorite': this.isFavorite,
       'base_price': this.basePrice,
       'offers': this.offers,
