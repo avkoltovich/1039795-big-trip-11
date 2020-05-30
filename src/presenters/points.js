@@ -54,7 +54,10 @@ export default class PointPresenter {
         this._eventsModel.addEvent(newData);
       });
     } else {
-      this._eventsModel.removeEvent(oldData.id);
+      this._api.deleteEvent(oldData.id)
+      .then(() => {
+        this._eventsModel.deleteEvent(oldData.id);
+      });
     }
   }
 

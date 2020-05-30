@@ -24,6 +24,20 @@ export default class Events {
     this._callHandlers(this._dataChangeHandlers);
   }
 
+  deleteEvent(id) {
+    const index = this._events.findIndex((item) => item.id === id);
+
+    if (index === -1) {
+      return false;
+    }
+
+    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
+
+    this._callHandlers(this._dataChangeHandlers);
+
+    return true;
+  }
+
   getAllEvents() {
     return this._events;
   }
@@ -47,20 +61,6 @@ export default class Events {
 
   getSortType() {
     return this._activeSortType;
-  }
-
-  removeEvent(id) {
-    const index = this._events.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
-
-    this._callHandlers(this._dataChangeHandlers);
-
-    return true;
   }
 
   resetFilterType() {

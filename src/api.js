@@ -37,6 +37,13 @@ export default class API {
       .then(EventAdapter.parseTripEvent);
   }
 
+  deleteEvent(id) {
+    return this._loadData({
+      url: `${ServerUrl.POINTS}/${id}`,
+      method: `DELETE`,
+    });
+  }
+
   updateEvent(id, data) {
     return this._loadData({
       url: `${ServerUrl.POINTS}/${id}`,
