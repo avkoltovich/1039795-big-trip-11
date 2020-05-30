@@ -28,7 +28,7 @@ export default class API {
   }
 
   addEvent(data) {
-    return this._sendResponse({
+    return this._sendRequest({
       url: ServerUrl.POINTS,
       method: `POST`,
       body: JSON.stringify(data.toRAW()),
@@ -38,14 +38,14 @@ export default class API {
   }
 
   deleteEvent(id) {
-    return this._sendResponse({
+    return this._sendRequest({
       url: `${ServerUrl.POINTS}/${id}`,
       method: `DELETE`,
     });
   }
 
   updateEvent(id, data) {
-    return this._sendResponse({
+    return this._sendRequest({
       url: `${ServerUrl.POINTS}/${id}`,
       method: `PUT`,
       body: JSON.stringify(data.toRAW()),
@@ -64,22 +64,22 @@ export default class API {
   }
 
   _getEvents() {
-    return this._sendResponse({url: ServerUrl.POINTS})
+    return this._sendRequest({url: ServerUrl.POINTS})
       .then((response) => response.json())
       .then(EventAdapter.parseEvents);
   }
 
   _getDestinations() {
-    return this._sendResponse({url: ServerUrl.DESTINATIONS})
+    return this._sendRequest({url: ServerUrl.DESTINATIONS})
       .then((response) => response.json());
   }
 
   _getOffers() {
-    return this._sendResponse({url: ServerUrl.OFFERS})
+    return this._sendRequest({url: ServerUrl.OFFERS})
       .then((response) => response.json());
   }
 
-  _sendResponse({url, method = `GET`, body = null, headers = new Headers()}) {
+  _sendRequest({url, method = `GET`, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
     headers.append(`Content-Type`, `application/json`);
 
