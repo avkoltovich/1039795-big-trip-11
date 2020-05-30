@@ -1,26 +1,17 @@
-import {BAR_HEIGHT, ChartValues, TRANSFER_TYPE, tripPointIconMap} from '../../../helpers/const.js';
+import {BAR_HEIGHT, ChartValues, tripPointIconMap} from '../../../helpers/const.js';
 
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-export const transportChart = (ctx, events) => {
-  const parseData = events
-    .filter((event) => TRANSFER_TYPE.includes(event.type))
-    .reduce((count, event) => {
-      count[event.type] = (count[event.type] || 0) + 1;
-      return count;
-    }, {});
-
-  const sortedData = Object.entries(parseData).sort((a, b) => b[1] - a[1]);
-  const data = Object.fromEntries(sortedData);
-
-  ctx.height = BAR_HEIGHT * sortedData.length;
+export const transportChart = (ctx, data) => {
+  const dataKeys = Object.keys(data);
+  ctx.height = BAR_HEIGHT * dataKeys.length;
 
   return new Chart(ctx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
     data: {
-      labels: Object.keys(data).map((label) => `${tripPointIconMap[label]} ${label.toUpperCase()}`),
+      labels: dataKeys.map((label) => `${tripPointIconMap[label]} ${label.toUpperCase()}`),
       datasets: [{
         data: Object.values(data),
         backgroundColor: `#ffffff`,

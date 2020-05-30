@@ -2,31 +2,35 @@ import {Mode, sortTypeMap} from '../helpers/const.js';
 import {render, replace, InsertionPosition} from '../helpers/render.js';
 import SortingComponent from '../components/sorting.js';
 import BlankTripComponent from '../components/trip/blank-trip.js';
+import EventAdapter from '../models/event-adapter.js';
+import LoadingTripComponent from '../components/trip/loading-trip';
 import EventsGroupByDaysComponent from '../components/trip/points-group-by-days.js';
 import EventsGroupByTimeOrPriceComponent from '../components/trip/points-group-by-time-or-price.js';
 import PointsPresenter from './points.js';
 import PointPresenter from './point.js';
 
 const emptyEvent = {
-  'basePrice': 0,
-  'dateFrom': new Date(),
-  'dateTo': new Date(),
-  'destination': null,
+  'base_price': 0,
+  'date_from': new Date(),
+  'date_to': new Date(),
+  'destination': ``,
   'id': null,
-  'isFavorite': false,
+  'is_favorite': false,
   'offers': null,
   'type': `taxi`
 };
 
 export default class TripPresenter {
-  constructor(container, eventsModel) {
+  constructor(container, api, eventsModel) {
+    this._api = api;
     this._blankTripComponent = new BlankTripComponent();
     this._container = container;
     this._eventsModel = eventsModel;
-    this._emptyEvent = emptyEvent;
+    this._emptyEvent = new EventAdapter(emptyEvent);
     this._enableNewEventButtonHandler = null;
+    this._loadingTripComponent = new LoadingTripComponent();
     this._newPointPresenter = null;
-    this._pointsPresenter = new PointsPresenter(this._eventsModel);
+    this._pointsPresenter = new PointsPresenter(this._api, this._eventsModel);
     this._sortingComponent = new SortingComponent();
     this._tripElement = null;
 
@@ -43,6 +47,10 @@ export default class TripPresenter {
 
   }
 
+  getLoadingMessage() {
+    render(this._container, this._loadingTripComponent, InsertionPosition.BEFOREEND);
+  }
+
   newEvent() {
     this._newPointPresenter = new PointPresenter(this._sortingComponent, this._emptyEvent, this._pointsPresenter);
     this._newPointPresenter.render(Mode.CREATE);
@@ -54,6 +62,11 @@ export default class TripPresenter {
   }
 
   render() {
+    if (this._loadingTripComponent) {
+      this._loadingTripComponent.getElement().remove();
+      this._loadingTripComponent = null;
+    }
+
     const events = this._eventsModel.getEvents();
 
     if (events.length === 0) {

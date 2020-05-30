@@ -1,17 +1,13 @@
+import API from './api.js';
 import EventsModel from './models/events.js';
 import FilterPresenter from './presenters/filter.js';
-import InfoComponent from './components/header/info.js';
+import InfoPresenter from './presenters/info.js';
 import MenuPresenter from './presenters/menu.js';
 import StatsComponent from './components/stats/stats.js';
 import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
-import {getDestinations, getOffersByType, getRandomEvents} from './mocks/events.js';
 
-const POINTS_COUNT = 20;
-
-const renderHeader = (infoContainer) => {
-  render(infoContainer, new InfoComponent(), InsertionPosition.AFTERBEGIN);
-};
+const AUTHORIZATION = `Basic eo0w5110ik998195`;
 
 const infoContainer = document.querySelector(`.trip-main`);
 const filterContainer = infoContainer.querySelector(`.trip-main__trip-controls`);
@@ -24,16 +20,10 @@ const enableNewEventButton = () => {
   newEventButton.disabled = ``;
 };
 
-const randomEvents = getRandomEvents(POINTS_COUNT);
-const randomDestinations = getDestinations();
-const randomOffers = getOffersByType();
+const api = new API(AUTHORIZATION);
+const eventsModel = new EventsModel(api);
 
-const eventsModel = new EventsModel();
-eventsModel.setEvents(randomEvents);
-eventsModel.setDestinations(randomDestinations);
-eventsModel.setOffers(randomOffers);
-
-renderHeader(infoContainer);
+const infoPresenter = new InfoPresenter(infoContainer, eventsModel);
 const menuPresenter = new MenuPresenter(menuContainer);
 
 const tableButtonHandler = () => {
@@ -55,9 +45,7 @@ menuPresenter.render();
 const filterPresenter = new FilterPresenter(filterContainer, eventsModel);
 filterPresenter.render();
 
-const tripPresenter = new TripPresenter(tripEventsSection, eventsModel);
-tripPresenter.setEnableNewEventButtonHandler(enableNewEventButton);
-tripPresenter.render();
+const tripPresenter = new TripPresenter(tripEventsSection, api, eventsModel);
 
 const statsComponent = new StatsComponent(eventsModel);
 
@@ -68,3 +56,15 @@ const onNewEventButtonClick = () => {
 };
 
 newEventButton.addEventListener(`click`, onNewEventButtonClick);
+
+tripPresenter.getLoadingMessage();
+
+api.getData()
+  .then((data) => {
+    eventsModel.setEvents(data.events);
+    eventsModel.setDestinations(data.destinations);
+    eventsModel.setOffers(data.offers);
+    infoPresenter.render();
+    tripPresenter.setEnableNewEventButtonHandler(enableNewEventButton);
+    tripPresenter.render();
+  });

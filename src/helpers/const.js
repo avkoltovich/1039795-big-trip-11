@@ -37,14 +37,6 @@ const Mode = {
   EDIT: `edit`
 };
 
-const offerTitlesMap = {
-  'event-offer-luggage': `Add luggage`,
-  'event-offer-comfort': `Switch to comfort class`,
-  'event-offer-meal': `Add meal`,
-  'event-offer-seats': `Choose seats`,
-  'event-offer-train': `Travel by train`
-};
-
 const sortTypeMap = {
   DEFAULT: `sort-event`,
   TIME: `sort-time`,
@@ -66,4 +58,4 @@ const tripPointIconMap = {
   'restaurant': `🍴`,
 };
 
-export {BAR_HEIGHT, ChartValues, ACTIVITY_TYPES, eventTypesMap, filterTypeMap, Mode, offerTitlesMap, sortTypeMap, TRANSFER_TYPE, tripPointIconMap};
+export {BAR_HEIGHT, ChartValues, ACTIVITY_TYPES, eventTypesMap, filterTypeMap, Mode, sortTypeMap, TRANSFER_TYPE, tripPointIconMap};

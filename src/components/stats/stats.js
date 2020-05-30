@@ -1,9 +1,17 @@
 import AbstractComponent from '../abstract-component.js';
+import {TRANSFER_TYPE} from '../../helpers/const.js';
 
 import {moneyChart} from './charts/money-сhart.js';
 import {transportChart} from './charts/transport-chart.js';
 import {timeSpendChart} from './charts/time-spend-chart.js';
 
+import Moment from 'moment';
+
+const chartTypeMap = {
+  transport: TRANSFER_TYPE,
+  timeSpend: `time spend`,
+  money: `money`
+};
 
 const createStatisticsTemplate = () => {
   return (
@@ -27,9 +35,10 @@ export default class Stats extends AbstractComponent {
     super();
     this._eventsModel = eventsModel;
 
+    this._events = null;
     this._moneyChart = null;
-    this._transportChart = null;
     this._timeSpendChart = null;
+    this._transportChart = null;
   }
 
   getTemplate() {
@@ -44,18 +53,61 @@ export default class Stats extends AbstractComponent {
     this._renderCharts();
   }
 
+  _getMoneyCountByType(events) {
+    return events.reduce((sum, event) => {
+      sum[event.type] = (sum[event.type] || 0) + event.basePrice;
+      return sum;
+    }, {});
+  }
+
+  _getTimeSpendCountByType(events) {
+    return events.reduce((time, event) => {
+      const dateFrom = new Moment(event.dateFrom);
+      const dateTo = new Moment(event.dateTo);
+      const diff = Moment.duration(dateTo.diff(dateFrom)).hours();
+
+      time[event.type] = (time[event.type] || 0) + diff;
+      return time;
+    }, {});
+  }
+
+  _getTransportCountByType(events, type) {
+    return events.filter((event) => type.includes(event.type))
+    .reduce((count, event) => {
+      count[event.type] = (count[event.type] || 0) + 1;
+      return count;
+    }, {});
+  }
+
+  _getSortedDataByChartType(type) {
+    let dataByType = {};
+    this._events = this._eventsModel.getAllEvents();
+
+    switch (type) {
+      case chartTypeMap.transport:
+        dataByType = this._getTransportCountByType(this._events, type);
+        break;
+      case chartTypeMap.timeSpend:
+        dataByType = this._getTimeSpendCountByType(this._events);
+        break;
+      case chartTypeMap.money:
+        dataByType = this._getMoneyCountByType(this._events);
+        break;
+    }
+
+    return Object.fromEntries(Object.entries(dataByType).sort((a, b) => b[1] - a[1]));
+  }
+
   _renderCharts() {
     const element = this.getElement();
     const ctxMoney = element.querySelector(`.statistics__chart--money`);
     const ctxTransport = element.querySelector(`.statistics__chart--transport`);
     const ctxTimeSpend = element.querySelector(`.statistics__chart--time`);
 
-    const events = this._eventsModel.getAllEvents();
-
     this._resetCharts();
-    this._moneyChart = moneyChart(ctxMoney, events);
-    this._transportChart = transportChart(ctxTransport, events);
-    this._timeSpendChart = timeSpendChart(ctxTimeSpend, events);
+    this._moneyChart = moneyChart(ctxMoney, this._getSortedDataByChartType(chartTypeMap.money));
+    this._transportChart = transportChart(ctxTransport, this._getSortedDataByChartType(chartTypeMap.transport));
+    this._timeSpendChart = timeSpendChart(ctxTimeSpend, this._getSortedDataByChartType(chartTypeMap.timeSpend));
   }
 
   _resetCharts() {

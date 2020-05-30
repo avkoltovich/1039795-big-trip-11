@@ -3,23 +3,15 @@ import {BAR_HEIGHT, ChartValues, tripPointIconMap} from '../../../helpers/const.
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-export const moneyChart = (ctx, events) => {
-  const parseData = events
-    .reduce((sum, event) => {
-      sum[event.type] = (sum[event.type] || 0) + event.basePrice;
-      return sum;
-    }, {});
-
-  const sortedData = Object.entries(parseData).sort((a, b) => b[1] - a[1]);
-  const data = Object.fromEntries(sortedData);
-
-  ctx.height = BAR_HEIGHT * sortedData.length;
+export const moneyChart = (ctx, data) => {
+  const dataKeys = Object.keys(data);
+  ctx.height = BAR_HEIGHT * dataKeys.length;
 
   return new Chart(ctx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
     data: {
-      labels: Object.keys(data).map((label) => `${tripPointIconMap[label]} ${label.toUpperCase()}`),
+      labels: dataKeys.map((label) => `${tripPointIconMap[label]} ${label.toUpperCase()}`),
       datasets: [{
         data: Object.values(data),
         backgroundColor: `#ffffff`,
