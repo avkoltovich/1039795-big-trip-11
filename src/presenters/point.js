@@ -41,9 +41,16 @@ export default class PointPresenter {
 
       this._editablePointComponent.setSubmitHandler((evt) => {
         evt.preventDefault();
-        this._replaceEditToEvent();
+        const element = this._editablePointComponent.getElement();
+        element.querySelectorAll(`button, input`).forEach((item) => {
+          item.disabled = `disabled`;
+        });
+        element.querySelector(`.event__save-btn`).textContent = `Saving...`;
         const data = this._editablePointComponent.getData();
-        this._pointsPresenter.syncData(this._event, data);
+        this._pointsPresenter.syncData(this._event, data)
+          .then(() => {
+            this._replaceEditToEvent();
+          });
       });
 
       this._editablePointComponent.setCollapseHandler(() => {
@@ -51,11 +58,16 @@ export default class PointPresenter {
       });
 
       this._editablePointComponent.setDeleteButtonClickHandler(() => {
+        const element = this._editablePointComponent.getElement();
+        element.querySelectorAll(`button, input`).forEach((item) => {
+          item.disabled = `disabled`;
+        });
+        element.querySelector(`.event__reset-btn`).textContent = `Deleting...`;
         this._pointsPresenter.syncData(this._event, null);
       });
 
       this._editablePointComponent.setFavoritesButtonClickHandler(() => {
-        this._pointsPresenter.syncFavorite(this._event.id, !(this._event[`isFavorite`]));
+        this._pointsPresenter.syncFavorite(this._event.id, this._event);
       });
 
       render(this._container, this._collapsedPointComponent, InsertionPosition.BEFOREEND);
@@ -87,11 +99,18 @@ export default class PointPresenter {
 
     this._editablePointComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      this._editablePointComponent.removeFlatpickr();
+      const element = this._editablePointComponent.getElement();
+      element.querySelectorAll(`button, input`).forEach((item) => {
+        item.disabled = `disabled`;
+      });
+      element.querySelector(`.event__save-btn`).textContent = `Saving...`;
       const data = this._editablePointComponent.getData();
-      this._editablePointComponent.getElement().remove();
-      this._pointsPresenter.syncData(null, data);
-      this._pointsPresenter.unsubscribe(this);
+      this._pointsPresenter.syncData(null, data)
+        .then(() => {
+          this._editablePointComponent.removeFlatpickr();
+          this._editablePointComponent.getElement().remove();
+          this._pointsPresenter.unsubscribe(this);
+        });
     });
 
     this._pointsPresenter.subscribe(this);

@@ -61,8 +61,12 @@ export default class PointPresenter {
     }
   }
 
-  syncFavorite(id, isFavorite) {
-    this._eventsModel.updateFavoriteEvent(id, isFavorite);
+  syncFavorite(id, event) {
+    event[`isFavorite`] = !event[`isFavorite`];
+    this._api.updateEvent(id, event)
+      .then(() => {
+        this._eventsModel.updateFavoriteEvent(id, event[`isFavorite`]);
+      });
   }
 
   unsubscribe(handler) {
