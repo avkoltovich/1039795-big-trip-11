@@ -9,10 +9,6 @@ import {InsertionPosition, render} from './helpers/render.js';
 
 const AUTHORIZATION = `Basic eo0w5110ik99819b`;
 
-const renderHeader = (infoContainer) => {
-  render(infoContainer, new InfoComponent(), InsertionPosition.AFTERBEGIN);
-};
-
 const infoContainer = document.querySelector(`.trip-main`);
 const filterContainer = infoContainer.querySelector(`.trip-main__trip-controls`);
 const menuContainer = filterContainer.querySelector(`h2`);
@@ -60,6 +56,8 @@ const onNewEventButtonClick = () => {
 };
 
 newEventButton.addEventListener(`click`, onNewEventButtonClick);
+
+tripPresenter.getLoadingMessage();
 
 api.getData()
   .then((data) => {

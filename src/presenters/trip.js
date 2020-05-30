@@ -2,6 +2,7 @@ import {Mode, sortTypeMap} from '../helpers/const.js';
 import {render, replace, InsertionPosition} from '../helpers/render.js';
 import SortingComponent from '../components/sorting.js';
 import BlankTripComponent from '../components/trip/blank-trip.js';
+import LoadingTripComponent from '../components/trip/loading-trip';
 import EventsGroupByDaysComponent from '../components/trip/points-group-by-days.js';
 import EventsGroupByTimeOrPriceComponent from '../components/trip/points-group-by-time-or-price.js';
 import PointsPresenter from './points.js';
@@ -26,6 +27,7 @@ export default class TripPresenter {
     this._eventsModel = eventsModel;
     this._emptyEvent = emptyEvent;
     this._enableNewEventButtonHandler = null;
+    this._loadingTripComponent = new LoadingTripComponent();
     this._newPointPresenter = null;
     this._pointsPresenter = new PointsPresenter(this._api, this._eventsModel);
     this._sortingComponent = new SortingComponent();
@@ -44,6 +46,10 @@ export default class TripPresenter {
 
   }
 
+  getLoadingMessage() {
+    render(this._container, this._loadingTripComponent, InsertionPosition.BEFOREEND);
+  }
+
   newEvent() {
     this._newPointPresenter = new PointPresenter(this._sortingComponent, this._emptyEvent, this._pointsPresenter);
     this._newPointPresenter.render(Mode.CREATE);
@@ -55,6 +61,11 @@ export default class TripPresenter {
   }
 
   render() {
+    if (this._loadingTripComponent) {
+      this._loadingTripComponent.getElement().remove();
+      this._loadingTripComponent = null;
+    }
+
     const events = this._eventsModel.getEvents();
 
     if (events.length === 0) {
