@@ -423,11 +423,14 @@ export default class EditablePoint extends AbstractSmartComponent {
     this._selectedOffers = this._getSelectedOffers();
     this._isFavorite = this._getFavoriteStatus();
 
+    if (this._id) {
+      this._event[`id`] = this._id;
+    }
+
     this._event[`basePrice`] = this._basePrice;
     this._event[`dateFrom`] = this._dateFrom;
     this._event[`dateTo`] = this._dateTo;
     this._event[`destination`] = this._destination;
-    this._event[`id`] = this._id;
     this._event[`isFavorite`] = this._isFavorite;
     this._event[`offers`] = this._selectedOffers;
     this._event[`type`] = this._type;

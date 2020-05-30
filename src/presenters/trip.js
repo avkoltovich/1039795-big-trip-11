@@ -2,6 +2,7 @@ import {Mode, sortTypeMap} from '../helpers/const.js';
 import {render, replace, InsertionPosition} from '../helpers/render.js';
 import SortingComponent from '../components/sorting.js';
 import BlankTripComponent from '../components/trip/blank-trip.js';
+import EventAdapter from '../models/event-adapter.js';
 import LoadingTripComponent from '../components/trip/loading-trip';
 import EventsGroupByDaysComponent from '../components/trip/points-group-by-days.js';
 import EventsGroupByTimeOrPriceComponent from '../components/trip/points-group-by-time-or-price.js';
@@ -9,12 +10,12 @@ import PointsPresenter from './points.js';
 import PointPresenter from './point.js';
 
 const emptyEvent = {
-  'basePrice': 0,
-  'dateFrom': new Date(),
-  'dateTo': new Date(),
-  'destination': null,
+  'base_price': 0,
+  'date_from': new Date(),
+  'date_to': new Date(),
+  'destination': ``,
   'id': null,
-  'isFavorite': false,
+  'is_favorite': false,
   'offers': null,
   'type': `taxi`
 };
@@ -25,7 +26,7 @@ export default class TripPresenter {
     this._blankTripComponent = new BlankTripComponent();
     this._container = container;
     this._eventsModel = eventsModel;
-    this._emptyEvent = emptyEvent;
+    this._emptyEvent = new EventAdapter(emptyEvent);
     this._enableNewEventButtonHandler = null;
     this._loadingTripComponent = new LoadingTripComponent();
     this._newPointPresenter = null;

@@ -77,8 +77,6 @@ export default class PointPresenter {
   }
 
   _addNewEvent() {
-    this._event[`id`] = this._pointsPresenter.getNewID();
-    this._event[`destination`] = ``;
     this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers, this._offersTitleMap, this._mode);
     this._editablePointComponent.applyFlatpickr();
     this._editablePointComponent.subscribeOnEvents();

@@ -25,10 +25,6 @@ export default class PointPresenter {
     return this._eventsModel.getDestinations();
   }
 
-  getNewID() {
-    return this._eventsModel.getNewID();
-  }
-
   getOffers() {
     return this._eventsModel.getOffers();
   }
@@ -52,7 +48,11 @@ export default class PointPresenter {
         this._eventsModel.updateEvent(oldData.id, newData);
       });
     } else if (!oldData) {
-      this._eventsModel.addEvent(newData);
+      this._api.addEvent(newData)
+      .then((response) => {
+        newData[`id`] = response[`id`];
+        this._eventsModel.addEvent(newData);
+      });
     } else {
       this._eventsModel.removeEvent(oldData.id);
     }

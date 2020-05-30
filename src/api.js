@@ -1,4 +1,4 @@
-import EventAdapter from './models/event.js';
+import EventAdapter from './models/event-adapter.js';
 
 const ServerUrl = {
   POINTS: `https://11.ecmascript.pages.academy/big-trip/points`,
@@ -27,12 +27,21 @@ export default class API {
       });
   }
 
+  addEvent(data) {
+    return this._loadData({
+      url: ServerUrl.POINTS,
+      method: `POST`,
+      body: JSON.stringify(data.toRAW()),
+    })
+      .then((response) => response.json())
+      .then(EventAdapter.parseTripEvent);
+  }
+
   updateEvent(id, data) {
     return this._loadData({
       url: `${ServerUrl.POINTS}/${id}`,
       method: `PUT`,
       body: JSON.stringify(data.toRAW()),
-      headers: new Headers({"Content-Type": `application/json`})
     })
     .then(this._checkStatus)
     .then((response) => response.json())
@@ -65,6 +74,7 @@ export default class API {
 
   _loadData({url, method = `GET`, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
+    headers.append(`Content-Type`, `application/json`);
 
     return fetch(url, {method, body, headers})
       .then(this._checkStatus)

@@ -37,10 +37,6 @@ export default class Events {
     return this._filteredAndSortedEvents;
   }
 
-  getNewID() {
-    return +(new Date());
-  }
-
   getOffers() {
     return this._offers;
   }
