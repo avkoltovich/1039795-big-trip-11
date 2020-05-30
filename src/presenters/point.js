@@ -5,6 +5,8 @@ import EditablePointComponent from '../components/trip/points/editable-point.js'
 
 export default class PointPresenter {
   constructor(container, event, pointsPresenter) {
+    this._SHAKE_ANIMATION_TIMEOUT = 600;
+
     this._container = container;
     this._collapsedPointComponent = null;
     this._editablePointComponent = null;
@@ -41,16 +43,13 @@ export default class PointPresenter {
 
       this._editablePointComponent.setSubmitHandler((evt) => {
         evt.preventDefault();
-        const element = this._editablePointComponent.getElement();
-        element.querySelectorAll(`button, input`).forEach((item) => {
-          item.disabled = `disabled`;
+        this._editablePointComponent.getElement().style.border = `0`;
+        this._disableFormElements();
+        this._editablePointComponent.setButtonText({
+          save: `Saving...`
         });
-        element.querySelector(`.event__save-btn`).textContent = `Saving...`;
         const data = this._editablePointComponent.getData();
-        this._pointsPresenter.syncData(this._event, data)
-          .then(() => {
-            this._replaceEditToEvent();
-          });
+        this._pointsPresenter.syncData(this, this._event, data);
       });
 
       this._editablePointComponent.setCollapseHandler(() => {
@@ -58,12 +57,12 @@ export default class PointPresenter {
       });
 
       this._editablePointComponent.setDeleteButtonClickHandler(() => {
-        const element = this._editablePointComponent.getElement();
-        element.querySelectorAll(`button, input`).forEach((item) => {
-          item.disabled = `disabled`;
+        this._disableFormElements();
+        this._editablePointComponent.getElement().style.border = `0`;
+        this._editablePointComponent.setButtonText({
+          delete: `Deleting...`
         });
-        element.querySelector(`.event__reset-btn`).textContent = `Deleting...`;
-        this._pointsPresenter.syncData(this._event, null);
+        this._pointsPresenter.syncData(this, this._event, null);
       });
 
       this._editablePointComponent.setFavoritesButtonClickHandler(() => {
@@ -88,6 +87,22 @@ export default class PointPresenter {
     }
   }
 
+  shake() {
+    this._editablePointComponent.getElement().style.animation = `shake ${this._SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._editablePointComponent.getElement().style.border = `2px solid red`;
+
+    setTimeout(() => {
+      this._editablePointComponent.getElement().style.animation = ``;
+
+      this._editablePointComponent.setButtonText({
+        save: `Save`,
+        delete: `Delete`,
+      });
+
+      this._enableFormElements();
+    }, this._SHAKE_ANIMATION_TIMEOUT);
+  }
+
   _addNewEvent() {
     this._editablePointComponent = new EditablePointComponent(this._event, this._destinations, this._offers, this._offersTitleMap, this._mode);
     this._editablePointComponent.applyFlatpickr();
@@ -99,18 +114,19 @@ export default class PointPresenter {
 
     this._editablePointComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const element = this._editablePointComponent.getElement();
-      element.querySelectorAll(`button, input`).forEach((item) => {
-        item.disabled = `disabled`;
+      this._editablePointComponent.getElement().style.border = `0`;
+      this._disableFormElements();
+      this._editablePointComponent.setButtonText({
+        save: `Saving...`
       });
-      element.querySelector(`.event__save-btn`).textContent = `Saving...`;
       const data = this._editablePointComponent.getData();
-      this._pointsPresenter.syncData(null, data)
-        .then(() => {
-          this._editablePointComponent.removeFlatpickr();
-          this._editablePointComponent.getElement().remove();
-          this._pointsPresenter.unsubscribe(this);
-        });
+      const removeFlatpickr = this._editablePointComponent.removeFlatpickr.bind(this);
+      const editablePointComponent = this._editablePointComponent.getElement();
+      this._pointsPresenter.syncData(this, null, data, () => {
+        removeFlatpickr();
+        editablePointComponent.remove();
+        this._pointsPresenter.unsubscribe(this);
+      });
     });
 
     this._pointsPresenter.subscribe(this);
@@ -124,6 +140,20 @@ export default class PointPresenter {
     this._pointsPresenter.unsubscribe(this);
     this._pointsPresenter.callEnableNewEventButtonHandler();
     document.removeEventListener(`keydown`, this._onEscKeyDownNewEvent);
+  }
+
+  _disableFormElements() {
+    this._editablePointComponent.getElement()
+      .querySelectorAll(`button, input`).forEach((item) => {
+        item.disabled = `disabled`;
+      });
+  }
+
+  _enableFormElements() {
+    this._editablePointComponent.getElement()
+      .querySelectorAll(`button, input`).forEach((item) => {
+        item.disabled = ``;
+      });
   }
 
   _onEscKeyDown(evt) {

@@ -1,4 +1,4 @@
-export default class PointPresenter {
+export default class PointsPresenter {
   constructor(api, eventsModel) {
     this._api = api;
     this._enableNewEventButtonHandler = null;
@@ -41,22 +41,40 @@ export default class PointPresenter {
     this._observers.push(handler);
   }
 
-  syncData(oldData, newData) {
+  syncData(eventPresenter, oldData, newData, handler) {
     if (oldData && newData) {
       this._api.updateEvent(oldData.id, newData)
       .then(() => {
         this._eventsModel.updateEvent(oldData.id, newData);
+        if (handler) {
+          handler();
+        }
+      })
+      .catch(() => {
+        eventPresenter.shake();
       });
     } else if (!oldData) {
       this._api.addEvent(newData)
       .then((response) => {
         newData[`id`] = response[`id`];
         this._eventsModel.addEvent(newData);
+        if (handler) {
+          handler();
+        }
+      })
+      .catch(() => {
+        eventPresenter.shake();
       });
     } else {
       this._api.deleteEvent(oldData.id)
       .then(() => {
         this._eventsModel.deleteEvent(oldData.id);
+        if (handler) {
+          handler();
+        }
+      })
+      .catch(() => {
+        eventPresenter.shake();
       });
     }
   }

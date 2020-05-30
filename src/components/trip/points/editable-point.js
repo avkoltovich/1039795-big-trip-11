@@ -293,6 +293,11 @@ export default class EditablePoint extends AbstractSmartComponent {
     this.applyFlatpickr();
   }
 
+  setButtonText(text = {save: `Save`, delete: `Delete`}) {
+    this.getElement().querySelector(`.event__save-btn`).textContent = text.save;
+    this.getElement().querySelector(`.event__reset-btn`).textContent = text.delete;
+  }
+
   setCollapseHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
