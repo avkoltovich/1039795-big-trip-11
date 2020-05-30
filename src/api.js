@@ -32,6 +32,7 @@ export default class API {
       url: `${ServerUrl.POINTS}/${id}`,
       method: `PUT`,
       body: JSON.stringify(data.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
     })
     .then(this._checkStatus)
     .then((response) => response.json())
