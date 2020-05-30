@@ -58,7 +58,7 @@ export default class PointPresenter {
 
       this._editablePointComponent.setDeleteButtonClickHandler(() => {
         this._disableFormElements();
-        this._editablePointComponent.getElement().style.border = `0`;
+        this._resetBorderStyle();
         this._editablePointComponent.setButtonText({
           delete: `Deleting...`
         });
@@ -114,7 +114,7 @@ export default class PointPresenter {
 
     this._editablePointComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      this._editablePointComponent.getElement().style.border = `0`;
+      this._resetBorderStyle();
       this._disableFormElements();
       this._editablePointComponent.setButtonText({
         save: `Saving...`
@@ -189,5 +189,9 @@ export default class PointPresenter {
     this._pointsPresenter.subscribe(this);
     this._editablePointComponent.applyFlatpickr();
     this._editablePointComponent.subscribeOnEvents();
+  }
+
+  _resetBorderStyle() {
+    this._editablePointComponent.getElement().style.border = `0`;
   }
 }
