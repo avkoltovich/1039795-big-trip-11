@@ -1,7 +1,7 @@
 import API from './api.js';
 import EventsModel from './models/events.js';
 import FilterPresenter from './presenters/filter.js';
-import InfoComponent from './components/header/info.js';
+import InfoPresenter from './presenters/info.js';
 import MenuPresenter from './presenters/menu.js';
 import StatsComponent from './components/stats/stats.js';
 import TripPresenter from './presenters/trip.js';
@@ -27,7 +27,7 @@ const enableNewEventButton = () => {
 const api = new API(AUTHORIZATION);
 const eventsModel = new EventsModel(api);
 
-renderHeader(infoContainer);
+const infoPresenter = new InfoPresenter(infoContainer, eventsModel);
 const menuPresenter = new MenuPresenter(menuContainer);
 
 const tableButtonHandler = () => {
@@ -66,6 +66,7 @@ api.getData()
     eventsModel.setEvents(data.events);
     eventsModel.setDestinations(data.destinations);
     eventsModel.setOffers(data.offers);
+    infoPresenter.render();
     tripPresenter.setEnableNewEventButtonHandler(enableNewEventButton);
     tripPresenter.render();
   });
