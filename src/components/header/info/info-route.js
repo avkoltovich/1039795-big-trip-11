@@ -24,8 +24,7 @@ export default class InfoRoute extends AbstractComponent {
   }
 
   _getTripTitle() {
-    const routeCitiesSet = new Set(this._events.map((event) => event.destination.name));
-    const routeCities = Array.from(routeCitiesSet);
+    const routeCities = Array.from(new Set(this._events.map((event) => event.destination.name)));
 
     return routeCities.length <= this._MAXIMUM_CITIES_SHOWN ? routeCities.join(` — `) : routeCities.slice(0, 1) + ` — … — ` + routeCities.slice(routeCities.length - 1);
   }
