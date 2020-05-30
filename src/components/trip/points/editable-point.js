@@ -344,7 +344,7 @@ export default class EditablePoint extends AbstractSmartComponent {
     destinationInput.addEventListener(`input`, (evt) => {
       this._city = evt.target.value;
       this._destinationIndex = this._getDestinationIndex(this._city);
-      if (this._destinationIndex > 0) {
+      if (this._destinationIndex !== -1) {
         this._destination = this._destinations[this._destinationIndex];
         this._isValidCity = true;
 
