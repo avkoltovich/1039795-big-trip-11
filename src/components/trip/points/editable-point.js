@@ -410,7 +410,7 @@ export default class EditablePoint extends AbstractSmartComponent {
   }
 
   _getSelectedOffers() {
-    let selectedOffers = [];
+    const selectedOffers = [];
     const offers = this.getElement().querySelectorAll(`.event__offer-checkbox:checked`);
     offers.forEach((item) => {
       selectedOffers.push(this._allOffersByType[this._getOffersIndexByTitle(this._offersTitleMap[item.name])]);

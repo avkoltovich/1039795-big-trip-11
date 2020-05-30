@@ -23,7 +23,7 @@ export default class PointsGroupByTimeOrPrice {
     const pointsListComponent = new PointsListComponent();
     render(dayItemComponent, pointsListComponent, InsertionPosition.BEFOREEND);
 
-    for (let event of this._events) {
+    for (const event of this._events) {
       const pointItem = new PointItemComponent();
       render(pointsListComponent, pointItem, InsertionPosition.BEFOREEND);
       const pointPresenter = new PointPresenter(pointItem, event, this._pointsPresenter);
