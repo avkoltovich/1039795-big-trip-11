@@ -37,6 +37,12 @@ const Mode = {
   EDIT: `edit`
 };
 
+const keyMap = {
+  EVENTS: `-events`,
+  DESTINATIONS: `-destinations`,
+  OFFERS: `-offers`
+};
+
 const sortTypeMap = {
   DEFAULT: `sort-event`,
   TIME: `sort-time`,
@@ -58,4 +64,4 @@ const tripPointIconMap = {
   'restaurant': `🍴`,
 };
 
-export {BAR_HEIGHT, ChartValues, ACTIVITY_TYPES, eventTypesMap, filterTypeMap, Mode, sortTypeMap, TRANSFER_TYPE, tripPointIconMap};
+export {BAR_HEIGHT, ChartValues, ACTIVITY_TYPES, eventTypesMap, filterTypeMap, Mode, keyMap, sortTypeMap, TRANSFER_TYPE, tripPointIconMap};

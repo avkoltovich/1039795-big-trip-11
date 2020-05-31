@@ -1,8 +1,4 @@
-const keyMap = {
-  EVENTS: `-events`,
-  DESTINATIONS: `-destinations`,
-  OFFERS: `-offers`
-};
+import {keyMap} from '../helpers/const.js';
 
 const isOnline = () => {
   return window.navigator.onLine;
@@ -33,11 +29,13 @@ export default class Provider {
 
   deleteEvent(id) {
     if (isOnline()) {
-      return this._api.deleteEvent(id);
+      return this._api.deleteEvent(id)
+        .then(() => this._store.removeItem(id));
     }
 
-    // TODO: Реализовать логику при отсутствии интернета
-    return Promise.reject(`offline logic is not implemented`);
+    this._store.removeItem(id);
+
+    return Promise.resolve();
   }
 
   getData() {
@@ -62,10 +60,16 @@ export default class Provider {
 
   updateEvent(id, data) {
     if (isOnline()) {
-      return this._api.updateEvent(id, data);
+      return this._api.updateEvent(id, data)
+      .then((updatedEvent) => {
+        this._store.updateItem(updatedEvent.id, updatedEvent);
+
+        return updatedEvent;
+      });
     }
 
-    // TODO: Реализовать логику при отсутствии интернета
-    return Promise.reject(`offline logic is not implemented`);
+    this._store.updateItem(id, data.toRAW());
+
+    return Promise.resolve(data);
   }
 }
