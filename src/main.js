@@ -1,4 +1,5 @@
 import API from './api/index.js';
+import Store from './api/store.js';
 import Provider from './api/provider.js';
 import EventsModel from './models/events.js';
 import FilterPresenter from './presenters/filter.js';
@@ -9,6 +10,9 @@ import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
 
 const AUTHORIZATION = `Basic eo0w5110ik998198`;
+const STORE_PREFIX = `big-trip-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const infoContainer = document.querySelector(`.trip-main`);
 const filterContainer = infoContainer.querySelector(`.trip-main__trip-controls`);
@@ -22,7 +26,8 @@ const enableNewEventButton = () => {
 };
 
 const api = new API(AUTHORIZATION);
-const apiWithProvider = new Provider(api);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 const eventsModel = new EventsModel(apiWithProvider);
 
 const infoPresenter = new InfoPresenter(infoContainer, eventsModel);
