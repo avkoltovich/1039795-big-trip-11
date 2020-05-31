@@ -3,10 +3,10 @@ import {Mode} from '../helpers/const.js';
 import CollapsedPointComponent from '../components/trip/points/collapsed-point.js';
 import EditablePointComponent from '../components/trip/points/editable-point.js';
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export default class PointPresenter {
   constructor(container, event, pointsPresenter) {
-    this._SHAKE_ANIMATION_TIMEOUT = 600;
-
     this._container = container;
     this._collapsedPointComponent = null;
     this._editablePointComponent = null;
@@ -88,7 +88,7 @@ export default class PointPresenter {
   }
 
   shake() {
-    this._editablePointComponent.getElement().style.animation = `shake ${this._SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._editablePointComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     this._editablePointComponent.getElement().style.border = `2px solid red`;
 
     setTimeout(() => {
@@ -100,7 +100,7 @@ export default class PointPresenter {
       });
 
       this._enableFormElements();
-    }, this._SHAKE_ANIMATION_TIMEOUT);
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _addNewEvent() {

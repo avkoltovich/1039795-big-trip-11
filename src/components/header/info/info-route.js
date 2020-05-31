@@ -1,12 +1,12 @@
 import moment from 'moment';
 import AbstractComponent from '../../abstract-component.js';
 
+const MAXIMUM_CITIES_SHOWN = 3;
+
 export default class InfoRoute extends AbstractComponent {
   constructor(events) {
     super();
     this._events = events;
-
-    this._MAXIMUM_CITIES_SHOWN = 3;
   }
 
   getTemplate() {
@@ -26,7 +26,7 @@ export default class InfoRoute extends AbstractComponent {
   _getTripTitle() {
     const routeCities = Array.from(new Set(this._events.map((event) => event.destination.name)));
 
-    return routeCities.length <= this._MAXIMUM_CITIES_SHOWN ? routeCities.join(` — `) : routeCities.slice(0, 1) + ` — … — ` + routeCities.slice(routeCities.length - 1);
+    return routeCities.length <= MAXIMUM_CITIES_SHOWN ? routeCities.join(` — `) : routeCities.slice(0, 1) + ` — … — ` + routeCities.slice(routeCities.length - 1);
   }
 
 
