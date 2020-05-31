@@ -1,4 +1,4 @@
-import EventAdapter from './models/event-adapter.js';
+import EventAdapter from '../models/event-adapter.js';
 
 const ServerUrl = {
   POINTS: `https://11.ecmascript.pages.academy/big-trip/points`,
