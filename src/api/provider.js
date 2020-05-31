@@ -1,4 +1,5 @@
 import {keyMap} from '../helpers/const.js';
+import {nanoid} from "nanoid";
 
 const isOnline = () => {
   return window.navigator.onLine;
@@ -20,11 +21,18 @@ export default class Provider {
 
   addEvent(data) {
     if (isOnline()) {
-      return this._api.addEvent(data);
+      return this._api.addEvent(data)
+        .then((newEvent) => {
+          this._store.updateItem(newEvent.id, newEvent);
+
+          return newEvent;
+        });
     }
 
-    // TODO: Реализовать логику при отсутствии интернета
-    return Promise.reject(`offline logic is not implemented`);
+    data.id = nanoid();
+
+    this._store.updateItem(data.id, data.toRAW());
+    return Promise.resolve(data);
   }
 
   deleteEvent(id) {

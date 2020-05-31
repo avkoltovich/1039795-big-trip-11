@@ -9,7 +9,7 @@ import StatsComponent from './components/stats/stats.js';
 import TripPresenter from './presenters/trip.js';
 import {InsertionPosition, render} from './helpers/render.js';
 
-const AUTHORIZATION = `Basic eo0w5110ik998198`;
+const AUTHORIZATION = `Basic eo0w5110ik898198`;
 const STORE_PREFIX = `big-trip-localstorage`;
 const STORE_VER = `v1`;
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
