@@ -27,8 +27,8 @@ const enableNewEventButton = () => {
 
 const api = new API(AUTHORIZATION);
 const store = new Store(STORE_NAME, window.localStorage);
-const apiWithProvider = new Provider(api, store);
-const eventsModel = new EventsModel(apiWithProvider);
+const eventsModel = new EventsModel();
+const apiWithProvider = new Provider(api, store, eventsModel);
 
 const infoPresenter = new InfoPresenter(infoContainer, eventsModel);
 const menuPresenter = new MenuPresenter(menuContainer);
@@ -75,3 +75,12 @@ apiWithProvider.getData()
     tripPresenter.setEnableNewEventButtonHandler(enableNewEventButton);
     tripPresenter.render();
   });
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

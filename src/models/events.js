@@ -2,10 +2,9 @@ import {filterTypeMap, sortTypeMap} from '../helpers/const.js';
 import {getCebabName} from '../helpers/utils.js';
 
 export default class Events {
-  constructor(api) {
+  constructor() {
     this._activeFilterType = filterTypeMap.DEFAULT;
     this._activeSortType = sortTypeMap.DEFAULT;
-    this._api = api;
     this._destinations = [];
     this._events = [];
     this._filteredAndSortedEvents = [];

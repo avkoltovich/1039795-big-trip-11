@@ -1,9 +1,10 @@
 import EventAdapter from '../models/event-adapter.js';
 
 const ServerUrl = {
-  POINTS: `https://11.ecmascript.pages.academy/big-trip/points`,
+  DESTINATIONS: `https://11.ecmascript.pages.academy/big-trip/destinations`,
   OFFERS: `https://11.ecmascript.pages.academy/big-trip/offers`,
-  DESTINATIONS: `https://11.ecmascript.pages.academy/big-trip/destinations`
+  POINTS: `https://11.ecmascript.pages.academy/big-trip/points`,
+  SYNC: `https://11.ecmascript.pages.academy/big-trip/points/sync`
 };
 
 export default class API {
@@ -42,6 +43,15 @@ export default class API {
       url: `${ServerUrl.POINTS}/${id}`,
       method: `DELETE`,
     });
+  }
+
+  sync(localData) {
+    return this._sendRequest({
+      url: `${ServerUrl.SYNC}`,
+      method: `POST`,
+      body: JSON.stringify(localData),
+    })
+      .then((response) => response.json());
   }
 
   updateEvent(id, data) {

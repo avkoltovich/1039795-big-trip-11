@@ -1,3 +1,4 @@
+import EventAdapter from '../models/event-adapter.js';
 import {keyMap} from '../helpers/const.js';
 import {nanoid} from "nanoid";
 
@@ -13,10 +14,16 @@ const createStoreStructure = (items) => {
   }, {});
 };
 
+const getSyncedEvents = (items) => {
+  return items.filter(({success}) => success)
+    .map(({payload}) => payload.point);
+};
+
 export default class Provider {
-  constructor(api, store) {
+  constructor(api, store, eventsModel) {
     this._api = api;
     this._store = store;
+    this._eventsModel = eventsModel;
   }
 
   addEvent(data) {
@@ -64,6 +71,27 @@ export default class Provider {
         {events: this._store.getItems(keyMap.EVENTS)},
         {destinations: this._store.getItems(keyMap.DESTINATIONS)},
         {offers: this._store.getItems(keyMap.OFFERS)}));
+  }
+
+  sync() {
+    if (isOnline()) {
+      const storeEvents = Object.values(this._store.getItems(keyMap.EVENTS));
+
+      return this._api.sync(storeEvents)
+        .then((response) => {
+          const createdEvents = response.created;
+          const updatedEvents = getSyncedEvents(response.updated);
+
+          const items = createStoreStructure([...createdEvents, ...updatedEvents]);
+
+          this._store.setItems(keyMap.EVENTS, items);
+
+          const syncedItems = EventAdapter.parseEvents(Object.values(items));
+          this._eventsModel.setEvents(syncedItems);
+        });
+    }
+
+    return Promise.reject(new Error(`Sync data failed`));
   }
 
   updateEvent(id, data) {
