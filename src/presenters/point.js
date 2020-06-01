@@ -119,7 +119,8 @@ export default class PointPresenter {
       this._resetBorderStyle();
       this._disableFormElements();
       this._editablePointComponent.setButtonText({
-        save: `Saving...`
+        save: `Saving...`,
+        delete: `Cancel`,
       });
       const data = this._editablePointComponent.getData();
       const removeFlatpickr = this._editablePointComponent.removeFlatpickr.bind(this);
