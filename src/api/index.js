@@ -1,9 +1,13 @@
-import EventAdapter from './models/event-adapter.js';
+import EventAdapter from '../models/event-adapter.js';
+
+const STATUS_REDIRECTION = 300;
+const STATUS_OK = 200;
 
 const ServerUrl = {
-  POINTS: `https://11.ecmascript.pages.academy/big-trip/points`,
+  DESTINATIONS: `https://11.ecmascript.pages.academy/big-trip/destinations`,
   OFFERS: `https://11.ecmascript.pages.academy/big-trip/offers`,
-  DESTINATIONS: `https://11.ecmascript.pages.academy/big-trip/destinations`
+  POINTS: `https://11.ecmascript.pages.academy/big-trip/points`,
+  SYNC: `https://11.ecmascript.pages.academy/big-trip/points/sync`
 };
 
 export default class API {
@@ -27,11 +31,11 @@ export default class API {
       });
   }
 
-  addEvent(data) {
+  addEvent(event) {
     return this._sendRequest({
       url: ServerUrl.POINTS,
       method: `POST`,
-      body: JSON.stringify(data.toRAW()),
+      body: JSON.stringify(event.toRAW()),
     })
       .then((response) => response.json())
       .then(EventAdapter.parseTripEvent);
@@ -44,11 +48,20 @@ export default class API {
     });
   }
 
-  updateEvent(id, data) {
+  sync(localEvents) {
+    return this._sendRequest({
+      url: `${ServerUrl.SYNC}`,
+      method: `POST`,
+      body: JSON.stringify(localEvents),
+    })
+      .then((response) => response.json());
+  }
+
+  updateEvent(id, event) {
     return this._sendRequest({
       url: `${ServerUrl.POINTS}/${id}`,
       method: `PUT`,
-      body: JSON.stringify(data.toRAW()),
+      body: JSON.stringify(event.toRAW()),
     })
     .then(this._checkStatus)
     .then((response) => response.json())
@@ -56,7 +69,7 @@ export default class API {
   }
 
   _checkStatus(response) {
-    if (response.status >= 200 && response.status < 300) {
+    if (response.status >= STATUS_OK && response.status < STATUS_REDIRECTION) {
       return response;
     } else {
       throw new Error(`${response.status}: ${response.statusText}`);
