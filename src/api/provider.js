@@ -26,9 +26,9 @@ export default class Provider {
     this._eventsModel = eventsModel;
   }
 
-  addEvent(data) {
+  addEvent(event) {
     if (isOnline()) {
-      return this._api.addEvent(data)
+      return this._api.addEvent(event)
         .then((newEvent) => {
           this._store.updateItem(newEvent.id, newEvent);
 
@@ -36,10 +36,10 @@ export default class Provider {
         });
     }
 
-    data.id = nanoid();
+    event.id = nanoid();
 
-    this._store.updateItem(data.id, data.toRAW());
-    return Promise.resolve(data);
+    this._store.updateItem(event.id, event.toRAW());
+    return Promise.resolve(event);
   }
 
   deleteEvent(id) {
@@ -94,9 +94,9 @@ export default class Provider {
     return Promise.reject(new Error(`Sync data failed`));
   }
 
-  updateEvent(id, data) {
+  updateEvent(id, event) {
     if (isOnline()) {
-      return this._api.updateEvent(id, data)
+      return this._api.updateEvent(id, event)
       .then((updatedEvent) => {
         this._store.updateItem(updatedEvent.id, updatedEvent);
 
@@ -104,8 +104,8 @@ export default class Provider {
       });
     }
 
-    this._store.updateItem(id, data.toRAW());
+    this._store.updateItem(id, event.toRAW());
 
-    return Promise.resolve(data);
+    return Promise.resolve(event);
   }
 }
