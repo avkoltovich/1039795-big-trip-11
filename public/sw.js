@@ -22,6 +22,8 @@ const CACHED_DATA = [
   `/img/logo.png`,
 ];
 
+const STATUS_OK = 200;
+
 self.addEventListener(`install`, (evt) => {
   evt.waitUntil(caches.open(CACHE_NAME)
     .then((cache) => {
@@ -53,7 +55,7 @@ self.addEventListener(`fetch`, (evt) => {
 
       return fetch(request)
     .then((response) => {
-      if (!response || response.status !== 200 || response.type !== `basic`) {
+      if (!response || response.status !== STATUS_OK || response.type !== `basic`) {
         return response;
       }
 
