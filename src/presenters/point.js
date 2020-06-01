@@ -46,7 +46,8 @@ export default class PointPresenter {
         this._editablePointComponent.getElement().style.border = `0`;
         this._disableFormElements();
         this._editablePointComponent.setButtonText({
-          save: `Saving...`
+          save: `Saving...`,
+          delete: `Delete`
         });
         const data = this._editablePointComponent.getData();
         this._pointsPresenter.syncData(this, this._event, data);
@@ -60,6 +61,7 @@ export default class PointPresenter {
         this._disableFormElements();
         this._resetBorderStyle();
         this._editablePointComponent.setButtonText({
+          save: `Save`,
           delete: `Deleting...`
         });
         this._pointsPresenter.syncData(this, this._event, null);
