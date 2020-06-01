@@ -25,6 +25,7 @@ export default class TripPresenter {
     this._api = api;
     this._blankTripComponent = new BlankTripComponent();
     this._container = container;
+    this._events = null;
     this._eventsModel = eventsModel;
     this._emptyEvent = new EventAdapter(emptyEvent);
     this._enableNewEventButtonHandler = null;
@@ -52,13 +53,23 @@ export default class TripPresenter {
   }
 
   newEvent() {
-    this._newPointPresenter = new PointPresenter(this._sortingComponent, this._emptyEvent, this._pointsPresenter);
-    this._newPointPresenter.render(Mode.CREATE);
+    if (this._tripElement) {
+      this._newPointPresenter = new PointPresenter(this._sortingComponent, this._emptyEvent, this._pointsPresenter);
+      this._newPointPresenter.render(Mode.CREATE);
+    } else {
+      this._blankTripComponent.getElement().remove();
+      this._newPointPresenter = new PointPresenter(this._container, this._emptyEvent, this._pointsPresenter);
+      this._newPointPresenter.render(Mode.CREATE);
+    }
   }
 
   remove() {
-    this._sortingComponent.getElement().remove();
-    this._tripElement.getElement().remove();
+    if (this._tripElement) {
+      this._sortingComponent.getElement().remove();
+      this._tripElement.getElement().remove();
+    } else {
+      this._blankTripComponent.getElement().remove();
+    }
   }
 
   render() {
@@ -67,9 +78,9 @@ export default class TripPresenter {
       this._loadingTripComponent = null;
     }
 
-    const events = this._eventsModel.getEvents();
+    this._events = this._eventsModel.getEvents();
 
-    if (events.length === 0) {
+    if (this._events.length === 0) {
       render(this._container, this._blankTripComponent, InsertionPosition.BEFOREEND);
       return;
     }
@@ -95,29 +106,45 @@ export default class TripPresenter {
   }
 
   _getTripElement(sortType) {
-    const sortedEvents = this._eventsModel.getEvents();
+    this._events = this._eventsModel.getEvents();
 
     if (sortType === sortTypeMap.DEFAULT) {
-      return new EventsGroupByDaysComponent(sortedEvents, this._pointsPresenter);
+      return new EventsGroupByDaysComponent(this._events, this._pointsPresenter);
     }
 
-    return new EventsGroupByTimeOrPriceComponent(sortedEvents, this._pointsPresenter);
+    return new EventsGroupByTimeOrPriceComponent(this._events, this._pointsPresenter);
   }
 
   _onDataChange() {
-    this._onSortChange();
+    this._events = this._eventsModel.getEvents();
+
+    if (this._events.length === 0) {
+      this.remove();
+      this._tripElement = null;
+      render(this._container, this._blankTripComponent, InsertionPosition.BEFOREEND);
+      return;
+    }
+
+    if (this._tripElement) {
+      this._onSortChange();
+    } else {
+      this._enableNewEventButtonHandler();
+      this.render();
+    }
   }
 
   _onFilterChange() {
-    const sortingComponent = new SortingComponent();
-    replace(sortingComponent, this._sortingComponent);
-    this._sortingComponent = sortingComponent;
+    if (this._tripElement) {
+      const sortingComponent = new SortingComponent();
+      replace(sortingComponent, this._sortingComponent);
+      this._sortingComponent = sortingComponent;
 
-    this._sortingComponent.setSortTypeChangeHandler((sortType) => {
-      this._eventsModel.setSortType(sortType);
-    });
+      this._sortingComponent.setSortTypeChangeHandler((sortType) => {
+        this._eventsModel.setSortType(sortType);
+      });
 
-    this._onSortChange();
+      this._onSortChange();
+    }
   }
 
   _onSortChange() {
