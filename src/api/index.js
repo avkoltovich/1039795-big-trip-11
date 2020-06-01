@@ -1,6 +1,6 @@
 import EventAdapter from '../models/event-adapter.js';
 
-const STATUS_REDIRECTION  = 300;
+const STATUS_REDIRECTION = 300;
 const STATUS_OK = 200;
 
 const ServerUrl = {
@@ -69,7 +69,7 @@ export default class API {
   }
 
   _checkStatus(response) {
-    if (response.status >= STATUS_OK && response.status <= STATUS_REDIRECTION) {
+    if (response.status >= STATUS_OK && response.status < STATUS_REDIRECTION) {
       return response;
     } else {
       throw new Error(`${response.status}: ${response.statusText}`);
