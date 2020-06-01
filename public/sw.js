@@ -60,12 +60,12 @@ self.addEventListener(`fetch`, (evt) => {
       }
 
       const clonedResponse = response.clone();
-      const cachePut = (cache) => {
+      const putCache = (cache) => {
         cache.put(request, clonedResponse);
       };
 
       caches.open(CACHE_NAME)
-        .then((cache) => cachePut(cache));
+        .then((cache) => putCache(cache));
 
       return response;
     });
