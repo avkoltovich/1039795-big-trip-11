@@ -27,7 +27,6 @@ export default class TripPresenter {
     this._container = container;
     this._events = null;
     this._eventsModel = eventsModel;
-    this._emptyEvent = new EventAdapter(emptyEvent);
     this._enableNewEventButtonHandler = null;
     this._loadingTripComponent = new LoadingTripComponent();
     this._newPointPresenter = null;
@@ -54,11 +53,11 @@ export default class TripPresenter {
 
   newEvent() {
     if (this._tripElement) {
-      this._newPointPresenter = new PointPresenter(this._sortingComponent, this._emptyEvent, this._pointsPresenter);
+      this._newPointPresenter = new PointPresenter(this._sortingComponent, new EventAdapter(emptyEvent), this._pointsPresenter);
       this._newPointPresenter.render(Mode.CREATE);
     } else {
       this._blankTripComponent.getElement().remove();
-      this._newPointPresenter = new PointPresenter(this._container, this._emptyEvent, this._pointsPresenter);
+      this._newPointPresenter = new PointPresenter(this._container, new EventAdapter(emptyEvent), this._pointsPresenter);
       this._newPointPresenter.render(Mode.CREATE);
     }
   }
@@ -155,7 +154,9 @@ export default class TripPresenter {
     if (this._newPointPresenter) {
       this._pointsPresenter.collapseAndUnsubscribeAll();
       this._newPointPresenter.remove();
+      this._newPointPresenter = null;
     }
+
     const filteredAndSortedTripElement = this._getTripElement(this._eventsModel.getSortType());
     replace(filteredAndSortedTripElement, this._tripElement);
     this._tripElement = filteredAndSortedTripElement;
