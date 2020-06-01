@@ -31,11 +31,11 @@ export default class API {
       });
   }
 
-  addEvent(data) {
+  addEvent(event) {
     return this._sendRequest({
       url: ServerUrl.POINTS,
       method: `POST`,
-      body: JSON.stringify(data.toRAW()),
+      body: JSON.stringify(event.toRAW()),
     })
       .then((response) => response.json())
       .then(EventAdapter.parseTripEvent);
@@ -48,20 +48,20 @@ export default class API {
     });
   }
 
-  sync(localData) {
+  sync(localEvents) {
     return this._sendRequest({
       url: `${ServerUrl.SYNC}`,
       method: `POST`,
-      body: JSON.stringify(localData),
+      body: JSON.stringify(localEvents),
     })
       .then((response) => response.json());
   }
 
-  updateEvent(id, data) {
+  updateEvent(id, event) {
     return this._sendRequest({
       url: `${ServerUrl.POINTS}/${id}`,
       method: `PUT`,
-      body: JSON.stringify(data.toRAW()),
+      body: JSON.stringify(event.toRAW()),
     })
     .then(this._checkStatus)
     .then((response) => response.json())
